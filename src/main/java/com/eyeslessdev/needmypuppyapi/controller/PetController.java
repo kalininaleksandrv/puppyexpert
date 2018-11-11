@@ -12,51 +12,51 @@ import java.util.Map;
 @RequestMapping("pet")
 public class PetController {
 
-        private int counter = 4;
+    private int counter = 4;
 
-        private List<Map<String, String>> pets = new ArrayList<Map<String, String>>(){{
-            add(new HashMap<String, String>() {{put("id", "1"); put ("name", "1stname"); }});
-            add(new HashMap<String, String>() {{put("id", "2"); put ("name", "2ndname"); }});
-            add(new HashMap<String, String>() {{put("id", "3"); put ("name", "3rdname"); }});
-        }};
+    private List<Map<String, String>> pets = new ArrayList<Map<String, String>>(){{
+        add(new HashMap<String, String>() {{put("id", "1"); put ("title", "Лабрадор"); }});
+        add(new HashMap<String, String>() {{put("id", "2"); put ("title", "Хаски"); }});
+        add(new HashMap<String, String>() {{put("id", "3"); put ("title", "Ретривер"); }});
+    }};
 
-        @GetMapping
-        public List<Map<String, String>> list (){
-            return pets;
-        }
+    @GetMapping
+    public List<Map<String, String>> list (){
+        return pets;
+    }
 
-        @GetMapping("{id}")
-        private Map<String, String> getPetById(@PathVariable String id){
-            return getId(id);
-        }
+    @GetMapping("{id}")
+    private Map<String, String> getPetById(@PathVariable String id){
+        return getId(id);
+    }
 
-        @PostMapping
-        public Map<String,String> createNewPet (@RequestBody Map<String, String> pet){
+    @PostMapping
+    public Map<String,String> createNewPet (@RequestBody Map<String, String> pet){
 
-            pet.put("id", String.valueOf(counter++));
-            pets.add(pet);
-            return pet;
-        }
+        pet.put("id", String.valueOf(counter++));
+        pets.add(pet);
+        return pet;
+    }
 
-        @PutMapping("{id}")
-        public Map<String, String> updatePetById(@PathVariable String id, @RequestBody Map<String, String> pet){
+    @PutMapping("{id}")
+    public Map<String, String> updatePetById(@PathVariable String id, @RequestBody Map<String, String> pet){
 
-            Map<String, String> petFromDb = getId(id);
-            petFromDb.putAll(pet);
-            petFromDb.put("id", id);
+        Map<String, String> petFromDb = getId(id);
+        petFromDb.putAll(pet);
+        petFromDb.put("id", id);
 
-            return petFromDb;
-        }
+        return petFromDb;
+    }
 
-        @DeleteMapping ("{id}")
-        public void deleatPetById (@PathVariable String id){
-            pets.remove(getPetById(id));
-        }
+    @DeleteMapping ("{id}")
+    public void deleatPetById (@PathVariable String id){
+        pets.remove(getPetById(id));
+    }
 
-        private Map<String, String> getId(@PathVariable String id) {
-            return pets.stream()
-                    .filter(pet -> pet.get("id").equals(id))
-                    .findFirst()
-                    .orElseThrow(NotFoundException::new);
-        }
+    private Map<String, String> getId(@PathVariable String id) {
+        return pets.stream()
+                .filter(pet -> pet.get("id").equals(id))
+                .findFirst()
+                .orElseThrow(NotFoundException::new);
+    }
 }
