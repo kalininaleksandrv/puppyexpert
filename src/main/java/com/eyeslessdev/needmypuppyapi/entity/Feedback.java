@@ -1,10 +1,7 @@
 package com.eyeslessdev.needmypuppyapi.entity;
 
 import javax.persistence.*;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.*;
 import java.io.Serializable;
 
     @Entity
@@ -25,6 +22,7 @@ import java.io.Serializable;
         private String title;
 
         @NotNull
+        @Size(min = 5, max = 500)
         private String description;
 
         @NotNull
