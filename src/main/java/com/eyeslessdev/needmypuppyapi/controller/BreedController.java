@@ -3,34 +3,36 @@ package com.eyeslessdev.needmypuppyapi.controller;
 import com.eyeslessdev.needmypuppyapi.entity.Breed;
 import com.eyeslessdev.needmypuppyapi.repositories.BreedRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 
 @RestController
-@RequestMapping("breeds")
+@CrossOrigin
 public class BreedController {
 
     @Autowired
     private BreedRepo breedRepo;
 
     @GetMapping
-    public List<Map<String, String>> list (){
+    @RequestMapping("breeds")
+    public List<Breed> getAllBreeds (){
 
-        List<Map<String, String>> returnedlist = new ArrayList<>();
-        List<Breed> allBreeds = breedRepo.findAll();
-
-        for (Breed allBreed : allBreeds) {
-            Map<String, String> breedsmap = new HashMap<>();
-            breedsmap.put("Title", allBreed.getTitle());
-            breedsmap.put("Description", allBreed.getDescription());
-            returnedlist.add(breedsmap);
-        }
-        return returnedlist;
+        return breedRepo.findAllByOrderByTitle();
     }
+
+    @GetMapping
+    @RequestMapping("breedsbyid")
+    public List<Breed> getBreedsById (){
+
+        List<Breed> rawlist = breedRepo.findAll();
+        rawlist.sort(Comparator.comparing(Breed::get_id));
+        return rawlist;
+
+    }
+
 }
