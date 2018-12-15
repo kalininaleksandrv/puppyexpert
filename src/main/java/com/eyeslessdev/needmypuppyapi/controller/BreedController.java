@@ -2,6 +2,7 @@ package com.eyeslessdev.needmypuppyapi.controller;
 
 import com.eyeslessdev.needmypuppyapi.entity.Breed;
 import com.eyeslessdev.needmypuppyapi.repositories.BreedRepo;
+import com.eyeslessdev.needmypuppyapi.service.BreedService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,25 +15,22 @@ import java.util.List;
 @RestController
 @CrossOrigin
 public class BreedController {
-
+    
     @Autowired
-    private BreedRepo breedRepo;
+    private BreedService breedService;
 
     @GetMapping
     @RequestMapping("breeds")
-    public List<Breed> getAllBreeds (){
+    public List<Breed> getAllBreedsOrderedByTitle (){
 
-        return breedRepo.findAllByOrderByTitle();
+        return breedService.getAllBreedsOrderedByTitle();
     }
 
     @GetMapping
     @RequestMapping("breedsbyid")
-    public List<Breed> getBreedsById (){
+    public List<Breed> getAllBreedsById (){
 
-        List<Breed> rawlist = breedRepo.findAll();
-        rawlist.sort(Comparator.comparing(Breed::get_id));
-        return rawlist;
-
+        return breedService.getAllBreedsOrderedById();
     }
 
 }
