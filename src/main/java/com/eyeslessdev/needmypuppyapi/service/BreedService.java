@@ -31,9 +31,16 @@ public class BreedService {
         return breedRepo.findAllByOrderByTitle();
     }
 
+
+    public Optional<Breed> getBreedById (long id) {
+
+        return breedRepo.findById(id);
+    }
+
+
     public ResponseEntity<Object> faveBreedById(long id) {
 
-        Optional<Breed> breedOptional = breedRepo.findById(id);
+        Optional<Breed> breedOptional = getBreedById(id);
 
         if (!breedOptional.isPresent())
             return ResponseEntity.notFound().build();
@@ -43,6 +50,7 @@ public class BreedService {
         breedRepo.save(breed);
         return ResponseEntity.noContent().build();}
     }
+
 
     private int increasefav(int favorite) {
         return ++favorite;

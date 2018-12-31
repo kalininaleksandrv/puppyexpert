@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @CrossOrigin
@@ -29,6 +30,14 @@ public class BreedController {
 
         return breedService.getAllBreedsOrderedById();
     }
+
+
+    @CrossOrigin
+    @GetMapping("{id}")
+    public Optional<Breed> getBreedById(@PathVariable long id) {
+        return breedService.getBreedById(id);
+    }
+
 
     @CrossOrigin
     @GetMapping("faved/{id}")
