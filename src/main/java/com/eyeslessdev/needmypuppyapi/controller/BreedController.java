@@ -1,12 +1,14 @@
 package com.eyeslessdev.needmypuppyapi.controller;
 
 import com.eyeslessdev.needmypuppyapi.entity.Breed;
+import com.eyeslessdev.needmypuppyapi.exceptions.NotFoundException;
 import com.eyeslessdev.needmypuppyapi.service.BreedService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @RestController
@@ -34,8 +36,8 @@ public class BreedController {
 
     @CrossOrigin
     @GetMapping("{id}")
-    public Optional<Breed> getBreedById(@PathVariable long id) {
-        return breedService.getBreedById(id);
+    public Breed getBreedById(@PathVariable long id) {
+        return breedService.getBreedById(id).orElseThrow(()-> new NotFoundException());
     }
 
 
