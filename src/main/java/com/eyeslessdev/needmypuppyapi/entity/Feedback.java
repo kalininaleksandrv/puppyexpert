@@ -25,9 +25,14 @@ import java.io.Serializable;
         @Size(min = 5, max = 500)
         private String description;
 
-        @NotNull
         @Email
         private String email;
+
+        private String username;
+
+        private Long commenttime;
+
+        private String commenttimestr;
 
         public Long getId() {
             return id;
@@ -68,4 +73,16 @@ import java.io.Serializable;
         public void setEmail(String email) {
             this.email = email;
         }
+
+        public String getUsername() {return username;}
+
+        public void setUsername(String username) {this.username = username;}
+
+        public Long getCommenttime() {return commenttime;}
+
+        public void setCommenttime(Long commenttime) {this.commenttime = commenttime;}
+
+        public String getCommenttimestr() {return commenttimestr;}
+
+        public void setCommenttimestr(String commenttimestr) {this.commenttimestr = commenttimestr;}
     }
