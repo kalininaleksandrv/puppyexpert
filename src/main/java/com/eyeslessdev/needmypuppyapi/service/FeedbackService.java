@@ -22,13 +22,18 @@ public class FeedbackService {
         return feedbackRepo.findByDogid(id);
     }
 
-    public void saveFeedback (Feedback feedback) {
-
-        DateTime nowtime = DateTime.now();
-        DateTimeFormatter dtf = DateTimeFormat.forPattern("MM/dd/yyyy HH:mm:ss");
-        feedback.setCommenttime(nowtime.getMillis());
-        feedback.setCommenttimestr(nowtime.toString(dtf));
-        feedbackRepo.save(feedback);
+    public Boolean saveFeedback (Feedback feedback)  {
+     try {
+         DateTime nowtime = DateTime.now();
+         DateTimeFormatter dtf = DateTimeFormat.forPattern("MM/dd/yyyy HH:mm:ss");
+         feedback.setCommenttime(nowtime.getMillis());
+         feedback.setCommenttimestr(nowtime.toString(dtf));
+         feedbackRepo.save(feedback);
+         return true;
+     } catch (Exception e) {
+            System.out.println(e);
+            return false;
+     }
     }
 
 }

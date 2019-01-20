@@ -40,8 +40,9 @@ public class FeedbackController {
                     .collect(Collectors.toList());
             return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
         } else {
-            feedbackService.saveFeedback(feedback);
-            return new ResponseEntity<>(HttpStatus.CREATED);
+            if (feedbackService.saveFeedback(feedback)){
+                return new ResponseEntity<>(HttpStatus.CREATED);
+            } else {return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);}
         }
     }
 
