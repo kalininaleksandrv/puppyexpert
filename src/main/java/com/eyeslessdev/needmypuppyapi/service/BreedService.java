@@ -56,11 +56,10 @@ public class BreedService {
 
     public Optional<List<Breed>> getFilteredListOfBreed(Map<String, String> allparam) {
 
-        String hunt = allparam.get("hunt");
-        String obidence = allparam.get("obidence");
-        System.out.println(hunt+obidence);
+        int for_hunt = Integer.parseInt(allparam.get("hunt"));
+        int for_obidence = Integer.parseInt(allparam.get("obidence"));
 
-        Optional<List<Breed>> mylist = breedRepo.findQuery();
+        Optional<List<Breed>> mylist = breedRepo.findQuery(for_hunt, for_obidence);
         return mylist;
     }
 

@@ -20,7 +20,7 @@ public interface BreedRepo extends JpaRepository<Breed, Long> {
     //SELECT * FROM public.breeds WHERE for_hunt = 1;
     //SELECT * FROM public.breeds WHERE for_hunt = 1&for_obidience = 1;
 
-    @Query(value = "SELECT * FROM public.breeds WHERE for_hunt = 1" , nativeQuery = true)
-    Optional<List<Breed>> findQuery();
+    @Query(value = "SELECT * FROM public.breeds WHERE for_hunt = :for_hunt and for_obidience = :for_obidience" , nativeQuery = true)
+    Optional<List<Breed>> findQuery(@Param("for_hunt") int for_hunt, @Param("for_obidience") int for_obidence);
 }
 
