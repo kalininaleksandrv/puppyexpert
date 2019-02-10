@@ -7,9 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 @CrossOrigin
@@ -47,4 +45,15 @@ public class BreedController {
         return breedService.faveBreedById(id);
     }
 
+    //http://localhost:8080/breeds/filtered?exp=no-exp&time=1h&hunt=false&obidence=false&fursize=any
+
+    @CrossOrigin
+    @GetMapping
+    @RequestMapping("filtered")
+    public String getFilteredBreeds(@RequestParam Map<String,String> allparam){
+
+        Set<Map.Entry<String, String>> entries = allparam.entrySet();
+
+        return "Params: " + entries;
+    }
 }
