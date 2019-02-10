@@ -6,9 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class BreedService {
@@ -55,4 +53,16 @@ public class BreedService {
     private int increasefav(int favorite) {
         return ++favorite;
     }
+
+    public Optional<List<Breed>> getFilteredListOfBreed(Map<String, String> allparam) {
+
+        String hunt = allparam.get("hunt");
+        String obidence = allparam.get("obidence");
+        System.out.println(hunt+obidence);
+
+        Optional<List<Breed>> mylist = breedRepo.findQuery();
+        return mylist;
+    }
+
+
 }

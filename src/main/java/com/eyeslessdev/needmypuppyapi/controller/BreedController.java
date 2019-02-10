@@ -45,15 +45,13 @@ public class BreedController {
         return breedService.faveBreedById(id);
     }
 
-    //http://localhost:8080/breeds/filtered?exp=no-exp&time=1h&hunt=false&obidence=false&fursize=any
-
     @CrossOrigin
     @GetMapping
     @RequestMapping("filtered")
-    public String getFilteredBreeds(@RequestParam Map<String,String> allparam){
+    public List<Breed> getFilteredBreeds(@RequestParam Map<String,String> allparam){
 
         Set<Map.Entry<String, String>> entries = allparam.entrySet();
 
-        return "Params: " + entries;
+        return breedService.getFilteredListOfBreed(allparam).orElseThrow(()-> new NotFoundException());
     }
 }
