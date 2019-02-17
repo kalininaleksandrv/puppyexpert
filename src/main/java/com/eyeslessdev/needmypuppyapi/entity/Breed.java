@@ -13,12 +13,12 @@ public class Breed implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long _id;
+    private Long id;
     private String title;
     private String description;
-    private String description_full;
-    private String image_resource_id;
-    private String image_resource_id_big;
+    private String descriptionfull;
+    private String imageresourceid;
+    private String imageresourceidbig;
     private int obidience;
     private int guard;
     private int agressive;
@@ -28,28 +28,28 @@ public class Breed implements Serializable {
     private int care;
     private String hunt;
     private String weblinc;
-    private String weblinc_wiki;
+    private String weblincwiki;
     private int fciid;
     private String hair;
     private String blackorwhite;
     private String noalergy;
     private int favorite;
     private String comment;
-    private int for_child;
-    private int for_company;
-    private int for_running;
-    private int for_hunt;
-    private int for_obidience;
-    private int for_guardterritory;
-    private int for_zks;
-    private int for_agility;
+    private int forchild;
+    private int forcompany;
+    private int forrunning;
+    private int forhunt;
+    private int forobidience;
+    private int forguardterritory;
+    private int forzks;
+    private int foragility;
 
     public Long get_id() {
-        return _id;
+        return id;
     }
 
-    public void set_id(Long _id) {
-        this._id = _id;
+    public void setid(Long id) {
+        this.id = id;
     }
 
     public String getTitle() {
@@ -68,29 +68,29 @@ public class Breed implements Serializable {
         this.description = description;
     }
 
-    public String getDescription_full() {
-        return description_full;
+    public String getDescriptionfull() {
+        return descriptionfull;
     }
 
-    public void setDescription_full(String description_full) {
-        this.description_full = description_full;
+    public void setDescriptionfull(String descriptionfull) {
+        this.descriptionfull = descriptionfull;
     }
 
 
-    public String getImage_resource_id() {
-        return image_resource_id;
+    public String getImageresourceid() {
+        return imageresourceid;
     }
 
-    public void setImage_resource_id(String image_resource_id) {
-        this.image_resource_id = image_resource_id;
+    public void setImageresourceid(String imageresourceid) {
+        this.imageresourceid = imageresourceid;
     }
 
-    public String getImage_resource_id_big() {
-        return image_resource_id_big;
+    public String getImageresourceidbig() {
+        return imageresourceidbig;
     }
 
-    public void setImage_resource_id_big(String image_resource_id_big) {
-        this.image_resource_id_big = image_resource_id_big;
+    public void setImageresourceidbig(String imageresourceidbig) {
+        this.imageresourceidbig = imageresourceidbig;
     }
 
     public int getObidience() {
@@ -167,12 +167,12 @@ public class Breed implements Serializable {
         this.weblinc = weblinc;
     }
 
-    public String getWeblinc_wiki() {
-        return weblinc_wiki;
+    public String getWeblincwiki() {
+        return weblincwiki;
     }
 
-    public void setWeblinc_wiki(String weblinc_wiki) {
-        this.weblinc_wiki = weblinc_wiki;
+    public void setWeblincwiki(String weblinc_wiki) {
+        this.weblincwiki = weblinc_wiki;
     }
 
     public int getFciid() {
@@ -225,68 +225,68 @@ public class Breed implements Serializable {
         this.comment = comment;
     }
 
-    public int getFor_child() {
-        return for_child;
+    public int getForchild() {
+        return forchild;
     }
 
-    public void setFor_child(int for_child) {
-        this.for_child = for_child;
+    public void setForchild(int for_child) {
+        this.forchild = forchild;
     }
 
-    public int getFor_company() {
-        return for_company;
+    public int getForcompany() {
+        return forcompany;
     }
 
-    public void setFor_company(int for_company) {
-        this.for_company = for_company;
+    public void setForcompany(int forcompany) {
+        this.forcompany = forcompany;
     }
 
-    public int getFor_running() {
-        return for_running;
+    public int getForrunning() {
+        return forrunning;
     }
 
-    public void setFor_running(int for_running) {
-        this.for_running = for_running;
+    public void setForrunning(int forrunning) {
+        this.forrunning = forrunning;
     }
 
-    public int getFor_hunt() {
-        return for_hunt;
+    public int getForhunt() {
+        return forhunt;
     }
 
-    public void setFor_hunt(int for_hunt) {
-        this.for_hunt = for_hunt;
+    public void setForhunt(int for_hunt) {
+        this.forhunt = forhunt;
     }
 
-    public int getFor_obidience() {
-        return for_obidience;
+    public int getForobidience() {
+        return forobidience;
     }
 
-    public void setFor_obidience(int for_obidience) {
-        this.for_obidience = for_obidience;
+    public void setForobidience(int forobidience) {
+        this.forobidience = forobidience;
     }
 
-    public int getFor_guardterritory() {
-        return for_guardterritory;
+    public int getForguardterritory() {
+        return forguardterritory;
     }
 
-    public void setFor_guardterritory(int for_guardterritory) {
-        this.for_guardterritory = for_guardterritory;
+    public void setForguardterritory(int forguardterritory) {
+        this.forguardterritory = forguardterritory;
     }
 
-    public int getFor_zks() {
-        return for_zks;
+    public int getForzks() {
+        return forzks;
     }
 
-    public void setFor_zks(int for_zks) {
-        this.for_zks = for_zks;
+    public void setForzks(int for_zks) {
+        this.forzks = forzks;
     }
 
-    public int getFor_agility() {
-        return for_agility;
+    public int getForagility() {
+        return foragility;
     }
 
-    public void setFor_agility(int for_agility) {
-        this.for_agility = for_agility;
+    public void setForagility(int for_agility) {
+        this.foragility = foragility;
     }
 
     @Override
@@ -294,7 +294,7 @@ public class Breed implements Serializable {
         if (this == o) return true;
         if (!(o instanceof Breed)) return false;
         Breed breed = (Breed) o;
-        return Objects.equals(_id, breed._id);
+        return Objects.equals(id, breed.id);
     }
 
     @Override
