@@ -16,9 +16,7 @@ public interface BreedRepo extends JpaRepository<Breed, Long> {
 
     Optional<List<Breed>> findByBlackorwhite(final String s);
 
-    //SELECT * FROM public.breeds WHERE for_hunt = 1 and for_obidience = 1;
-    //SELECT * FROM public.breeds WHERE for_hunt = 1;
-    //SELECT * FROM public.breeds WHERE for_hunt = 1&for_obidience = 1;
+    //SELECT * FROM public.breeds WHERE forhunt = 1 and forobidience = 1;
 
     @Query(value = "SELECT * FROM public.breeds WHERE forhunt = :forhunt and forobidience = :forobidience" , nativeQuery = true)
     Optional<List<Breed>> findQuery(@Param("forhunt") int forhunt, @Param("forobidience") int forobidence);

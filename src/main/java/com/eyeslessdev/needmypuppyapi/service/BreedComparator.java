@@ -9,6 +9,6 @@ public class BreedComparator implements Comparator <Breed> {
 
     @Override
     public int compare(Breed breed1, Breed breed2) {
-        return (int) (breed1.get_id()-breed2.get_id());
+        return (int) (breed1.getId()-breed2.getId());
     }
 }

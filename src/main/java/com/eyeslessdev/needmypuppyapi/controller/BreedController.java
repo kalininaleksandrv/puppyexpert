@@ -17,18 +17,18 @@ public class BreedController {
     @Autowired
     private BreedService breedService;
 
-    @GetMapping
-    public List<Breed> getAllBreedsOrderedByTitle (){
-
-        return breedService.getAllBreedsOrderedByTitle();
-    }
-
     @CrossOrigin
     @GetMapping
-    @RequestMapping("byid")
     public List<Breed> getAllBreedsById (){
 
         return breedService.getAllBreedsOrderedById();
+    }
+
+    @GetMapping
+    @RequestMapping("bytitle")
+    public List<Breed> getAllBreedsOrderedByTitle (){
+
+        return breedService.getAllBreedsOrderedByTitle();
     }
 
 

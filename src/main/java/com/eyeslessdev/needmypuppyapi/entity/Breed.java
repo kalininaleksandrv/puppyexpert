@@ -44,11 +44,11 @@ public class Breed implements Serializable {
     private int forzks;
     private int foragility;
 
-    public Long get_id() {
+    public Long getId() {
         return id;
     }
 
-    public void setid(Long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -75,7 +75,6 @@ public class Breed implements Serializable {
     public void setDescriptionfull(String descriptionfull) {
         this.descriptionfull = descriptionfull;
     }
-
 
     public String getImageresourceid() {
         return imageresourceid;
@@ -109,15 +108,6 @@ public class Breed implements Serializable {
         this.guard = guard;
     }
 
-
-    public int getActive() {
-        return active;
-    }
-
-    public void setActive(int active) {
-        this.active = active;
-    }
-
     public int getAgressive() {
         return agressive;
     }
@@ -126,6 +116,13 @@ public class Breed implements Serializable {
         this.agressive = agressive;
     }
 
+    public int getActive() {
+        return active;
+    }
+
+    public void setActive(int active) {
+        this.active = active;
+    }
 
     public int getHardy() {
         return hardy;
@@ -171,8 +168,8 @@ public class Breed implements Serializable {
         return weblincwiki;
     }
 
-    public void setWeblincwiki(String weblinc_wiki) {
-        this.weblincwiki = weblinc_wiki;
+    public void setWeblincwiki(String weblincwiki) {
+        this.weblincwiki = weblincwiki;
     }
 
     public int getFciid() {
@@ -207,11 +204,9 @@ public class Breed implements Serializable {
         this.noalergy = noalergy;
     }
 
-
     public int getFavorite() {
         return favorite;
     }
-
 
     public void setFavorite(int favorite) {
         this.favorite = favorite;
@@ -229,7 +224,7 @@ public class Breed implements Serializable {
         return forchild;
     }
 
-    public void setForchild(int for_child) {
+    public void setForchild(int forchild) {
         this.forchild = forchild;
     }
 
@@ -253,7 +248,7 @@ public class Breed implements Serializable {
         return forhunt;
     }
 
-    public void setForhunt(int for_hunt) {
+    public void setForhunt(int forhunt) {
         this.forhunt = forhunt;
     }
 
@@ -277,7 +272,7 @@ public class Breed implements Serializable {
         return forzks;
     }
 
-    public void setForzks(int for_zks) {
+    public void setForzks(int forzks) {
         this.forzks = forzks;
     }
 
@@ -285,9 +280,10 @@ public class Breed implements Serializable {
         return foragility;
     }
 
-    public void setForagility(int for_agility) {
+    public void setForagility(int foragility) {
         this.foragility = foragility;
     }
+
 
     @Override
     public boolean equals(Object o) {
