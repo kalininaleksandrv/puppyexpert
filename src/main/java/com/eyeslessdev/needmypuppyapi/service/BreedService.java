@@ -15,6 +15,9 @@ public class BreedService {
     @Autowired
     private BreedRepo breedRepo;
 
+    @Autowired
+    private BreedRequest breedRequest;
+
     public List<Breed> findAll() {
 
         return breedRepo.findAll();
@@ -56,8 +59,8 @@ public class BreedService {
 
         BreedRequest breedRequest = parserequest(allparam);
 
-        int forhunt = Integer.parseInt(allparam.get("hunt"));
-        int forobidence = Integer.parseInt(allparam.get("obidence"));
+        int forhunt = Integer.parseInt(allparam.get("forhunt"));
+        int forobidence = Integer.parseInt(allparam.get("forobidence"));
 
         return breedRepo.findQuery(forhunt, forobidence);
     }
@@ -66,11 +69,12 @@ public class BreedService {
 
     private BreedRequest parserequest(Map<String, String> allparam) {
 
-        BreedRequest breedRequest = new BreedRequest();
+        breedRequest.removeouterparams();
         breedRequest.fillouterparams(allparam);
 
+        // TODO: 24.02.19 delete if production
+        System.out.println(breedRequest.getrequestandresponceparamsAsString());
 
-        System.out.println(breedRequest.toString());
         return breedRequest;
     }
 

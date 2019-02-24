@@ -1,11 +1,12 @@
 package com.eyeslessdev.needmypuppyapi.entity;
 
-
+import org.springframework.stereotype.Component;
 import java.util.Map;
 
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 
+@Component
 public class BreedRequest {
 
     public BreedRequest() {
@@ -18,20 +19,32 @@ public class BreedRequest {
 
         this.time = 1;
         this.exp = 1;
+        this.age = 1;
+        this.athlet = 1;
         this.cynologist = 1;
         this.walk = 1;
-        this.age = 1;
         this.family = 1;
         this.grummer = 1;
+
+        this.foragility= 0;
+        this.forchild= 0;
+        this.forcompany= 0;
+        this.forguardter= 0;
+        this.forhunt= 0;
+        this.forobidience= 0;
+        this.forruning= 0;
+        this.forzks= 0;
+
     }
 
 
     //inner parameters
     private int time;
     private int exp;
+    private int age;
+    private int athlet;
     private int cynologist;
     private int walk;
-    private int age;
     private int family;
     private int grummer;
 
@@ -43,9 +56,20 @@ public class BreedRequest {
     private int size;
     private int care;
 
+    //constraintparameters
+    private int foragility;
+    private int forchild;
+    private int forcompany;
+    private int forguardter;
+    private int forhunt;
+    private int forobidience;
+    private int forruning;
+    private int forzks;
+
+
     @Override
     public String toString() {
-        return "BreedRequest{" +
+        return "BreedResponce{" +
                 "obidience=" + obidience +
                 ", guard=" + guard +
                 ", agressive=" + agressive +
@@ -53,6 +77,38 @@ public class BreedRequest {
                 ", size=" + size +
                 ", care=" + care +
                 '}';
+    }
+
+    public String getrequestandresponceparamsAsString (){
+
+        return "-------\n" +
+                "BreedRequest{" +
+                "time=" + time +
+                ", exp=" + exp +
+                ", age=" + age +
+                ", athlet=" + athlet +
+                ", cynologist=" + cynologist +
+                ", walk=" + walk +
+                ", family=" + family +
+                ", grummer=" + grummer +
+                '}' +
+                "\n" +
+                "--------\n"+
+                this.toString() +
+                "\n" +
+                "--------\n"+
+                "Constraints{" +
+                "foragility=" + foragility +
+                ", forchild=" + forchild +
+                ", forcompany=" + forcompany +
+                ", forguardter=" + forguardter +
+                ", forhunt=" + forhunt +
+                ", forobidience=" + forobidience +
+                ", forruning=" + forruning +
+                ", forzks=" + forzks +
+                '}'+
+                "\n"
+                ;
     }
 
     // main logic for convert inner parameters to outer parameters
@@ -69,14 +125,17 @@ public class BreedRequest {
                 case "exp":
                     setExp(item.getValue());
                     break;
+                case "age":
+                    setAge(item.getValue());
+                    break;
+                case "athlet":
+                    setAthlet(item.getValue());
+                    break;
                 case "cyno":
                     setCynologist(item.getValue());
                     break;
                 case "walk":
                     setWalk(item.getValue());
-                    break;
-                case "age":
-                    setAge(item.getValue());
                     break;
                 case "fam":
                     setFamily(item.getValue());
@@ -84,7 +143,31 @@ public class BreedRequest {
                 case "grum":
                     setGrummer(item.getValue());
                     break;
-
+                 //constraints------------------------------------------
+                case "foragility":
+                    setForagility(item.getValue());
+                    break;
+                case "forchild":
+                    setForchild(item.getValue());
+                    break;
+                case "forcompany":
+                    setForcompany(item.getValue());
+                    break;
+                case "forguardter":
+                    setForguardter(item.getValue());
+                    break;
+                case "forhunt":
+                    setForhunt(item.getValue());
+                    break;
+                case "forobidence":
+                    setForobidience(item.getValue());
+                    break;
+                case "forruning":
+                    setForruning(item.getValue());
+                    break;
+                case "forzks":
+                    setForzks(item.getValue());
+                    break;
             }
         }
 
@@ -142,7 +225,7 @@ public class BreedRequest {
     //корректируем показатель активности от возраста или от менее активных членов семьи
     private int finalyactive (){
 
-        int activwithage = getActive()+1;
+        int activwithage = getAthlet()+1;
 
         if (getAge() == 5){activwithage --;}
 
@@ -163,10 +246,20 @@ public class BreedRequest {
 
             this.time = 1;
             this.exp = 1;
+            this.age = 1;
+            this.athlet = 1;
             this.cynologist = 1;
             this.walk = 1;
-            this.age = 1;
             this.family = 1;
+
+            this.foragility= 0;
+            this.forchild= 0;
+            this.forcompany= 0;
+            this.forguardter= 0;
+            this.forhunt= 0;
+            this.forobidience= 0;
+            this.forruning= 0;
+            this.forzks= 0;
         }
 
 
@@ -272,6 +365,76 @@ public class BreedRequest {
         private void setGrummer(String grummer) {
                 this.grummer = Integer.parseInt(grummer);
             }
+
+        private int getAthlet() {return athlet;}
+
+        private void setAthlet(String athlet) {this.athlet = Integer.parseInt(athlet);}
+
+        //constrains----------------------------------
+
+        private int isForagility() {
+            return foragility;
+        }
+
+        private void setForagility(String foragility) {
+            this.foragility = Integer.parseInt(foragility);
+        }
+
+        private int isForchild() {
+            return forchild;
+        }
+
+        private void setForchild(String forchild) {
+            this.forchild = Integer.parseInt(forchild);
+        }
+
+        private int isForcompany() {
+            return forcompany;
+        }
+
+        private void setForcompany(String forcompany) {
+            this.forcompany = Integer.parseInt(forcompany);
+        }
+
+        private int isForguardter() {
+            return forguardter;
+        }
+
+        private void setForguardter(String forguardter) {
+            this.forguardter = Integer.parseInt(forguardter);
+        }
+
+        private int isForhunt() {
+            return forhunt;
+        }
+
+        private void setForhunt(String forhunt) {
+            this.forhunt = Integer.parseInt(forhunt);
+        }
+
+        private int isForobidience() {
+            return forobidience;
+        }
+
+        private void setForobidience(String forobidience) {
+            this.forobidience = Integer.parseInt(forobidience);
+        }
+
+        private int isForruning() {
+            return forruning;
+        }
+
+        private void setForruning(String forruning) {
+            this.forruning = Integer.parseInt(forruning);
+        }
+
+        private int isForzks() {
+            return forzks;
+        }
+
+        private void setForzks(String forzks) {
+            this.forzks = Integer.parseInt(forzks);
+        }
 
 
 
