@@ -1,6 +1,7 @@
 package com.eyeslessdev.needmypuppyapi.entity;
 
 import org.springframework.stereotype.Component;
+
 import java.util.Map;
 
 import static java.lang.Math.max;
@@ -35,6 +36,12 @@ public class BreedRequest {
         this.forruning= 0;
         this.forzks= 0;
 
+        this.hairsize = "";
+        this.blackorwhite = "";
+        this.sizeconstraintmin = 0;
+        this.sizeconstraintmax = 5;
+        this.rare = "yes";
+
     }
 
 
@@ -66,6 +73,12 @@ public class BreedRequest {
     private int forruning;
     private int forzks;
 
+    //exterier and other
+    private String hairsize;
+    private String blackorwhite;
+    private int sizeconstraintmin;
+    private int sizeconstraintmax;
+    private String rare;
 
     @Override
     public String toString() {
@@ -106,6 +119,15 @@ public class BreedRequest {
                 ", forobidience=" + forobidience +
                 ", forruning=" + forruning +
                 ", forzks=" + forzks +
+                '}'+
+                "\n" +
+                "--------\n"+
+                "Exterier{" +
+                "hairsize=" + hairsize +
+                ", blackorwhite=" + blackorwhite +
+                ", sizeconstraintmin=" + sizeconstraintmin +
+                ", sizeconstraintmax=" + sizeconstraintmax +
+                ", rare=" + rare +
                 '}'+
                 "\n"
                 ;
@@ -167,6 +189,22 @@ public class BreedRequest {
                     break;
                 case "forzks":
                     setForzks(item.getValue());
+                    break;
+                //exterier------------------------------------------------
+                case "hairsize":
+                    setHairsize(item.getValue());
+                    break;
+                case "blackorwhite":
+                    setBlackorwhite(item.getValue());
+                    break;
+                case "sizeconstraintmin":
+                    setSizeconstraintmin(item.getValue());
+                    break;
+                case "sizeconstraintmax":
+                    setSizeconstraintmax(item.getValue());
+                    break;
+                case "rare":
+                    setRare(item.getValue());
                     break;
             }
         }
@@ -234,8 +272,8 @@ public class BreedRequest {
         return activwithage;
     }
 
-        //restore all parameters back to default
-        public void removeouterparams () {
+    //restore all parameters back to default
+    public void removeouterparams () {
 
             this.obidience = 0;
             this.guard = 5;
@@ -260,6 +298,12 @@ public class BreedRequest {
             this.forobidience= 0;
             this.forruning= 0;
             this.forzks= 0;
+
+            this.hairsize = "";
+            this.blackorwhite = "";
+            this.sizeconstraintmin = 0;
+            this.sizeconstraintmax = 5;
+            this.rare = "yes";
         }
 
 
@@ -436,6 +480,45 @@ public class BreedRequest {
             this.forzks = Integer.parseInt(forzks);
         }
 
+        public String getHairsize() {
+            return hairsize;
+        }
+
+        private void setHairsize(String hairsize) {
+            this.hairsize = hairsize;
+        }
+
+        private String getBlackorwhite() {
+            return blackorwhite;
+        }
+
+        private void setBlackorwhite(String blackorwhite) {
+            this.blackorwhite = blackorwhite;
+        }
+
+        private int getSizeconstraintmin() {
+            return sizeconstraintmin;
+        }
+
+        private void setSizeconstraintmin(String sizeconstraintmin) {
+            this.sizeconstraintmin = Integer.parseInt(sizeconstraintmin);
+        }
+
+        private int getSizeconstraintmax() {
+            return sizeconstraintmax;
+        }
+
+        private void setSizeconstraintmax(String sizeconstraintmax) {
+            this.sizeconstraintmax = Integer.parseInt(sizeconstraintmax);
+        }
+
+        private String getRare() {
+            return rare;
+        }
+
+        private void setRare(String rare) {
+            this.rare = rare;
+        }
 
 
     //создаем 12 корзин для основных свойств выбора собаки
