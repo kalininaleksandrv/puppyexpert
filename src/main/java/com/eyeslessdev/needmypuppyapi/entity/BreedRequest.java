@@ -289,6 +289,7 @@ public class BreedRequest {
             this.cynologist = 1;
             this.walk = 1;
             this.family = 1;
+            this.grummer = 1;
 
             this.foragility= 0;
             this.forchild= 0;

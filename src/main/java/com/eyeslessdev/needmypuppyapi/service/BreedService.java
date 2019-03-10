@@ -18,6 +18,9 @@ public class BreedService {
     @Autowired
     private BreedRequest breedRequest;
 
+    @Autowired
+    private BreedRequestParsingService breedRequestParsingService;
+
     public List<Breed> findAll() {
 
         return breedRepo.findAll();
@@ -68,6 +71,8 @@ public class BreedService {
     //helpers
 
     private BreedRequest parserequest(Map<String, String> allparam) {
+
+        breedRequestParsingService.incomeToSelectorReadyMap(allparam);
 
         breedRequest.removeouterparams();
         breedRequest.fillouterparams(allparam);
