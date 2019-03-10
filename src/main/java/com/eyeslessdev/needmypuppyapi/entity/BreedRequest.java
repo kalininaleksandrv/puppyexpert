@@ -2,18 +2,49 @@ package com.eyeslessdev.needmypuppyapi.entity;
 
 import org.springframework.stereotype.Component;
 
-import java.util.Map;
+import javax.persistence.*;
+import java.io.Serializable;
 
-import static java.lang.Math.max;
-import static java.lang.Math.min;
-
-@Component
-public class BreedRequest {
+@Entity
+@Table(name="breedrequests", schema = "public")
+public class BreedRequest implements Serializable {
 
     public BreedRequest() {
 
     }
 
+    public BreedRequest(int time, int exp, int age, int athlet, int cynologist, int walk,
+                        int family, int grummer, int foragility, int forchild, int forcompany,
+                        int forguardter, int forhunt, int forobidience, int forruning, int forzks,
+                        String hairsize, String blackorwhite, int sizeconstraintmin,
+                        int sizeconstraintmax, String rare) {
+
+        this.time = time;
+        this.exp = exp;
+        this.age = age;
+        this.athlet = athlet;
+        this.cynologist = cynologist;
+        this.walk = walk;
+        this.family = family;
+        this.grummer = grummer;
+        this.foragility = foragility;
+        this.forchild = forchild;
+        this.forcompany = forcompany;
+        this.forguardter = forguardter;
+        this.forhunt = forhunt;
+        this.forobidience = forobidience;
+        this.forruning = forruning;
+        this.forzks = forzks;
+        this.hairsize = hairsize;
+        this.blackorwhite = blackorwhite;
+        this.sizeconstraintmin = sizeconstraintmin;
+        this.sizeconstraintmax = sizeconstraintmax;
+        this.rare = rare;
+    }
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
 
     //inner parameters
     private int time;
@@ -24,14 +55,6 @@ public class BreedRequest {
     private int walk;
     private int family;
     private int grummer;
-
-    //outerparrameters
-    private int obidience;
-    private int guard;
-    private int agressive;
-    private int active;
-    private int size;
-    private int care;
 
     //constraintparameters
     private int foragility;
@@ -50,19 +73,8 @@ public class BreedRequest {
     private int sizeconstraintmax;
     private String rare;
 
-    @Override
-    public String toString() {
-        return "BreedResponce{" +
-                "obidience=" + obidience +
-                ", guard=" + guard +
-                ", agressive=" + agressive +
-                ", active=" + active +
-                ", size=" + size +
-                ", care=" + care +
-                '}';
-    }
 
-    public String getrequestandresponceparamsAsString() {
+    public String getRequestParamsAsString() {
 
         return "-------\n" +
                 "BreedRequest{" +
@@ -75,9 +87,6 @@ public class BreedRequest {
                 ", family=" + family +
                 ", grummer=" + grummer +
                 '}' +
-                "\n" +
-                "--------\n" +
-                this.toString() +
                 "\n" +
                 "--------\n" +
                 "Constraints{" +
@@ -102,5 +111,6 @@ public class BreedRequest {
                 "\n"
                 ;
     }
+
 
 }
