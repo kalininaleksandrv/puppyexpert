@@ -1,7 +1,5 @@
 package com.eyeslessdev.needmypuppyapi.entity;
 
-import org.springframework.stereotype.Component;
-
 import javax.persistence.*;
 import java.io.Serializable;
 
@@ -19,7 +17,7 @@ public class BreedRequest implements Serializable {
                         String hairsize, String blackorwhite, int sizeconstraintmin,
                         int sizeconstraintmax, String rare) {
 
-        this.time = time;
+        this.thetime = time;
         this.exp = exp;
         this.age = age;
         this.athlet = athlet;
@@ -47,7 +45,7 @@ public class BreedRequest implements Serializable {
     private Long id;
 
     //inner parameters
-    private int time;
+    private int thetime;
     private int exp;
     private int age;
     private int athlet;
@@ -78,7 +76,7 @@ public class BreedRequest implements Serializable {
 
         return "-------\n" +
                 "BreedRequest{" +
-                "time=" + time +
+                "time=" + thetime +
                 ", exp=" + exp +
                 ", age=" + age +
                 ", athlet=" + athlet +
@@ -112,5 +110,179 @@ public class BreedRequest implements Serializable {
                 ;
     }
 
+    public Long getId() {
+        return id;
+    }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public int getThetime() {
+        return thetime;
+    }
+
+    public void setThetime(int thetime) {
+        this.thetime = thetime;
+    }
+
+    public int getExp() {
+        return exp;
+    }
+
+    public void setExp(int exp) {
+        this.exp = exp;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public int getAthlet() {
+        return athlet;
+    }
+
+    public void setAthlet(int athlet) {
+        this.athlet = athlet;
+    }
+
+    public int getCynologist() {
+        return cynologist;
+    }
+
+    public void setCynologist(int cynologist) {
+        this.cynologist = cynologist;
+    }
+
+    public int getWalk() {
+        return walk;
+    }
+
+    public void setWalk(int walk) {
+        this.walk = walk;
+    }
+
+    public int getFamily() {
+        return family;
+    }
+
+    public void setFamily(int family) {
+        this.family = family;
+    }
+
+    public int getGrummer() {
+        return grummer;
+    }
+
+    public void setGrummer(int grummer) {
+        this.grummer = grummer;
+    }
+
+    public int getForagility() {
+        return foragility;
+    }
+
+    public void setForagility(int foragility) {
+        this.foragility = foragility;
+    }
+
+    public int getForchild() {
+        return forchild;
+    }
+
+    public void setForchild(int forchild) {
+        this.forchild = forchild;
+    }
+
+    public int getForcompany() {
+        return forcompany;
+    }
+
+    public void setForcompany(int forcompany) {
+        this.forcompany = forcompany;
+    }
+
+    public int getForguardter() {
+        return forguardter;
+    }
+
+    public void setForguardter(int forguardter) {
+        this.forguardter = forguardter;
+    }
+
+    public int getForhunt() {
+        return forhunt;
+    }
+
+    public void setForhunt(int forhunt) {
+        this.forhunt = forhunt;
+    }
+
+    public int getForobidience() {
+        return forobidience;
+    }
+
+    public void setForobidience(int forobidience) {
+        this.forobidience = forobidience;
+    }
+
+    public int getForruning() {
+        return forruning;
+    }
+
+    public void setForruning(int forruning) {
+        this.forruning = forruning;
+    }
+
+    public int getForzks() {
+        return forzks;
+    }
+
+    public void setForzks(int forzks) {
+        this.forzks = forzks;
+    }
+
+    public String getHairsize() {
+        return hairsize;
+    }
+
+    public void setHairsize(String hairsize) {
+        this.hairsize = hairsize;
+    }
+
+    public String getBlackorwhite() {
+        return blackorwhite;
+    }
+
+    public void setBlackorwhite(String blackorwhite) {
+        this.blackorwhite = blackorwhite;
+    }
+
+    public int getSizeconstraintmin() {
+        return sizeconstraintmin;
+    }
+
+    public void setSizeconstraintmin(int sizeconstraintmin) {
+        this.sizeconstraintmin = sizeconstraintmin;
+    }
+
+    public int getSizeconstraintmax() {
+        return sizeconstraintmax;
+    }
+
+    public void setSizeconstraintmax(int sizeconstraintmax) {
+        this.sizeconstraintmax = sizeconstraintmax;
+    }
+
+    public String getRare() {
+        return rare;
+    }
+
+    public void setRare(String rare) {
+        this.rare = rare;
+    }
 }

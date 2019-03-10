@@ -3,6 +3,7 @@ package com.eyeslessdev.needmypuppyapi.service;
 import com.eyeslessdev.needmypuppyapi.entity.Breed;
 import com.eyeslessdev.needmypuppyapi.entity.BreedRequest;
 import com.eyeslessdev.needmypuppyapi.repositories.BreedRepo;
+import com.eyeslessdev.needmypuppyapi.repositories.BreedRequestRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,9 @@ public class BreedService {
 
     @Autowired
     private BreedRepo breedRepo;
+
+    @Autowired
+    private BreedRequestRepo breedRequestRepo;
 
     @Autowired
     private BreedRequestParsingService breedRequestParsingService;
@@ -78,6 +82,11 @@ public class BreedService {
         System.out.println(breedRequestParsingService.incomeToExterierMap(allparam));
         System.out.println(breedSelectorService.getMapReadyToSelectFromDb(breedRequestParsingService.incomeToSelectorReadyMap(allparam)));
 
+        breedRequestRepo.save(new BreedRequest(1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1,
+        "long", "black", 1,
+        5, "no"));
 
         return null;
     }
