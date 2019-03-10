@@ -73,6 +73,8 @@ public class BreedService {
     private BreedRequest parserequest(Map<String, String> allparam) {
 
         breedRequestParsingService.incomeToSelectorReadyMap(allparam);
+        breedRequestParsingService.incomeToConstraintMap(allparam);
+        breedRequestParsingService.incomeToExterierMap(allparam);
 
         breedRequest.removeouterparams();
         breedRequest.fillouterparams(allparam);
