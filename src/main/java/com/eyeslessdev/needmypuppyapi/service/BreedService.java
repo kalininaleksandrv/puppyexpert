@@ -76,17 +76,39 @@ public class BreedService {
 
     private BreedRequest parserequest(Map<String, String> allparam) {
 
+        // TODO: 10.03.19 remove this when prod
         System.out.println(allparam);
         System.out.println(breedRequestParsingService.incomeToSelectorReadyMap(allparam));
         System.out.println(breedRequestParsingService.incomeToConstraintMap(allparam));
         System.out.println(breedRequestParsingService.incomeToExterierMap(allparam));
         System.out.println(breedSelectorService.getMapReadyToSelectFromDb(breedRequestParsingService.incomeToSelectorReadyMap(allparam)));
 
-        breedRequestRepo.save(new BreedRequest(1, 1, 1, 1, 1, 1,
-        1, 1, 1, 1, 1,
-        1, 1, 1, 1, 1,
-        "long", "black", 1,
-        5, "no"));
+        Map<String, Integer> brpselect = breedRequestParsingService.incomeToSelectorReadyMap(allparam);
+        Map<String, Integer> brpconstraint = breedRequestParsingService.incomeToConstraintMap(allparam);
+        Map<String, String> brpexterier = breedRequestParsingService.incomeToExterierMap(allparam);
+
+        breedRequestRepo.save(new BreedRequest(
+                brpselect.get("time"),
+                brpselect.get("exp"),
+                brpselect.get("age"),
+                brpselect.get("athlet"),
+                brpselect.get("cyno"),
+                brpselect.get("walk"),
+                brpselect.get("fam"),
+                brpselect.get("grum"),
+                brpconstraint.get("foragility"),
+                brpconstraint.get("forchild"),
+                brpconstraint.get("forcompany"),
+                brpconstraint.get("forguardter"),
+                brpconstraint.get("forhunt"),
+                brpconstraint.get("forobidience"),
+                brpconstraint.get("forruning"),
+                brpconstraint.get("forzks"),
+                brpexterier.get("hairsize"),
+                brpexterier.get("blackorwhite"),
+                brpconstraint.get("sizeconstraintmin"),
+                brpconstraint.get("sizeconstraintmax"),
+                brpexterier.get("rare")));
 
         return null;
     }
