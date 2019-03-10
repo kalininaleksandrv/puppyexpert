@@ -16,10 +16,10 @@ public class BreedService {
     private BreedRepo breedRepo;
 
     @Autowired
-    private BreedRequest breedRequest;
+    private BreedRequestParsingService breedRequestParsingService;
 
     @Autowired
-    private BreedRequestParsingService breedRequestParsingService;
+    private BreedSelectorService breedSelectorService;
 
     public List<Breed> findAll() {
 
@@ -72,17 +72,14 @@ public class BreedService {
 
     private BreedRequest parserequest(Map<String, String> allparam) {
 
-        breedRequestParsingService.incomeToSelectorReadyMap(allparam);
-        breedRequestParsingService.incomeToConstraintMap(allparam);
-        breedRequestParsingService.incomeToExterierMap(allparam);
+        System.out.println(allparam);
+        System.out.println(breedRequestParsingService.incomeToSelectorReadyMap(allparam));
+        System.out.println(breedRequestParsingService.incomeToConstraintMap(allparam));
+        System.out.println(breedRequestParsingService.incomeToExterierMap(allparam));
+        System.out.println(breedSelectorService.getMapReadyToSelectFromDb(breedRequestParsingService.incomeToSelectorReadyMap(allparam)));
 
-        breedRequest.removeouterparams();
-        breedRequest.fillouterparams(allparam);
 
-        // TODO: 24.02.19 delete if production
-        System.out.println(breedRequest.getrequestandresponceparamsAsString());
-
-        return breedRequest;
+        return null;
     }
 
     private int increasefav(int favorite) {return ++favorite;}
