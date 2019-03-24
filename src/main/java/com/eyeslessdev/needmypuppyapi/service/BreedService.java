@@ -2,6 +2,7 @@ package com.eyeslessdev.needmypuppyapi.service;
 
 import com.eyeslessdev.needmypuppyapi.entity.Breed;
 import com.eyeslessdev.needmypuppyapi.entity.BreedRequest;
+import com.eyeslessdev.needmypuppyapi.entity.BreedRequestFactory;
 import com.eyeslessdev.needmypuppyapi.repositories.BreedRepo;
 import com.eyeslessdev.needmypuppyapi.repositories.BreedRequestRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,9 @@ public class BreedService {
 
     @Autowired
     private BreedSelectorService breedSelectorService;
+
+    @Autowired
+    private BreedRequestFactory breedRequestFactory;
 
     public List<Breed> findAll() {
 
@@ -67,7 +71,7 @@ public class BreedService {
         BreedRequest breedRequest = parserequest(allparam);
 
         int forhunt = Integer.parseInt(allparam.get("forhunt"));
-        int forobidence = Integer.parseInt(allparam.get("forobidence"));
+        int forobidence = Integer.parseInt(allparam.get("forobidience"));
 
         return breedRepo.findQuery(forhunt, forobidence);
     }
@@ -87,28 +91,7 @@ public class BreedService {
         Map<String, Integer> brpconstraint = breedRequestParsingService.incomeToConstraintMap(allparam);
         Map<String, String> brpexterier = breedRequestParsingService.incomeToExterierMap(allparam);
 
-        breedRequestRepo.save(new BreedRequest(
-                brpselect.get("time"),
-                brpselect.get("exp"),
-                brpselect.get("age"),
-                brpselect.get("athlet"),
-                brpselect.get("cyno"),
-                brpselect.get("walk"),
-                brpselect.get("fam"),
-                brpselect.get("grum"),
-                brpconstraint.get("foragility"),
-                brpconstraint.get("forchild"),
-                brpconstraint.get("forcompany"),
-                brpconstraint.get("forguardter"),
-                brpconstraint.get("forhunt"),
-                brpconstraint.get("forobidience"),
-                brpconstraint.get("forruning"),
-                brpconstraint.get("forzks"),
-                brpexterier.get("hairsize"),
-                brpexterier.get("blackorwhite"),
-                brpconstraint.get("sizeconstraintmin"),
-                brpconstraint.get("sizeconstraintmax"),
-                brpexterier.get("rare")));
+        breedRequestRepo.save(breedRequestFactory.getBreedReqwest(brpselect, brpconstraint, brpexterier));
 
         return null;
     }
