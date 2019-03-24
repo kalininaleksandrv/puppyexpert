@@ -1,8 +1,6 @@
 package com.eyeslessdev.needmypuppyapi.service;
 
-import com.eyeslessdev.needmypuppyapi.entity.Breed;
-import com.eyeslessdev.needmypuppyapi.entity.BreedRequest;
-import com.eyeslessdev.needmypuppyapi.entity.BreedRequestFactory;
+import com.eyeslessdev.needmypuppyapi.entity.*;
 import com.eyeslessdev.needmypuppyapi.repositories.BreedRepo;
 import com.eyeslessdev.needmypuppyapi.repositories.BreedRequestRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,12 +66,16 @@ public class BreedService {
 
     public Optional<List<Breed>> getFilteredListOfBreed(Map<String, String> allparam) {
 
-        BreedRequest breedRequest = parserequest(allparam);
+//        BreedRequest breedRequest = parserequest(allparam);
+//        int forhunt = Integer.parseInt(allparam.get("forhunt"));
+//        int forobidence = Integer.parseInt(allparam.get("forobidience"));
+//        return breedRepo.findQuery(forhunt, forobidence);
 
-        int forhunt = Integer.parseInt(allparam.get("forhunt"));
-        int forobidence = Integer.parseInt(allparam.get("forobidience"));
+        //select * from public.breeds where active = 3 and blackorwhite like '%'
 
-        return breedRepo.findQuery(forhunt, forobidence);
+        BreedSpecification spec = new BreedSpecification(new SearchCriteria("active", ">", "5"));
+
+        return Optional.ofNullable(breedRepo.findAll(spec));
     }
 
     //helpers

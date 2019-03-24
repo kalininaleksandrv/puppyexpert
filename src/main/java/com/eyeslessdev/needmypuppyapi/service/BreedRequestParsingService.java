@@ -2,6 +2,7 @@ package com.eyeslessdev.needmypuppyapi.service;
 
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Array;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,13 +14,13 @@ public class BreedRequestParsingService {
 
     Map<String, Integer> incomeToSelectorReadyMap(Map<String, String> incomemap) {
 
-        Map<String, Integer> selectorreadymap = getSelectoRreadyMapByDefault();
+        Map<String, Integer> selectorreadymap = new HashMap<>();
 
         //extract values from map
         for (Map.Entry<String, String> item : incomemap.entrySet()) {
             //check if created map contains fetched value
-            for (Map.Entry<String, Integer> compareditem : selectorreadymap.entrySet()) {
-                if (item.getKey().contains(compareditem.getKey()))
+            for (String compareditem : getSelectorArray()) {
+                if (item.getKey().contains(compareditem))
                 selectorreadymap.put(item.getKey(), stringtoint(item.getValue()));
             }
         }
@@ -28,13 +29,13 @@ public class BreedRequestParsingService {
 
     Map<String, Integer> incomeToConstraintMap(Map<String, String> incomemap) {
 
-        Map<String, Integer> constraintmap = getConstraintMapByDefault();
+        Map<String, Integer> constraintmap = new HashMap<>();
 
         //extract values from map
         for (Map.Entry<String, String> item : incomemap.entrySet()) {
             //check if created map contains fetched value
-            for (Map.Entry<String, Integer> compareditem : constraintmap.entrySet()) {
-                if (item.getKey().contains(compareditem.getKey()))
+            for (String compareditem : getConstraintArray()) {
+                if (item.getKey().contains(compareditem))
                     constraintmap.put(item.getKey(), stringtoint(item.getValue()));
             }
         }
@@ -43,60 +44,52 @@ public class BreedRequestParsingService {
 
     Map<String, String> incomeToExterierMap(Map<String, String> incomemap) {
 
-        Map<String, String> exteriermap = getExterierMapByDefault();
+        Map<String, String> exteriermap = new HashMap<>();
 
         //extract values from map
         for (Map.Entry<String, String> item : incomemap.entrySet()) {
             //check if created map contains fetched value
-            for (Map.Entry<String, String> compareditem : exteriermap.entrySet()) {
-                if (item.getKey().contains(compareditem.getKey()))
+            for (String compareditem : getExterierArray()) {
+                if (item.getKey().contains(compareditem))
                     exteriermap.put(item.getKey(), item.getValue());
             }
         }
         return exteriermap;
     }
 
-    private Map<String, Integer> getSelectoRreadyMapByDefault() {
+    private String[] getSelectorArray () {
 
-        Map<String,Integer> mymap = new HashMap<>();
-        mymap.put("time",1);
-        mymap.put("exp", 1);
-        mymap.put("age", 1);
-        mymap.put("athlet", 1);
-        mymap.put("cyno", 1);
-        mymap.put("walk", 1);
-        mymap.put("fam", 1);
-        mymap.put("grum", 1);
-
-        return mymap;
+        return new String[]{"time",
+                      "exp",
+                      "age",
+                      "athlet",
+                      "cyno",
+                      "walk",
+                      "fam",
+                      "grum" };
     }
 
-    private Map<String, Integer> getConstraintMapByDefault() {
+    private String[] getConstraintArray () {
 
-        Map<String,Integer> mymap = new HashMap<>();
-        mymap.put("foragility",0);
-        mymap.put("forchild", 0);
-        mymap.put("forcompany", 0);
-        mymap.put("forguardter", 0);
-        mymap.put("forhunt", 0);
-        mymap.put("forobidience", 0);
-        mymap.put("forruning", 0);
-        mymap.put("forzks", 0);
-        mymap.put("sizeconstraintmin", 0);
-        mymap.put("sizeconstraintmax", 5);
-
-        return mymap;
+        return new String[]{"foragility",
+                      "forchild",
+                      "forcompany",
+                      "forguardter",
+                      "forhunt",
+                      "forobidience",
+                      "forruning",
+                      "forzks",
+                      "sizeconstraintmin",
+                      "sizeconstraintmax" };
     }
 
-    private Map<String, String> getExterierMapByDefault() {
+    private String[] getExterierArray () {
 
-        Map<String,String> mymap = new HashMap<>();
-        mymap.put("hairsize", "");
-        mymap.put("blackorwhite", "");
-        mymap.put("rare", "");
-
-        return mymap;
+        return new String[]{"hairsize",
+                      "blackorwhite",
+                      "rare" };
     }
+
 
     private Integer stringtoint(String value) {
         return Integer.parseInt(value);

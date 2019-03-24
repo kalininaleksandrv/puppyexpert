@@ -1,14 +1,17 @@
 package com.eyeslessdev.needmypuppyapi.repositories;
 
 import com.eyeslessdev.needmypuppyapi.entity.Breed;
+import com.eyeslessdev.needmypuppyapi.entity.BreedSpecification;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface BreedRepo extends JpaRepository<Breed, Long> {
+public interface BreedRepo extends JpaRepository<Breed, Long>, JpaSpecificationExecutor<Breed> {
 
     List<Breed> findAllByOrderByTitle();
 
@@ -20,5 +23,8 @@ public interface BreedRepo extends JpaRepository<Breed, Long> {
 
     @Query(value = "SELECT * FROM public.breeds WHERE forhunt = :forhunt and forobidience = :forobidience" , nativeQuery = true)
     Optional<List<Breed>> findQuery(@Param("forhunt") int forhunt, @Param("forobidience") int forobidence);
+
+
+    List<Breed> findAll(Specification spec);
 }
 
