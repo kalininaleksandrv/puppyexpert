@@ -77,10 +77,9 @@ public class BreedService {
         System.out.println("SELECTOR: " + breedSelectorService.getCriteriaListFromSelector(breedRequestParsingService.incomeToSelectorReadyMap(allparam)));
         System.out.println("EXTERIER: " + breedSelectorService.getCriteriaListFromExterier(breedRequestParsingService.incomeToExterierMap(allparam)));
 
-        BreedSpecification spec1 = new BreedSpecification(new SearchCriteria("active", ">", 4));
-        BreedSpecification spec2 = new BreedSpecification(new SearchCriteria("hair", ":", "short"));
-
-        return Optional.ofNullable(breedRepo.findAll(Specification.where(spec1).and(spec2)));
+        BreedSpecificationBuilder bsb = new BreedSpecificationBuilder();
+        bsb.with(new SearchCriteria("active", ">", 5)).with(new SearchCriteria("hair", ":", "short"));
+        return Optional.ofNullable(breedRepo.findAll(bsb.build()));
     }
 
     //helpers
