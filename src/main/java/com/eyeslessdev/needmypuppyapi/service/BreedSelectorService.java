@@ -156,17 +156,18 @@ class BreedSelectorService {
 
         for (Map.Entry<String, String> item : selectorparams.entrySet()) {
 
+            //its very stupid but in db (and also in Breed.class) parameter "hairsize" turn to "hair" and "rare" turn to "imageidbig" (surprise!!!)
             switch (item.getKey()) {
                 case "hairsize":
                     if (!item.getValue().equals("any")){
-                    outcomecriteria.add(new SearchCriteria(item.getKey(), ":", item.getValue()));}
+                    outcomecriteria.add(new SearchCriteria("hair", ":", item.getValue()));}
                     break;
                 case "blackorwhite":
                     if (!item.getValue().equals("any")){
                         outcomecriteria.add(new SearchCriteria(item.getKey(), ":", item.getValue()));}
                     break;
                 case "rare":
-                    outcomecriteria.add(new SearchCriteria(item.getKey(), ":", item.getValue()));
+                    outcomecriteria.add(new SearchCriteria("imageresourceidbig", ":", item.getValue()));
                     break;
 
     }

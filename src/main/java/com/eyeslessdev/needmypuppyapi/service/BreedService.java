@@ -67,18 +67,28 @@ public class BreedService {
 
     public Optional<List<Breed>> getFilteredListOfBreed(Map<String, String> allparam) {
 
-//        BreedRequest breedRequest = parserequest(allparam);
-//        int forhunt = Integer.parseInt(allparam.get("forhunt"));
-//        int forobidence = Integer.parseInt(allparam.get("forobidience"));
-//        return breedRepo.findQuery(forhunt, forobidence);
+        Map<String, Integer> brpselect = breedRequestParsingService.incomeToSelectorReadyMap(allparam);
+        Map<String, Integer> brpconstraint = breedRequestParsingService.incomeToConstraintMap(allparam);
+        Map<String, String> brpexterier = breedRequestParsingService.incomeToExterierMap(allparam);
+
+        breedRequestRepo.save(breedRequestFactory.getBreedReqwest(brpselect, brpconstraint, brpexterier));
 
         //select * from public.breeds where active = 3 and blackorwhite like '%'
 
-        System.out.println("SELECTOR: " + breedSelectorService.getCriteriaListFromSelector(breedRequestParsingService.incomeToSelectorReadyMap(allparam)));
-        System.out.println("EXTERIER: " + breedSelectorService.getCriteriaListFromExterier(breedRequestParsingService.incomeToExterierMap(allparam)));
+
+
+        List<SearchCriteria>  selectorList = breedSelectorService.getCriteriaListFromSelector(breedRequestParsingService.incomeToSelectorReadyMap(allparam));
+        List<SearchCriteria>  exterierList = breedSelectorService.getCriteriaListFromExterier(breedRequestParsingService.incomeToExterierMap(allparam));
+        selectorList.addAll(exterierList);
 
         BreedSpecificationBuilder bsb = new BreedSpecificationBuilder();
-        bsb.with(new SearchCriteria("active", ">", 5)).with(new SearchCriteria("hair", ":", "short"));
+
+        for(SearchCriteria item : selectorList){
+            bsb = bsb.with(item);
+        }
+
+        System.out.println("BSB: " + bsb);
+
         return Optional.ofNullable(breedRepo.findAll(bsb.build()));
     }
 
@@ -93,11 +103,7 @@ public class BreedService {
         System.out.println(breedRequestParsingService.incomeToExterierMap(allparam));
         System.out.println(breedSelectorService.getCriteriaListFromSelector(breedRequestParsingService.incomeToSelectorReadyMap(allparam)));
 
-        Map<String, Integer> brpselect = breedRequestParsingService.incomeToSelectorReadyMap(allparam);
-        Map<String, Integer> brpconstraint = breedRequestParsingService.incomeToConstraintMap(allparam);
-        Map<String, String> brpexterier = breedRequestParsingService.incomeToExterierMap(allparam);
 
-        breedRequestRepo.save(breedRequestFactory.getBreedReqwest(brpselect, brpconstraint, brpexterier));
 
         return null;
     }
