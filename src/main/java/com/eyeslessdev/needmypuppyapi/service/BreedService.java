@@ -4,6 +4,7 @@ import com.eyeslessdev.needmypuppyapi.entity.*;
 import com.eyeslessdev.needmypuppyapi.repositories.BreedRepo;
 import com.eyeslessdev.needmypuppyapi.repositories.BreedRequestRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -73,9 +74,13 @@ public class BreedService {
 
         //select * from public.breeds where active = 3 and blackorwhite like '%'
 
-        BreedSpecification spec = new BreedSpecification(new SearchCriteria("active", ">", "5"));
+        System.out.println("SELECTOR: " + breedSelectorService.getCriteriaListFromSelector(breedRequestParsingService.incomeToSelectorReadyMap(allparam)));
+        System.out.println("EXTERIER: " + breedSelectorService.getCriteriaListFromExterier(breedRequestParsingService.incomeToExterierMap(allparam)));
 
-        return Optional.ofNullable(breedRepo.findAll(spec));
+        BreedSpecification spec1 = new BreedSpecification(new SearchCriteria("active", ">", 4));
+        BreedSpecification spec2 = new BreedSpecification(new SearchCriteria("hair", ":", "short"));
+
+        return Optional.ofNullable(breedRepo.findAll(Specification.where(spec1).and(spec2)));
     }
 
     //helpers
@@ -87,7 +92,7 @@ public class BreedService {
         System.out.println(breedRequestParsingService.incomeToSelectorReadyMap(allparam));
         System.out.println(breedRequestParsingService.incomeToConstraintMap(allparam));
         System.out.println(breedRequestParsingService.incomeToExterierMap(allparam));
-        System.out.println(breedSelectorService.getMapReadyToSelectFromDb(breedRequestParsingService.incomeToSelectorReadyMap(allparam)));
+        System.out.println(breedSelectorService.getCriteriaListFromSelector(breedRequestParsingService.incomeToSelectorReadyMap(allparam)));
 
         Map<String, Integer> brpselect = breedRequestParsingService.incomeToSelectorReadyMap(allparam);
         Map<String, Integer> brpconstraint = breedRequestParsingService.incomeToConstraintMap(allparam);

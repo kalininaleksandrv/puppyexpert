@@ -1,5 +1,7 @@
 package com.eyeslessdev.needmypuppyapi.entity;
 
+import org.springframework.data.jpa.domain.Specification;
+
 public class SearchCriteria {
 
     private String key;
@@ -38,5 +40,15 @@ public class SearchCriteria {
 
     public void setValue(Object value) {
         this.value = value;
+    }
+
+
+    @Override
+    public String toString() {
+        return "SearchCriteria{" +
+                "key='" + key + '\'' +
+                ", operation='" + operation + '\'' +
+                ", value=" + value +
+                '}';
     }
 }

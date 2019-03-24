@@ -1,15 +1,17 @@
 package com.eyeslessdev.needmypuppyapi.service;
 
+import com.eyeslessdev.needmypuppyapi.entity.SearchCriteria;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 
 @Service
-public class BreedSelectorService {
+class BreedSelectorService {
 
     //inner parameters
     private int time;
@@ -30,12 +32,12 @@ public class BreedSelectorService {
     private int care;
 
     // main logic for convert inner parameters to outer parameters
-    Map<String, Integer> getMapReadyToSelectFromDb(Map<String, Integer> allparams) {
+    List<SearchCriteria> getCriteriaListFromSelector(Map<String, Integer> selectorparams) {
 
-        Map<String, Integer> readymap = getSelectedMapByDefault();
+        List<SearchCriteria> outcomecriteria = new ArrayList<>();
 
         //extract values from map
-        for (Map.Entry<String, Integer> item : allparams.entrySet()) {
+        for (Map.Entry<String, Integer> item : selectorparams.entrySet()) {
 
             switch (item.getKey()) {
                 case "time":
@@ -66,6 +68,7 @@ public class BreedSelectorService {
         }
 
         //послушка
+        setObidience(0);
         setObidience(max(getObidience(), max(4 - getTime(), 5 - finalyactive()))); //чем меньше времени тем выше должно быть послушание породы, чем меньше активность тем выше послушание породы
 
         if (getExp() < 2 && getCynologist() < 4) {setObidience(min(getObidience(), 3));} //если нет опыта и нет кинолога, то минимальная послушка 3
@@ -76,14 +79,17 @@ public class BreedSelectorService {
 
         if (getAge() < 2) {setObidience(max(getObidience(), 3));} //если возраст менее 16 лет то увеличить минимально допустимое послушание до 3, даже если ранее выставлено меньше
 
-        readymap.put("obidience",getObidience());
+        outcomecriteria.add(new SearchCriteria("obidience", ">", getObidience()));
 
         //охранные качества - в текущей версии параметр фактичесски не используется
+        setGuard(5);
         if (getWalk() == 5) {setGuard(max(getGuard(), 5));}//если собака содержится на своем участке, то то максимально охранные качества 5
 
-        readymap.put("guard",getGuard());
+        outcomecriteria.add(new SearchCriteria("guard", "<", getGuard()));
+
 
         //агрессия
+        setAgressive(5);
         setAgressive(min(getAgressive(), max(getExp() + 1, getTime() + 2))); //минимальное значение из прямой зависимости от опыта и времени,
 
         if (getTime() > 1 && (getCynologist() == 4 || getExp() > 3)) {setAgressive(max(getAgressive(), getTime() + 2));} //если времени  2-3 часа в день и есть отличный доступ к кинологу или пользователь ЭКСПЕРТ, повысить максимально допустимую агрессию до 4, даже если ранее выставлено больше
@@ -94,9 +100,10 @@ public class BreedSelectorService {
 
         if (finalyactive() < 3) {setAgressive(min(getAgressive(), 2));} //если уровень физической активности не удовлетворительный то уменьшить максимально допустимую агрессивность до 2, даже если ранее выставлено больше
 
-        readymap.put("agressive",getAgressive());
+        outcomecriteria.add(new SearchCriteria("agressive", "<", getAgressive()));
 
         //активность
+        setActive(5);
         setActive(min(getActive(), max(finalyactive(), max(getWalk() + 1, getTime() + 2)))); //чем больше времени или активности, тем более активная порода допускается, также если хорошие условия выгула
 
         if (getTime() < 2 && (getExp() < 3 || getCynologist() < 4)) {setActive(min(getActive(), 4));} //если нет опыта и нет кинолога или времени, то минимальная активность 4
@@ -104,9 +111,10 @@ public class BreedSelectorService {
         if (getAge() > 3) {setActive(min(getActive(), finalyactive()));} //если возраст больше 40 то активность собаки прямо равна активность (finalyactive)
         if (finalyactive() < 3) {setActive(min(getActive(), 3));} //если уровень физической активности не удовлетворительный то уменьшить максимально допустимую активность до 3, даже если ранее выставлено больше
 
-        readymap.put("active",getActive());
+        outcomecriteria.add(new SearchCriteria("active", "<", getActive()));
 
         //размер
+        setSize(5);
         if (getAge() < 2 || getAge() == 5 || finalyactive() < 2) {setSize(min(getSize(), 3));} //если возраст менее 16 или активность менее нормальной (для старшего возраста менее хорошей), то максимальный размер не более 3
 
         if (getCynologist() < 3 || getExp() < 2) {setSize(min(getSize(), 3));} //если нет кинолога или опыта то размер не более 3
@@ -117,16 +125,17 @@ public class BreedSelectorService {
 
         if (getExp() < 4) {setSize(min(getSize(), getWalk() + 2));} //если нет места для выгула то размер уменьшается кроме экспертных пользователей
 
-        readymap.put("size",getSize());
+        outcomecriteria.add(new SearchCriteria("size", "<", getSize()));
 
         //уход
+        setCare(5);
         if (getAge() < 2 || (getAge() == 5 && getFamily() != 3)) {setCare(min(getCare(), 2));} //возраст менее 16лет или более 60 лет при отсутствии более активных членов семьи, то уменьшить заботу до 2
 
         setCare(min(getCare(), max(1, max(getGrummer(), getTime())))); //сложность в уходе напрямую зависит от наличия времени или доступа к груммеру
 
-        readymap.put("care",getCare());
+        outcomecriteria.add(new SearchCriteria("care", "<", getCare()));
 
-        return readymap;
+        return outcomecriteria;
     }
 
     //корректируем показатель активности от возраста или от менее активных членов семьи
@@ -141,36 +150,30 @@ public class BreedSelectorService {
         return activwithage;
     }
 
-    private Map<String, Integer> getSelectedMapByDefault() {
+    List<SearchCriteria> getCriteriaListFromExterier(Map<String, String> selectorparams){
 
-        this.obidience = 0;
-        this.guard = 4;
-        this.agressive = 5;
-        this.active = 5;
-        this.size = 5;
-        this.care = 5;
+        List<SearchCriteria> outcomecriteria = new ArrayList<>();
 
-        Map<String,Integer> mymap = new HashMap<>();
-        mymap.put("obidience",0);
-        mymap.put("guard", 5);
-        mymap.put("agressive", 5);
-        mymap.put("active", 5);
-        mymap.put("size", 5);
-        mymap.put("care", 5);
+        for (Map.Entry<String, String> item : selectorparams.entrySet()) {
 
-        return mymap;
+            switch (item.getKey()) {
+                case "hairsize":
+                    if (!item.getValue().equals("any")){
+                    outcomecriteria.add(new SearchCriteria(item.getKey(), ":", item.getValue()));}
+                    break;
+                case "blackorwhite":
+                    if (!item.getValue().equals("any")){
+                        outcomecriteria.add(new SearchCriteria(item.getKey(), ":", item.getValue()));}
+                    break;
+                case "rare":
+                    outcomecriteria.add(new SearchCriteria(item.getKey(), ":", item.getValue()));
+                    break;
+
+    }
+        }
+        return outcomecriteria;
     }
 
-    //restore all parameters back to default
-    public void removeouterparams () {
-
-        this.obidience = 0;
-        this.guard = 5;
-        this.agressive = 5;
-        this.active = 5;
-        this.size = 5;
-        this.care = 5;
-    }
 
     private int getTime() {
         return time;
