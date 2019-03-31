@@ -17,5 +17,7 @@ public interface BreedRepo extends JpaRepository<Breed, Long>, JpaSpecificationE
     Optional<List<Breed>> findByBlackorwhite(final String s);
 
     List<Breed> findAll(Specification spec);
+
+    Optional<List<Breed>> findAllByOrderById();
 }
 

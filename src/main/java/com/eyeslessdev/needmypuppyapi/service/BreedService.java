@@ -1,10 +1,11 @@
 package com.eyeslessdev.needmypuppyapi.service;
 
 import com.eyeslessdev.needmypuppyapi.entity.*;
+import com.eyeslessdev.needmypuppyapi.exceptions.NotFoundException;
 import com.eyeslessdev.needmypuppyapi.repositories.BreedRepo;
 import com.eyeslessdev.needmypuppyapi.repositories.BreedRequestRepo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -33,14 +34,19 @@ public class BreedService {
         return breedRepo.findAll();
     }
 
-    public List<Breed> getAllBreedsOrderedById() {
-        List<Breed> rawlist = breedRepo.findAll();
-        rawlist.sort(Comparator.comparing(Breed::getId));
-        return rawlist;
+    public ResponseEntity<Map<String, List<Breed>>> getAllBreedsOrderedById() {
+
+        Optional<List<Breed>> myBreed = breedRepo.findAllByOrderById();
+        if(myBreed.isPresent()){
+        Map <String, List<Breed>> searchingresult = new HashMap<>();
+        searchingresult.put("Список всех пород", myBreed.get());
+        return new ResponseEntity<>(searchingresult, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
-    public List<Breed> getAllBreedsOrderedByTitle() {
-        return breedRepo.findAllByOrderByTitle();
+    public Optional<List<Breed>> getAllBreedsOrderedByTitle() {return Optional.ofNullable(breedRepo.findAllByOrderByTitle());
     }
 
 
@@ -73,10 +79,6 @@ public class BreedService {
 
         breedRequestRepo.save(breedRequestFactory.getBreedReqwest(brpselect, brpconstraint, brpexterier));
 
-        //select * from public.breeds where active = 3 and blackorwhite like '%'
-
-
-
         List<SearchCriteria>  selectorList = breedSelectorService.getCriteriaListFromSelector(breedRequestParsingService.incomeToSelectorReadyMap(allparam));
         List<SearchCriteria>  exterierList = breedSelectorService.getCriteriaListFromExterier(breedRequestParsingService.incomeToExterierMap(allparam));
         selectorList.addAll(exterierList);
@@ -87,25 +89,7 @@ public class BreedService {
             bsb = bsb.with(item);
         }
 
-        System.out.println("BSB: " + bsb);
-
         return Optional.ofNullable(breedRepo.findAll(bsb.build()));
-    }
-
-    //helpers
-
-    private BreedRequest parserequest(Map<String, String> allparam) {
-
-        // TODO: 10.03.19 remove this when prod
-        System.out.println(allparam);
-        System.out.println(breedRequestParsingService.incomeToSelectorReadyMap(allparam));
-        System.out.println(breedRequestParsingService.incomeToConstraintMap(allparam));
-        System.out.println(breedRequestParsingService.incomeToExterierMap(allparam));
-        System.out.println(breedSelectorService.getCriteriaListFromSelector(breedRequestParsingService.incomeToSelectorReadyMap(allparam)));
-
-
-
-        return null;
     }
 
     private int increasefav(int favorite) {return ++favorite;}

@@ -19,23 +19,22 @@ public class BreedController {
 
     @CrossOrigin
     @GetMapping
-    public List<Breed> getAllBreedsById (){
-
-        return breedService.getAllBreedsOrderedById();
+    public ResponseEntity<Map<String, List<Breed>>> getAllBreedsById (){
+            return breedService.getAllBreedsOrderedById();
     }
 
     @GetMapping
     @RequestMapping("bytitle")
     public List<Breed> getAllBreedsOrderedByTitle (){
 
-        return breedService.getAllBreedsOrderedByTitle();
+        return breedService.getAllBreedsOrderedByTitle().orElseThrow(NotFoundException::new);
     }
 
 
     @CrossOrigin
     @GetMapping("{id}")
     public Breed getBreedById(@PathVariable long id) {
-        return breedService.getBreedById(id).orElseThrow(()-> new NotFoundException());
+        return breedService.getBreedById(id).orElseThrow(NotFoundException::new);
     }
 
 
@@ -52,6 +51,6 @@ public class BreedController {
 
         Set<Map.Entry<String, String>> entries = allparam.entrySet();
 
-        return breedService.getFilteredListOfBreed(allparam).orElseThrow(()-> new NotFoundException());
+        return breedService.getFilteredListOfBreed(allparam).orElseThrow(NotFoundException::new);
     }
 }
