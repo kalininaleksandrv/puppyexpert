@@ -159,15 +159,21 @@ class BreedSelectorService {
             //its very stupid but in db (and also in Breed.class) parameter "hairsize" turn to "hair" and "rare" turn to "imageidbig" (surprise!!!)
             switch (item.getKey()) {
                 case "hairsize":
+                    //if hairsize not equal "any", we're add hairsinze parameter to our request
                     if (!item.getValue().equals("any")){
                     outcomecriteria.add(new SearchCriteria("hair", ":", item.getValue()));}
                     break;
                 case "blackorwhite":
+                    //if blackorwhite not equal "any", we're add hairsinze parameter to our request
                     if (!item.getValue().equals("any")){
                         outcomecriteria.add(new SearchCriteria(item.getKey(), ":", item.getValue()));}
                     break;
                 case "rare":
-                    outcomecriteria.add(new SearchCriteria("imageresourceidbig", ":", item.getValue()));
+                    //if rare equal "no", the user has NOT added a flag "add rare breeds" in his request,
+                    // (so he wishes not to add rare breeds to results) we add "rare=no" param to our search;
+                    // otherwise, we do not add this param, so there we'll be search with any value of "rare" field
+                    if(item.getValue().equals("no")){
+                    outcomecriteria.add(new SearchCriteria("imageresourceidbig", ":", item.getValue()));}
                     break;
 
     }
