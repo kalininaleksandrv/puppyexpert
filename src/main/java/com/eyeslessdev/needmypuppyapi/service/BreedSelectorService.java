@@ -87,21 +87,6 @@ class BreedSelectorService {
 
         outcomecriteria.add(new SearchCriteria("guard", "<", getGuard()));
 
-
-        //агрессия
-        setAgressive(5);
-        setAgressive(min(getAgressive(), max(getExp() + 1, getTime() + 2))); //минимальное значение из прямой зависимости от опыта и времени,
-
-        if (getTime() > 1 && (getCynologist() == 4 || getExp() > 3)) {setAgressive(max(getAgressive(), getTime() + 2));} //если времени  2-3 часа в день и есть отличный доступ к кинологу или пользователь ЭКСПЕРТ, повысить максимально допустимую агрессию до 4, даже если ранее выставлено больше
-
-        if (getWalk() == 5 && getExp() > 1) {setAgressive(max(getAgressive(), (getExp() + 2)));}//если собака содержится на своем участке, то допускается повышенная агрессия, кореллирующая с опытом
-
-        if (getAge() < 2 || (getAge() == 5 && getFamily() != 3 && getWalk() != 5)) {setAgressive(min(getAgressive(), 2));} //возраст менее 16лет или более 60 лет при отсутствии более активных членов семьи, то уменьшить максимально допустимую агрессивность до 2, даже если ранее выставлено больше
-
-        if (finalyactive() < 3) {setAgressive(min(getAgressive(), 2));} //если уровень физической активности не удовлетворительный то уменьшить максимально допустимую агрессивность до 2, даже если ранее выставлено больше
-
-        outcomecriteria.add(new SearchCriteria("agressive", "<", getAgressive()));
-
         //активность
         setActive(5);
         setActive(min(getActive(), max(finalyactive(), max(getWalk() + 1, getTime() + 2)))); //чем больше времени или активности, тем более активная порода допускается, также если хорошие условия выгула
@@ -127,6 +112,21 @@ class BreedSelectorService {
 
         outcomecriteria.add(new SearchCriteria("size", "<", getSize()));
 
+        //агрессия
+        setAgressive(5);
+        setAgressive(min(getAgressive(), max(getExp() + 1, getTime() + 2))); //минимальное значение из прямой зависимости от опыта и времени,
+
+        if (getTime() > 1 && (getCynologist() == 4 || getExp() > 3)) {setAgressive(max(getAgressive(), getTime() + 2));} //если времени  2-3 часа в день и есть отличный доступ к кинологу или пользователь ЭКСПЕРТ, повысить максимально допустимую агрессию до 4, даже если ранее выставлено больше
+
+        if (getWalk() == 5 && getExp() > 1) {setAgressive(max(getAgressive(), (getExp() + 2)));}//если собака содержится на своем участке, то допускается повышенная агрессия, кореллирующая с опытом
+
+        if (getAge() < 2 || (getAge() == 5 && getFamily() != 3 && getWalk() != 5)) {setAgressive(min(getAgressive(), 2));} //возраст менее 16лет или более 60 лет при отсутствии более активных членов семьи, то уменьшить максимально допустимую агрессивность до 2, даже если ранее выставлено больше
+
+        if (finalyactive() < 3) {setAgressive(min(getAgressive(), 2));} //если уровень физической активности не удовлетворительный то уменьшить максимально допустимую агрессивность до 2, даже если ранее выставлено больше
+
+        outcomecriteria.add(new SearchCriteria("agressive", "<", getAgressive()));
+
+
         //уход
         setCare(5);
         if (getAge() < 2 || (getAge() == 5 && getFamily() != 3)) {setCare(min(getCare(), 2));} //возраст менее 16лет или более 60 лет при отсутствии более активных членов семьи, то уменьшить заботу до 2
@@ -141,7 +141,7 @@ class BreedSelectorService {
     //корректируем показатель активности от возраста или от менее активных членов семьи
     private int finalyactive (){
 
-        int activwithage = getAthlet()+1;
+        int activwithage = getAthlet()+2;
 
         if (getAge() == 5){activwithage --;}
 

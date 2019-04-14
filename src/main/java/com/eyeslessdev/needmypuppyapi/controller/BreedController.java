@@ -47,10 +47,10 @@ public class BreedController {
     @CrossOrigin
     @GetMapping
     @RequestMapping("filtered")
-    public List<Breed> getFilteredBreeds(@RequestParam Map<String,String> allparam){
+    public ResponseEntity<Map<String, List<Breed>>> getFilteredBreeds(@RequestParam Map<String,String> allparam){
 
         Set<Map.Entry<String, String>> entries = allparam.entrySet();
 
-        return breedService.getFilteredListOfBreed(allparam).orElseThrow(NotFoundException::new);
+        return breedService.getFilteredListOfBreed(allparam);
     }
 }
