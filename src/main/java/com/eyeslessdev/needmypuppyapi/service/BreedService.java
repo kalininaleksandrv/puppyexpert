@@ -1,11 +1,9 @@
 package com.eyeslessdev.needmypuppyapi.service;
 
 import com.eyeslessdev.needmypuppyapi.entity.Breed;
-import com.eyeslessdev.needmypuppyapi.entity.BreedRequestFactory;
 import com.eyeslessdev.needmypuppyapi.entity.BreedSpecificationBuilder;
 import com.eyeslessdev.needmypuppyapi.entity.SearchCriteria;
 import com.eyeslessdev.needmypuppyapi.repositories.BreedRepo;
-import com.eyeslessdev.needmypuppyapi.repositories.BreedRequestRepo;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
@@ -13,14 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Service
@@ -82,12 +74,21 @@ public class BreedService {
 
     private Map<String, List<Breed>> getProperBreeds(@NotNull List<Breed> myBreed, Map<String, Integer> brpconstraint) {
 
-        System.out.println(brpconstraint);
+        //if constrains = 1 it means that user want to choose breed depends on this exactly param (param=1)
+        // and don't care about others means it could be 0 or 1 (so it is < 2)
+
+        Predicate <Breed> isForHunt =  (brpconstraint.get("forhunt") == 0) ?  p -> p.getForhunt()< 2 : p -> p.getForhunt() == 1;
+        Predicate <Breed> isForObidience = (brpconstraint.get("forobidience") == 0) ?  p -> p.getForobidience() < 2 : p -> p.getForobidience() == 1;
+        Predicate <Breed> isForAgility = (brpconstraint.get("foragility") == 0) ?  p -> p.getForagility()< 2 : p -> p.getForagility() == 1;
+        Predicate <Breed> isForChild = (brpconstraint.get("forchild") == 0) ?  p -> p.getForchild()< 2 : p -> p.getForchild() == 1;
+        Predicate <Breed> isForCompany =  (brpconstraint.get("forcompany") == 0) ?  p -> p.getForcompany() < 2 : p -> p.getForcompany() == 1;
+        Predicate <Breed> isForRunning = (brpconstraint.get("forruning") == 0) ?  p -> p.getForrunning() < 2 : p -> p.getForrunning() == 1;
+        Predicate <Breed> isForZks =  (brpconstraint.get("forzks") == 0) ?  p -> p.getForzks() < 2 : p -> p.getForzks() == 1;
+        Predicate <Breed> isForGuardter = (brpconstraint.get("forguardter") == 0) ?  p -> p.getForguardterritory() < 2 : p -> p.getForguardterritory() == 1;
+        Predicate <Breed> isSize =  p -> p.getSize() <= brpconstraint.get("sizeconstraintmax") && p.getSize() >= brpconstraint.get("sizeconstraintmin");
 
         List<Breed> outcomelist = myBreed.stream()
-                //here we add filter depend on brpconstraint
-                .filter(breed -> breed.getSize()<3)
-                .peek(breed-> System.out.println(breed.getTitle()))
+                .filter(isSize.and(isForHunt.and(isForObidience.and(isForAgility.and(isForChild.and(isForCompany.and(isForRunning.and(isForZks.and(isForGuardter)))))))))
                 .collect(Collectors.toList());
 
         Map <String, List<Breed>> searchingresult = new HashMap<>();
