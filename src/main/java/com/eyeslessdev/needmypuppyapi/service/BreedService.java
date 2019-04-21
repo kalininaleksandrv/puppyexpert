@@ -8,10 +8,15 @@ import com.eyeslessdev.needmypuppyapi.repositories.BreedRepo;
 import com.eyeslessdev.needmypuppyapi.repositories.BreedRequestRepo;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,16 +30,10 @@ public class BreedService {
     private BreedRepo breedRepo;
 
     @Autowired
-    private BreedRequestRepo breedRequestRepo;
-
-    @Autowired
     private BreedRequestParsingService breedRequestParsingService;
 
     @Autowired
     private BreedSelectorService breedSelectorService;
-
-    @Autowired
-    private BreedRequestFactory breedRequestFactory;
 
     public List<Breed> findAll() {
 
@@ -55,12 +54,17 @@ public class BreedService {
 
     public ResponseEntity<Map<String, List<Breed>>>  getFilteredListOfBreed(Map<String, String> allparam) {
 
-        Map<String, Integer> brpselect = breedRequestParsingService.incomeToSelectorReadyMap(allparam);
-        Map<String, Integer> brpconstraint = breedRequestParsingService.incomeToConstraintMap(allparam);
-        Map<String, String> brpexterier = breedRequestParsingService.incomeToExterierMap(allparam);
+        Optional<List<Breed>> myBreed = Optional.ofNullable(breedRepo.findAll(getSpecification(allparam)));
 
-        //todo make it async
-        breedRequestRepo.save(breedRequestFactory.getBreedReqwest(brpselect, brpconstraint, brpexterier));
+        if(myBreed.isPresent()){
+            Map<String, List<Breed>> searchingresult = getProperBreeds(myBreed.get(), breedRequestParsingService.incomeToConstraintMap(allparam));
+            return new ResponseEntity<>(searchingresult, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    private Specification getSpecification (Map<String, String> allparam) {
 
         List<SearchCriteria>  selectorList = breedSelectorService.getCriteriaListFromSelector(breedRequestParsingService.incomeToSelectorReadyMap(allparam));
         List<SearchCriteria>  exterierList = breedSelectorService.getCriteriaListFromExterier(breedRequestParsingService.incomeToExterierMap(allparam));
@@ -72,13 +76,8 @@ public class BreedService {
             bsb = bsb.with(item);
         }
 
-        Optional<List<Breed>> myBreed = Optional.ofNullable(breedRepo.findAll(bsb.build()));
-        if(myBreed.isPresent()){
-            Map<String, List<Breed>> searchingresult = getProperBreeds(myBreed.get(), brpconstraint);
-            return new ResponseEntity<>(searchingresult, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+        return bsb.build();
+
     }
 
     private Map<String, List<Breed>> getProperBreeds(@NotNull List<Breed> myBreed, Map<String, Integer> brpconstraint) {
@@ -95,6 +94,8 @@ public class BreedService {
         searchingresult.put("Самые подходящие породы", outcomelist);
         return searchingresult;
     }
+
+
 
     public Optional<List<Breed>> getAllBreedsOrderedByTitle() {return Optional.ofNullable(breedRepo.findAllByOrderByTitle());
     }

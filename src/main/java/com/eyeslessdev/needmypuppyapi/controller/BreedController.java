@@ -2,6 +2,7 @@ package com.eyeslessdev.needmypuppyapi.controller;
 
 import com.eyeslessdev.needmypuppyapi.entity.Breed;
 import com.eyeslessdev.needmypuppyapi.exceptions.NotFoundException;
+import com.eyeslessdev.needmypuppyapi.service.BreedRequestService;
 import com.eyeslessdev.needmypuppyapi.service.BreedService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,9 @@ public class BreedController {
 
     @Autowired
     private BreedService breedService;
+
+    @Autowired
+    private BreedRequestService breedRequestService;
 
     @CrossOrigin
     @GetMapping
@@ -49,7 +53,17 @@ public class BreedController {
     @RequestMapping("filtered")
     public ResponseEntity<Map<String, List<Breed>>> getFilteredBreeds(@RequestParam Map<String,String> allparam){
 
-        Set<Map.Entry<String, String>> entries = allparam.entrySet();
+
+        new Thread(() -> {
+            try {
+                breedRequestService.saveBreedRequest(allparam);
+            } catch (Exception e) {
+                // handle: log or throw in a wrapped RuntimeException
+                throw new RuntimeException("InterruptedException caught in lambda", e);
+            }
+        }).start();
+
+
 
         return breedService.getFilteredListOfBreed(allparam);
     }
