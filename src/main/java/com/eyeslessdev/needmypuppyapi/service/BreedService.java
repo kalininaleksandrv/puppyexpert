@@ -89,7 +89,7 @@ public class BreedService {
         Predicate <Breed> isForGuardter = (brpconstraint.get("forguardter") == 0) ?  p -> p.getForguardterritory() < 2 : p -> p.getForguardterritory() == 1;
         Predicate <Breed> isSize =  p -> p.getSize() <= brpconstraint.get("sizeconstraintmax") && p.getSize() >= brpconstraint.get("sizeconstraintmin");
 
-        Predicate <Breed> isForCompanyExtended =  (p -> p.getForcompany() == 1);
+        Predicate <Breed> isForCompanyExtended =  (p -> p.getForcompany() == 1 && p.getSize()<4 && p.getObidience()>3);
 
 
         List<Breed> outcomelist = myBreed.stream()
@@ -104,25 +104,25 @@ public class BreedService {
                         .and(isForGuardter)))))))))
                 .collect(Collectors.toList());
 
-        List <Breed> forCompanyList = new ArrayList<>();
-
-        outcomelist.stream().forEach(p -> System.out.println(p.getTitle()));
+        List<Breed> forCompanyList = new ArrayList<>();
 
         myBreed.stream()
                 .filter(isSize
                         .and(isForCompanyExtended))
-                .forEach( p -> {
-                    System.out.println(p.getTitle());
+                .forEach(p -> {
+                        System.out.println(p.getTitle());
                         if (outcomelist.contains(p)) {
                             System.out.println("removed " + p.getTitle());
-                    } else {
+                        } else {
                             forCompanyList.add(p);
                             System.out.println("added " + p.getTitle());
                         }
-                });
+                 });
 
 
-        System.out.println("another breeds " + forCompanyList.size());
+        outcomelist.forEach(p -> System.out.println("--- outcomelist---" + p.getTitle()));
+        forCompanyList.forEach(p -> System.out.println("--- forcompany---" + p.getTitle()));
+
 
 
         Map <String, List<Breed>> searchingresult = new HashMap<>();
