@@ -56,6 +56,7 @@ public class BreedService {
         }
     }
 
+    //todo move to separate class
     private Specification getSpecification (Map<String, String> allparam) {
 
         List<SearchCriteria>  selectorList = breedSelectorService.getCriteriaListFromSelector(breedRequestParsingService.incomeToSelectorReadyMap(allparam));
@@ -72,6 +73,7 @@ public class BreedService {
 
     }
 
+    //todo move to separate class
     private Map<String, List<Breed>> getProperBreeds(@NotNull List<Breed> myBreed, Map<String, Integer> brpconstraint) {
 
         //if constrains = 1 it means that user want to choose breed depends on this exactly param (param=1)
@@ -87,12 +89,45 @@ public class BreedService {
         Predicate <Breed> isForGuardter = (brpconstraint.get("forguardter") == 0) ?  p -> p.getForguardterritory() < 2 : p -> p.getForguardterritory() == 1;
         Predicate <Breed> isSize =  p -> p.getSize() <= brpconstraint.get("sizeconstraintmax") && p.getSize() >= brpconstraint.get("sizeconstraintmin");
 
+        Predicate <Breed> isForCompanyExtended =  (p -> p.getForcompany() == 1);
+
+
         List<Breed> outcomelist = myBreed.stream()
-                .filter(isSize.and(isForHunt.and(isForObidience.and(isForAgility.and(isForChild.and(isForCompany.and(isForRunning.and(isForZks.and(isForGuardter)))))))))
+                .filter(isSize
+                        .and(isForHunt
+                        .and(isForObidience
+                        .and(isForAgility
+                        .and(isForChild
+                        .and(isForCompany
+                        .and(isForRunning
+                        .and(isForZks
+                        .and(isForGuardter)))))))))
                 .collect(Collectors.toList());
+
+        List <Breed> forCompanyList = new ArrayList<>();
+
+        outcomelist.stream().forEach(p -> System.out.println(p.getTitle()));
+
+        myBreed.stream()
+                .filter(isSize
+                        .and(isForCompanyExtended))
+                .forEach( p -> {
+                    System.out.println(p.getTitle());
+                        if (outcomelist.contains(p)) {
+                            System.out.println("removed " + p.getTitle());
+                    } else {
+                            forCompanyList.add(p);
+                            System.out.println("added " + p.getTitle());
+                        }
+                });
+
+
+        System.out.println("another breeds " + forCompanyList.size());
+
 
         Map <String, List<Breed>> searchingresult = new HashMap<>();
         searchingresult.put("Самые подходящие породы", outcomelist);
+        searchingresult.put("Рекомендуем дополнительно ", forCompanyList);
         return searchingresult;
     }
 

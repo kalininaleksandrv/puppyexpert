@@ -286,11 +286,19 @@ public class Breed implements Serializable {
 
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Breed)) return false;
-        Breed breed = (Breed) o;
-        return Objects.equals(id, breed.id);
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Breed other = (Breed) obj;
+        if (id != other.id)
+            return false;
+        if (title != other.title)
+            return false;
+        return true;
     }
 
     @Override
