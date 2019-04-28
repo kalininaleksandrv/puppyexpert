@@ -110,18 +110,18 @@ public class BreedService {
                 .filter(isSize
                         .and(isForCompanyExtended))
                 .forEach(p -> {
-                        System.out.println(p.getTitle());
+                       // System.out.println(p.getTitle());
                         if (outcomelist.contains(p)) {
-                            System.out.println("removed " + p.getTitle());
+                            //System.out.println("removed " + p.getTitle());
                         } else {
                             forCompanyList.add(p);
-                            System.out.println("added " + p.getTitle());
+                            //System.out.println("added " + p.getTitle());
                         }
                  });
 
 
-        outcomelist.forEach(p -> System.out.println("--- outcomelist---" + p.getTitle()));
-        forCompanyList.forEach(p -> System.out.println("--- forcompany---" + p.getTitle()));
+//        outcomelist.forEach(p -> System.out.println("--- outcomelist---" + p.getTitle()));
+//        forCompanyList.forEach(p -> System.out.println("--- forcompany---" + p.getTitle()));
 
 
 

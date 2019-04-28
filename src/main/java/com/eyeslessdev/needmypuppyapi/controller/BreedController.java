@@ -8,7 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @CrossOrigin
@@ -53,17 +54,7 @@ public class BreedController {
     @RequestMapping("filtered")
     public ResponseEntity<Map<String, List<Breed>>> getFilteredBreeds(@RequestParam Map<String,String> allparam){
 
-
-        new Thread(() -> {
-            try {
-                breedRequestService.saveBreedRequest(allparam);
-            } catch (Exception e) {
-                // handle: log or throw in a wrapped RuntimeException
-                throw new RuntimeException("InterruptedException caught in lambda", e);
-            }
-        }).start();
-
-
+           breedRequestService.saveBreedRequest(allparam);
 
         return breedService.getFilteredListOfBreed(allparam);
     }
