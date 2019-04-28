@@ -110,24 +110,15 @@ public class BreedService {
                 .filter(isSize
                         .and(isForCompanyExtended))
                 .forEach(p -> {
-                       // System.out.println(p.getTitle());
-                        if (outcomelist.contains(p)) {
-                            //System.out.println("removed " + p.getTitle());
-                        } else {
+                        if (!outcomelist.contains(p)) {
                             forCompanyList.add(p);
-                            //System.out.println("added " + p.getTitle());
                         }
                  });
 
-
-//        outcomelist.forEach(p -> System.out.println("--- outcomelist---" + p.getTitle()));
-//        forCompanyList.forEach(p -> System.out.println("--- forcompany---" + p.getTitle()));
-
-
-
         Map <String, List<Breed>> searchingresult = new HashMap<>();
-        searchingresult.put("Самые подходящие породы", outcomelist);
+        searchingresult.put("Самые подходящие породы ", outcomelist);
         searchingresult.put("Рекомендуем дополнительно ", forCompanyList);
+
         return searchingresult;
     }
 
