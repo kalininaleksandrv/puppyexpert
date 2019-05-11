@@ -4,7 +4,6 @@ import com.eyeslessdev.needmypuppyapi.entity.Breed;
 import com.eyeslessdev.needmypuppyapi.entity.BreedSpecificationBuilder;
 import com.eyeslessdev.needmypuppyapi.entity.SearchCriteria;
 import com.eyeslessdev.needmypuppyapi.repositories.BreedRepo;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
@@ -74,7 +73,7 @@ public class BreedService {
     }
 
     //todo move to separate class
-    private Map<String, List<Breed>> getProperBreeds(@NotNull List<Breed> myBreed, Map<String, Integer> brpconstraint) {
+    private Map<String, List<Breed>> getProperBreeds(List<Breed> myBreed, Map<String, Integer> brpconstraint) {
 
         //if constrains = 1 it means that user want to choose breed depends on this exactly param (param=1)
         // and don't care about others means it could be 0 or 1 (so it is < 2)

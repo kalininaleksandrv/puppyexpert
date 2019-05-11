@@ -15,11 +15,12 @@ import java.util.Optional;
 public class FeedbackService {
 
     @Autowired
+    private
     FeedbackRepo feedbackRepo;
 
     public Optional<List<Feedback>> findByDogid (long id){
 
-        return feedbackRepo.findByDogid(id);
+        return feedbackRepo.findTop10ByDogidOrderByCommenttimeDesc(id);
     }
 
     public Boolean saveFeedback (Feedback feedback)  {
@@ -31,8 +32,8 @@ public class FeedbackService {
          feedbackRepo.save(feedback);
          return true;
      } catch (Exception e) {
-            System.out.println(e);
-            return false;
+        e.printStackTrace();
+        return false;
      }
     }
 

@@ -19,6 +19,7 @@ import java.io.Serializable;
         private Long dogid;
 
         @NotNull
+        @Size(min = 4, max = 64)
         private String title;
 
         @NotNull
