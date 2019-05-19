@@ -15,7 +15,6 @@ import java.io.Serializable;
         @GeneratedValue(strategy = GenerationType.AUTO)
         private Long id;
 
-
         private Long dogid;
 
         @NotNull

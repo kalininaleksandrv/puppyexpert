@@ -1,8 +1,10 @@
 package com.eyeslessdev.needmypuppyapi.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name="breeds", schema = "public")
@@ -43,6 +45,10 @@ public class Breed implements Serializable {
     private int forguardterritory;
     private int forzks;
     private int foragility;
+
+//fetch not correct breed!!!
+    @OneToMany(mappedBy="id", fetch = FetchType.EAGER)
+    private Set<Feedback> comments;
 
     public Long getId() {
         return id;
@@ -284,6 +290,9 @@ public class Breed implements Serializable {
         this.foragility = foragility;
     }
 
+    public Set<Feedback> getComments() {return comments;}
+
+    public void setComments(Set<Feedback> comments) {this.comments = comments;}
 
     @Override
     public boolean equals(Object obj) {
