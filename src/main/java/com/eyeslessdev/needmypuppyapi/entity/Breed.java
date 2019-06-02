@@ -46,10 +46,6 @@ public class Breed implements Serializable {
     private int forzks;
     private int foragility;
 
-//fetch not correct breed!!!
-    @OneToMany(mappedBy="id", fetch = FetchType.EAGER)
-    private Set<Feedback> comments;
-
     public Long getId() {
         return id;
     }
@@ -289,10 +285,6 @@ public class Breed implements Serializable {
     public void setForagility(int foragility) {
         this.foragility = foragility;
     }
-
-    public Set<Feedback> getComments() {return comments;}
-
-    public void setComments(Set<Feedback> comments) {this.comments = comments;}
 
     @Override
     public boolean equals(Object obj) {

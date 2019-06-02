@@ -89,6 +89,7 @@ public class BreedService {
         Predicate <Breed> isForGuardter = (brpconstraint.get("forguardter") == 0) ?  p -> p.getForguardterritory() < 2 : p -> p.getForguardterritory() == 1;
         Predicate <Breed> isSize =  p -> p.getSize() <= brpconstraint.get("sizeconstraintmax") && p.getSize() >= brpconstraint.get("sizeconstraintmin");
 
+        //todo improve this logic
         Predicate <Breed> isForCompanyExtended =  (p -> p.getForcompany() == 1 && p.getSize()<4 && p.getObidience()>3);
 
 
