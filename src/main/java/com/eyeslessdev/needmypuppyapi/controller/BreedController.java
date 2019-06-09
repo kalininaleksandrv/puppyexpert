@@ -1,6 +1,8 @@
 package com.eyeslessdev.needmypuppyapi.controller;
 
 import com.eyeslessdev.needmypuppyapi.entity.Breed;
+import com.eyeslessdev.needmypuppyapi.entity.BreedRequest;
+import com.eyeslessdev.needmypuppyapi.entity.BreedRequestFactory;
 import com.eyeslessdev.needmypuppyapi.exceptions.NotFoundException;
 import com.eyeslessdev.needmypuppyapi.service.BreedRequestService;
 import com.eyeslessdev.needmypuppyapi.service.BreedService;
@@ -21,6 +23,10 @@ public class BreedController {
 
     @Autowired
     private BreedRequestService breedRequestService;
+
+
+    @Autowired
+    private BreedRequestFactory breedRequestFactory;
 
     @CrossOrigin
     @GetMapping
@@ -54,8 +60,10 @@ public class BreedController {
     @RequestMapping("filtered")
     public ResponseEntity<Map<String, List<Breed>>> getFilteredBreeds(@RequestParam Map<String,String> allparam){
 
-           breedRequestService.saveBreedRequest(allparam);
+        BreedRequest request = breedRequestFactory.getBreedRequest(allparam);
 
-        return breedService.getFilteredListOfBreed(allparam);
+        breedRequestService.saveBreedRequest(request);
+
+        return breedService.getFilteredListOfBreed(request);
     }
 }

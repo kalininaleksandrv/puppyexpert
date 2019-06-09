@@ -2,6 +2,8 @@ package com.eyeslessdev.needmypuppyapi.entity;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 @Entity
 @Table(name="breedrequests", schema = "public")
@@ -11,11 +13,11 @@ public class BreedRequest implements Serializable {
 
     }
 
-    public BreedRequest(int time, int exp, int age, int athlet, int cynologist, int walk,
-                        int family, int grummer, int foragility, int forchild, int forcompany,
-                        int forguardter, int forhunt, int forobidience, int forruning, int forzks,
-                        String hairsize, String blackorwhite, int sizeconstraintmin,
-                        int sizeconstraintmax, String rare) {
+    BreedRequest(int time, int exp, int age, int athlet, int cynologist, int walk,
+                 int family, int grummer, int foragility, int forchild, int forcompany,
+                 int forguardter, int forhunt, int forobidience, int forruning, int forzks,
+                 String hairsize, String blackorwhite, int sizeconstraintmin,
+                 int sizeconstraintmax, String rare) {
 
         this.thetime = time;
         this.exp = exp;
@@ -72,7 +74,7 @@ public class BreedRequest implements Serializable {
     private String rare;
 
 
-    public String getRequestParamsAsString() {
+        public String getRequestParamsAsString() {
 
         return "-------\n" +
                 "BreedRequest{" +
@@ -118,7 +120,7 @@ public class BreedRequest implements Serializable {
         this.id = id;
     }
 
-    public int getThetime() {
+    int getThetime() {
         return thetime;
     }
 
@@ -126,7 +128,7 @@ public class BreedRequest implements Serializable {
         this.thetime = thetime;
     }
 
-    public int getExp() {
+    int getExp() {
         return exp;
     }
 
@@ -134,7 +136,7 @@ public class BreedRequest implements Serializable {
         this.exp = exp;
     }
 
-    public int getAge() {
+    int getAge() {
         return age;
     }
 
@@ -142,7 +144,7 @@ public class BreedRequest implements Serializable {
         this.age = age;
     }
 
-    public int getAthlet() {
+    int getAthlet() {
         return athlet;
     }
 
@@ -150,7 +152,7 @@ public class BreedRequest implements Serializable {
         this.athlet = athlet;
     }
 
-    public int getCynologist() {
+    int getCynologist() {
         return cynologist;
     }
 
@@ -158,7 +160,7 @@ public class BreedRequest implements Serializable {
         this.cynologist = cynologist;
     }
 
-    public int getWalk() {
+    int getWalk() {
         return walk;
     }
 
@@ -166,7 +168,7 @@ public class BreedRequest implements Serializable {
         this.walk = walk;
     }
 
-    public int getFamily() {
+    int getFamily() {
         return family;
     }
 
@@ -174,7 +176,7 @@ public class BreedRequest implements Serializable {
         this.family = family;
     }
 
-    public int getGrummer() {
+    int getGrummer() {
         return grummer;
     }
 
@@ -246,7 +248,7 @@ public class BreedRequest implements Serializable {
         this.forzks = forzks;
     }
 
-    public String getHairsize() {
+    String getHairsize() {
         return hairsize;
     }
 
@@ -254,7 +256,7 @@ public class BreedRequest implements Serializable {
         this.hairsize = hairsize;
     }
 
-    public String getBlackorwhite() {
+    String getBlackorwhite() {
         return blackorwhite;
     }
 
@@ -278,11 +280,12 @@ public class BreedRequest implements Serializable {
         this.sizeconstraintmax = sizeconstraintmax;
     }
 
-    public String getRare() {
+    String getRare() {
         return rare;
     }
 
     public void setRare(String rare) {
         this.rare = rare;
     }
+
 }
