@@ -50,8 +50,10 @@ public class BreedService {
 
         Optional<List<Breed>> myBreed = Optional.ofNullable(breedRepo.findAll(searchCriteriaBuilder.buildListOfCriteria(breedrequest)));
 
-        if(myBreed.isPresent()){
-            Map<String, List<Breed>> searchingresult = breedFilterService.getProperBreeds(myBreed.get(), breedrequest);
+        Optional<List<Breed>> topRecomended = Optional.ofNullable(breedRepo.findTop6ByOrderByFavoriteDesc());
+
+        if(myBreed.isPresent() && topRecomended.isPresent()){
+            Map<String, List<Breed>> searchingresult = breedFilterService.getProperBreeds(myBreed.get(), topRecomended.get(), breedrequest);
             return new ResponseEntity<>(searchingresult, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
