@@ -26,7 +26,7 @@ public class FeedbackController {
     @CrossOrigin
     @GetMapping("{id}")
     public Optional<List<Feedback>> getFeedbackById(@PathVariable long id) {
-        //here we're return optional instead of object.orElseThrow(()-> new NotFoundException()) because frontend wont handle NFE correctly in this case (through interceptor)
+        //here we're return optional instead of object.orElseThrow(()-> new NotFoundException()) because frontend wont handle NPE correctly in this case (through interceptor)
         return feedbackService.findByDogid(id);
     }
 
