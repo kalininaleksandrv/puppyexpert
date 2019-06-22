@@ -2,6 +2,7 @@ package com.eyeslessdev.needmypuppyapi.entity.dto;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Set;
 
@@ -12,6 +13,7 @@ public class CaptchaResponseDto {
     @JsonAlias("error-codes")
     private Set<String> errorCodes;
 
+    @JsonProperty("success")
     public boolean isSucsess() {
         return sucsess;
     }

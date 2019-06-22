@@ -27,7 +27,6 @@ public class CaptchaController {
     public ResponseEntity<CaptchaResponseDto> getBreedById(@RequestBody String clienresp) {
 
         String url = String.format(CAPTURL, recsec, clienresp);
-        System.out.println(url);
         return restTemplate.postForEntity(url, Collections.EMPTY_LIST, CaptchaResponseDto.class);
     }
 }
