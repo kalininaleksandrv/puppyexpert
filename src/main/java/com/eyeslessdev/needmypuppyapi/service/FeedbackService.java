@@ -29,12 +29,17 @@ public class FeedbackService {
          DateTimeFormatter dtf = DateTimeFormat.forPattern("MM/dd/yyyy HH:mm:ss");
          feedback.setCommenttime(nowtime.getMillis());
          feedback.setCommenttimestr(nowtime.toString(dtf));
+         feedback.setIsModerated(0);
          feedbackRepo.save(feedback);
          return true;
      } catch (Exception e) {
         e.printStackTrace();
         return false;
      }
+    }
+
+    public Optional<List<Feedback>> findUnmoderatedFeedback (Integer ismoderated){
+        return feedbackRepo.findByIsmoderated(ismoderated);
     }
 
 }

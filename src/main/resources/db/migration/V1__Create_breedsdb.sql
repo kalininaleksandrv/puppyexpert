@@ -1,8 +1,8 @@
-create sequence hibernate_sequence start 1 increment 1;
+create sequence IF NOT EXISTS hibernate_sequence start 1 increment 1;
 
-CREATE SEQUENCE public.breeds_id_seq;
+CREATE SEQUENCE IF NOT EXISTS public.breeds_id_seq;
 
-CREATE TABLE public.breeds
+CREATE TABLE IF NOT EXISTS public.breeds
 (
     id bigint NOT NULL DEFAULT nextval('breeds_id_seq'::regclass),
     active integer NOT NULL,

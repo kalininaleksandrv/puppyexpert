@@ -10,4 +10,6 @@ import java.util.Optional;
 public interface FeedbackRepo extends JpaRepository<Feedback, Long> {
 
     Optional<List<Feedback>> findTop10ByDogidOrderByCommenttimeDesc(Long id);
+
+    Optional<List<Feedback>> findByIsmoderated(int i);
 }

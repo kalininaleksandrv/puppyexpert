@@ -34,6 +34,8 @@ import java.io.Serializable;
 
         private String commenttimestr;
 
+        private Integer ismoderated;
+
         public Long getId() {
             return id;
         }
@@ -85,4 +87,8 @@ import java.io.Serializable;
         public String getCommenttimestr() {return commenttimestr;}
 
         public void setCommenttimestr(String commenttimestr) {this.commenttimestr = commenttimestr;}
+
+        public Integer getIsModerated() {return ismoderated;}
+
+        public void setIsModerated(Integer isModerated) {this.ismoderated = isModerated;}
     }

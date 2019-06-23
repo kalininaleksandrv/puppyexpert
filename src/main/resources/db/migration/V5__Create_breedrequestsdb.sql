@@ -1,6 +1,6 @@
-CREATE SEQUENCE public.breedrequests_id_seq;
+CREATE SEQUENCE IF NOT EXISTS public.breedrequests_id_seq;
 
-CREATE TABLE public.breedrequests
+CREATE TABLE IF NOT EXISTS public.breedrequests
 (
     id bigint NOT NULL DEFAULT nextval('breedrequests_id_seq'::regclass),
     thetime integer NOT NULL,
