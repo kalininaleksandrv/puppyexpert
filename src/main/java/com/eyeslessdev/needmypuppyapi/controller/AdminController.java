@@ -19,7 +19,6 @@ public class AdminController {
     @Autowired
     private FeedbackService feedbackService;
 
-
     @CrossOrigin
     @GetMapping
     Optional<List<Feedback>> getUnmoderatedFeedback (){

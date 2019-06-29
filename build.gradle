@@ -31,6 +31,7 @@ dependencies {
 	implementation("com.h2database:h2")
 	implementation("org.postgresql:postgresql")
 	implementation("joda-time:joda-time")
+	implementation("org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:2.0.0.RELEASE")
 	implementation("org.flywaydb:flyway-core")
 	testImplementation("junit:junit")
 	implementation('org.springframework.boot:spring-boot-starter-web')

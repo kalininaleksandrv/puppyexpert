@@ -8,6 +8,8 @@ import java.util.Set;
 
 @JsonIgnoreProperties (ignoreUnknown = true)
 public class CaptchaResponseDto {
+
+    @JsonProperty("success")
     private boolean sucsess;
 
     @JsonAlias("error-codes")
