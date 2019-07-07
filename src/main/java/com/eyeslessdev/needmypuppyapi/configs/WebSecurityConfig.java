@@ -1,7 +1,7 @@
 package com.eyeslessdev.needmypuppyapi.configs;
 
 import com.eyeslessdev.needmypuppyapi.entity.User;
-import com.eyeslessdev.needmypuppyapi.repositories.UserDetailsRepo;
+import com.eyeslessdev.needmypuppyapi.repositories.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.oauth2.client.EnableOAuth2Sso;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.PrincipalExtractor;
@@ -10,9 +10,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Configuration
 @EnableWebSecurity
@@ -20,23 +18,29 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    UserDetailsRepo userDetailsRepo;
+    UserRepo userDetailsRepo;
 
     @Override
     protected void configure (HttpSecurity httpSecurity) throws Exception {
 
-//        httpSecurity.authorizeRequests()
-//                .mvcMatchers("/").permitAll()
-//                .anyRequest().authenticated()
-//                .and()
-//                .csrf().disable();
+        httpSecurity.authorizeRequests()
+                .mvcMatchers("/users/**").permitAll()
+                .anyRequest().authenticated()
+                .and()
+                .csrf().disable();
     }
 
     @Bean
-    public PrincipalExtractor principalExtractor (UserDetailsRepo userDetailsRepo){
+    public PrincipalExtractor principalExtractor (UserRepo userRepo){
         return map -> {
             return new User();
         };
+    }
+
+
+    @Bean
+    public BCryptPasswordEncoder bCryptPasswordEncoder(){
+        return new BCryptPasswordEncoder();
     }
 
 //    @Bean

@@ -2,8 +2,6 @@ package com.eyeslessdev.needmypuppyapi.entity;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
 
 @Entity
 @Table(name="breedrequests", schema = "public")
