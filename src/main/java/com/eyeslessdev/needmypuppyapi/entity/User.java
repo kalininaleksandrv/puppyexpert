@@ -26,6 +26,7 @@ public class User implements Serializable, UserDetails {
     @Size(min = 3, max = 256)
     private String password;
 
+    @NotNull
     @Email
     private String email;
     private String locale;

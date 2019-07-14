@@ -8,6 +8,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import java.util.Collections;
 import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @CrossOrigin
@@ -30,9 +31,14 @@ public class UserController {
 
         @PostMapping("/signup")
         public void signUp (@RequestBody User user){
-            user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-            user.setRoles(Collections.singleton(Role.CREATEDUSER));
-            userRepo.save(user);
+            if (!userRepo.findByEmail(user.getEmail()).isPresent()) {
+                user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+                if (user.getExternalid() == null) {user.setExternalid(UUID.randomUUID().toString().concat("generateinternal"));}
+                user.setRoles(Collections.singleton(Role.CREATEDUSER));
+                userRepo.save(user);
+            } else {
+                System.out.println("can't create user cause of email is busy");
+            }
         }
 
 }
