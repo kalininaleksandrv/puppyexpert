@@ -3,6 +3,7 @@ package com.eyeslessdev.needmypuppyapi.controller;
 import com.eyeslessdev.needmypuppyapi.entity.Role;
 import com.eyeslessdev.needmypuppyapi.entity.User;
 import com.eyeslessdev.needmypuppyapi.repositories.UserRepo;
+import com.eyeslessdev.needmypuppyapi.security.CommonConsts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -33,7 +34,10 @@ public class UserController {
         public void signUp (@RequestBody User user){
             if (!userRepo.findByEmail(user.getEmail()).isPresent()) {
                 user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-                if (user.getExternalid() == null) {user.setExternalid(UUID.randomUUID().toString().concat("generateinternal"));}
+                if (user.getExternalid() == null) {user.setExternalid(UUID
+                        .randomUUID()
+                        .toString()
+                        .concat(CommonConsts.ONUS_AUTH));}
                 user.setRoles(Collections.singleton(Role.CREATEDUSER));
                 userRepo.save(user);
             } else {
