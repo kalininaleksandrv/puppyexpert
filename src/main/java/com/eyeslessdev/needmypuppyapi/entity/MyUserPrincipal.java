@@ -23,9 +23,10 @@ public class MyUserPrincipal implements UserDetails {
         return user.getPassword();
     }
 
+    //getUsername returns email for authenticate user
     @Override
     public String getUsername() {
-        return user.getName();
+        return user.getEmail();
     }
 
     @Override

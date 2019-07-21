@@ -5,6 +5,7 @@ import com.eyeslessdev.needmypuppyapi.security.JWTAuthenticationFilter;
 import com.eyeslessdev.needmypuppyapi.security.JWTAutorizationFilter;
 import com.eyeslessdev.needmypuppyapi.service.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -27,6 +28,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private UserDetailsServiceImpl userDetailsService;
 
+    @Value("${jwttoken.secret}")
+    private String jwtsecret;
+
     @Override
     protected void configure (HttpSecurity httpSecurity) throws Exception {
 
@@ -36,7 +40,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .mvcMatchers("/login/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
-        .addFilter(new JWTAuthenticationFilter(authenticationManager()))
+        .addFilter(new JWTAuthenticationFilter(authenticationManager(), jwtsecret))
         .addFilter(new JWTAutorizationFilter(authenticationManager()))
         .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED);
     }

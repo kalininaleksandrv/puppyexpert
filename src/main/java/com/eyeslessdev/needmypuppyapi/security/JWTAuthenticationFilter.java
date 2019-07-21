@@ -11,7 +11,6 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -22,14 +21,14 @@ import static com.auth0.jwt.algorithms.Algorithm.HMAC512;
 
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
-//    @Value("${jwttoken.secret}")
-    private String jwtsecret = "uyeTLCKD1kIeO1h7YvcnfnuWmJsChnM2"; // TODO: 21.07.19 make value extra
 
     private AuthenticationManager authenticationManager;
+    private String jwtsecret;
 
 
-    public JWTAuthenticationFilter(AuthenticationManager authenticationManager) {
+    public JWTAuthenticationFilter(AuthenticationManager authenticationManager, String jwtsecret) {
         this.authenticationManager = authenticationManager;
+        this.jwtsecret = jwtsecret;
     }
 
     @Override
