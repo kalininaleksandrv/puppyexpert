@@ -1,19 +1,21 @@
 package com.eyeslessdev.needmypuppyapi.entity;
 
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
+import com.sun.prism.shader.DrawSemiRoundRect_ImagePattern_AlphaTest_Loader;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.Set;
 
 @Entity
 @Table(name="usr", schema = "public")
-public class User implements Serializable, UserDetails {
+public class User implements Serializable {
+
+    public User() {
+
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -49,36 +51,14 @@ public class User implements Serializable, UserDetails {
                 '}';
     }
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
-    }
-
-    @Override
-    public String getUsername() {
+    public String getUsername(){
         return name;
     }
 
-    @Override
-    public boolean isAccountNonExpired() {
-        return false;
-    }
 
-    @Override
-    public boolean isAccountNonLocked() {
-        return false;
+    public String getName() {
+        return name;
     }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return false;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return false;
-    }
-
 
     public Long getId() {
         return id;

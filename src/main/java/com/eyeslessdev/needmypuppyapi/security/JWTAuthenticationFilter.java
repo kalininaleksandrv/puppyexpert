@@ -1,10 +1,9 @@
 package com.eyeslessdev.needmypuppyapi.security;
 
 import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
+import com.eyeslessdev.needmypuppyapi.entity.MyUserPrincipal;
 import com.eyeslessdev.needmypuppyapi.entity.User;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.springframework.beans.factory.annotation.Value;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -19,10 +18,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 
+import static com.auth0.jwt.algorithms.Algorithm.HMAC512;
+
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
-    @Value("${jwttoken.secret}")
-    private String jwtsecret;
+//    @Value("${jwttoken.secret}")
+    private String jwtsecret = "uyeTLCKD1kIeO1h7YvcnfnuWmJsChnM2"; // TODO: 21.07.19 make value extra
 
     private AuthenticationManager authenticationManager;
 
@@ -32,37 +33,40 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     }
 
     @Override
-    public Authentication attemptAuthentication(HttpServletRequest request,
-                                                HttpServletResponse response) throws AuthenticationException {
-
-
+    public Authentication attemptAuthentication(HttpServletRequest req,
+                                                HttpServletResponse res) throws AuthenticationException {
         try {
+            User creds = new ObjectMapper()
+                    .readValue(req.getInputStream(), User.class);
 
-            User incominguser = new ObjectMapper().readValue(request.getInputStream(), User.class);
-            return authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                    incominguser.getEmail(), // TODO: 14.07.19 в оригинальном гайде тут username 
-                    incominguser.getPassword(),
-                    new ArrayList<>()));
-
-
-        } catch (IOException e){
+            return authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            creds.getUsername(),
+                            creds.getPassword(),
+                            new ArrayList<>())
+            );
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
 
     @Override
-    protected void successfulAuthentication(HttpServletRequest request,
-                                            HttpServletResponse response,
+    protected void successfulAuthentication(HttpServletRequest req,
+                                            HttpServletResponse res,
                                             FilterChain chain,
-                                            Authentication authResult) throws IOException, ServletException {
+                                            Authentication auth) {
+
+        MyUserPrincipal myuser = (MyUserPrincipal) auth.getPrincipal();
+
 
         String token = JWT.create()
-                .withSubject(((User)authResult.getPrincipal()).getExternalid())
-                .withExpiresAt(new Date(System.currentTimeMillis()+CommonConsts.EXPIRATION_TIME))
-                .sign(Algorithm.HMAC256(jwtsecret.getBytes()));
+                .withSubject(myuser.getUsername())
+                .withExpiresAt(new Date(System.currentTimeMillis() + CommonConsts.EXPIRATION_TIME))
+                .sign(HMAC512(jwtsecret.getBytes()));
 
-        response.addHeader(CommonConsts.HEADER_STRING, CommonConsts.TOKEN_PREFIX+token);
+        System.out.println(token);
 
+        res.addHeader(CommonConsts.HEADER_STRING, CommonConsts.TOKEN_PREFIX + token);
     }
 }
