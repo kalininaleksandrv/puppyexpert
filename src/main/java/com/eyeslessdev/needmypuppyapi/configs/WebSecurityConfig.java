@@ -1,5 +1,6 @@
 package com.eyeslessdev.needmypuppyapi.configs;
 
+import com.eyeslessdev.needmypuppyapi.entity.Role;
 import com.eyeslessdev.needmypuppyapi.repositories.UserRepo;
 import com.eyeslessdev.needmypuppyapi.security.JWTAuthenticationFilter;
 import com.eyeslessdev.needmypuppyapi.security.JWTAutorizationFilter;
@@ -36,14 +37,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         httpSecurity.cors().and().csrf().disable()
                 .authorizeRequests()
-                .mvcMatchers("/users/**").permitAll()
                 .mvcMatchers("/login/**").permitAll()
+                .mvcMatchers("/users/signup/*").permitAll()
+                .mvcMatchers("/users/getallusers").hasAuthority("ADMIN")
                 .anyRequest().authenticated()
                 .and()
-//                .formLogin()
-//                .loginPage("/login") todo work it out
-//                .usernameParameter("email")
-//                .and()
         .addFilter(new JWTAuthenticationFilter(authenticationManager(), jwtsecret))
         .addFilter(new JWTAutorizationFilter(authenticationManager(), jwtsecret))
         .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);

@@ -4,21 +4,21 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import org.springframework.beans.factory.annotation.Value;
+import com.eyeslessdev.needmypuppyapi.entity.Role;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
-import sun.plugin.liveconnect.SecurityContextHelper;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class JWTAutorizationFilter extends BasicAuthenticationFilter {
 
@@ -67,9 +67,10 @@ public class JWTAutorizationFilter extends BasicAuthenticationFilter {
                     System.out.println(extrainfo.get(CommonConsts.EXTERNALID_KEY).asString());
 //                } else {
                     System.out.println(extrainfo.get(CommonConsts.ISENABLED_KEY).asBoolean());
-                    System.out.println(extrainfo.get(CommonConsts.AUTHORITIES_KEY).asList(String.class));
 
-                return new UsernamePasswordAuthenticationToken(user, null, new ArrayList<>());
+                System.out.println(getRolesFromExtrainfo(extrainfo));
+
+                return new UsernamePasswordAuthenticationToken(user, null, getRolesFromExtrainfo(extrainfo));
             } else {
                 System.out.println("------------->user is null");
                 return null;
@@ -78,8 +79,27 @@ public class JWTAutorizationFilter extends BasicAuthenticationFilter {
         } else return null;
     }
 
+    //extract ROLES from token, parse it and convert to ROLE ENUM
+    private ArrayList<Role> getRolesFromExtrainfo(Map<String, Claim> extrainfo) {
+        return (ArrayList<Role>) extrainfo.get(CommonConsts.AUTHORITIES_KEY).asList(String.class)
+                    .stream()
+                    .map(val -> getEnumFromString(Role.class, val))
+                    .collect(Collectors.toList());
+    }
+
     private String getHeader(HttpServletRequest request) {
         return request.getHeader(CommonConsts.HEADER_STRING);
+    }
+
+    private static <T extends Enum<T>> T getEnumFromString(Class<T> c, String string) {
+        if( c != null && string != null ) {
+            try {
+                return Enum.valueOf(c, string.trim().toUpperCase());
+            } catch(IllegalArgumentException ex) {
+                throw new IllegalArgumentException(ex);
+            }
+        }
+        return null;
     }
 
 }
