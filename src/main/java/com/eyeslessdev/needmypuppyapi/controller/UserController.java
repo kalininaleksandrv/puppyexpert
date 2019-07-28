@@ -25,7 +25,7 @@ public class UserController {
         private BCryptPasswordEncoder bCryptPasswordEncoder;
 
         @CrossOrigin
-        @GetMapping("/getallusers")
+        @GetMapping("/admin/getallusers")
         public List<User> findAll () {
         return userRepo.findAll();
     }
