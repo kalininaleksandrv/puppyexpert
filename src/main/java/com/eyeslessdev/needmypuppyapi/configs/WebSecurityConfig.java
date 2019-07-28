@@ -45,7 +45,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //                .usernameParameter("email")
 //                .and()
         .addFilter(new JWTAuthenticationFilter(authenticationManager(), jwtsecret))
-        .addFilter(new JWTAutorizationFilter(authenticationManager()))
+        .addFilter(new JWTAutorizationFilter(authenticationManager(), jwtsecret))
         .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
 

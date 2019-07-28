@@ -2,7 +2,6 @@ package com.eyeslessdev.needmypuppyapi.service;
 
 import com.eyeslessdev.needmypuppyapi.entity.MyUserPrincipal;
 import com.eyeslessdev.needmypuppyapi.entity.User;
-import com.eyeslessdev.needmypuppyapi.exceptions.NotFoundException;
 import com.eyeslessdev.needmypuppyapi.repositories.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -26,7 +25,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         if (user.isPresent()) {
             //wrap founded user on userprincipal, get in from optional with .get()
             return new MyUserPrincipal(user.get());
+        } else {
+            System.out.println("User "+useremail+ " not found"); // TODO: 28.07.2019 add correct logger 
+            throw new UsernameNotFoundException("User "+useremail+ " not found");
         }
-        throw new UsernameNotFoundException("User "+useremail+ " not found");
     }
 }

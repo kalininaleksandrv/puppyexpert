@@ -2,6 +2,8 @@ package com.eyeslessdev.needmypuppyapi.security;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.Claim;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -11,20 +13,21 @@ import sun.plugin.liveconnect.SecurityContextHelper;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Map;
 
 public class JWTAutorizationFilter extends BasicAuthenticationFilter {
 
-    public JWTAutorizationFilter(AuthenticationManager authenticationManager) {
-        super(authenticationManager);
-    }
-
-
-    @Value("${jwttoken.secret}")
     private String jwtsecret;
+
+    public JWTAutorizationFilter(AuthenticationManager authenticationManager, String jwtsecret) {
+        super(authenticationManager);
+        this.jwtsecret = jwtsecret;
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -50,18 +53,21 @@ public class JWTAutorizationFilter extends BasicAuthenticationFilter {
         String token = getHeader(request);
         if(token != null){
 
-            String user = JWT.require(Algorithm.HMAC256(jwtsecret.getBytes()))
+            DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC512(jwtsecret.getBytes()))
                     .build()
-                    .verify(token.replace(CommonConsts.TOKEN_PREFIX, ""))
-                    .getSubject();
+                    .verify(token.replace(CommonConsts.TOKEN_PREFIX, ""));
 
-            if (user != null){
+                    String user = decodedJWT.getSubject();
 
-                if (user.endsWith(CommonConsts.ONUS_AUTH)) {
-                    System.out.println("our user");
-                } else {
-                    System.out.println("external user");
-                }
+            Map<String, Claim> extrainfo = decodedJWT.getClaims();
+
+            if (extrainfo != null){
+
+//                if (extrainfo.get(CommonConsts.EXTERNALID_KEY).endsWith(CommonConsts.ONUS_AUTH)) {
+                    System.out.println(extrainfo.get(CommonConsts.EXTERNALID_KEY).asString());
+//                } else {
+                    System.out.println(extrainfo.get(CommonConsts.ISENABLED_KEY).asBoolean());
+                    System.out.println(extrainfo.get(CommonConsts.AUTHORITIES_KEY).asList(String.class));
 
                 return new UsernamePasswordAuthenticationToken(user, null, new ArrayList<>());
             } else {
