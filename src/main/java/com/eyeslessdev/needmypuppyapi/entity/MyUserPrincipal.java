@@ -48,4 +48,6 @@ public class MyUserPrincipal implements UserDetails {
     public boolean isEnabled() {
         return true; // TODO: 21.07.19 implement User.isRegistered 
     }
+
+    public String getExternalId(){return user.getExternalid();}
 }

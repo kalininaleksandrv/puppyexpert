@@ -35,13 +35,21 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     public Authentication attemptAuthentication(HttpServletRequest req,
                                                 HttpServletResponse res) throws AuthenticationException {
         try {
+            //obtain json with    {
+            //    "email": "test5@test.com",
+            //    "password": "test5"
+            //   } and map it to user.class
             User creds = new ObjectMapper()
                     .readValue(req.getInputStream(), User.class);
 
+            //wrap user with userprincipal
+            MyUserPrincipal principalcreds = new MyUserPrincipal(creds);
+
+            //pass parsmeters email (userprincipal returns email instead of name) and password to UserDetailServiceImpl
             return authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
-                            creds.getUsername(),
-                            creds.getPassword(),
+                            principalcreds.getUsername(),
+                            principalcreds.getPassword(),
                             new ArrayList<>())
             );
         } catch (IOException e) {
@@ -63,8 +71,6 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 .withSubject(myuser.getUsername())
                 .withExpiresAt(new Date(System.currentTimeMillis() + CommonConsts.EXPIRATION_TIME))
                 .sign(HMAC512(jwtsecret.getBytes()));
-
-        System.out.println(token);
 
         res.addHeader(CommonConsts.HEADER_STRING, CommonConsts.TOKEN_PREFIX + token);
     }

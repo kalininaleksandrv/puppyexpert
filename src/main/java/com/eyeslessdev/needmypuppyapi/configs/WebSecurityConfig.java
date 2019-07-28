@@ -26,7 +26,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     UserRepo userDetailsRepo;
 
     @Autowired
-    private UserDetailsServiceImpl userDetailsService;
+    private UserDetailsServiceImpl userDetailsServiceimpl;
 
     @Value("${jwttoken.secret}")
     private String jwtsecret;
@@ -40,14 +40,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .mvcMatchers("/login/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
+//                .formLogin()
+//                .loginPage("/login") todo work it out
+//                .usernameParameter("email")
+//                .and()
         .addFilter(new JWTAuthenticationFilter(authenticationManager(), jwtsecret))
         .addFilter(new JWTAutorizationFilter(authenticationManager()))
-        .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED);
+        .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder());
+        auth.userDetailsService(userDetailsServiceimpl).passwordEncoder(bCryptPasswordEncoder());
     }
 
 //    @Bean
