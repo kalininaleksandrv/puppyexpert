@@ -1,10 +1,14 @@
 package com.eyeslessdev.needmypuppyapi.controller;
 
 import com.eyeslessdev.needmypuppyapi.entity.Feedback;
+import com.eyeslessdev.needmypuppyapi.entity.Role;
 import com.eyeslessdev.needmypuppyapi.entity.User;
 import com.eyeslessdev.needmypuppyapi.repositories.UserRepo;
 import com.eyeslessdev.needmypuppyapi.service.FeedbackService;
+import com.eyeslessdev.needmypuppyapi.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,8 +23,7 @@ public class AdminController {
     private FeedbackService feedbackService;
 
     @Autowired
-    private UserRepo userRepo;
-
+    private UserService userService;
 
     @CrossOrigin
     @GetMapping("/messagestomod")
@@ -31,14 +34,26 @@ public class AdminController {
 
     @CrossOrigin
     @GetMapping("/getallusers")
-    public List<User> findAll () {
-        return userRepo.findAll();
-    }
+    public List<User> findAll () {return userService.findAll();}
 
 
     @CrossOrigin
     @GetMapping("/user/{id}")
     public Optional<User> getUserById (@PathVariable long id) {
-        return userRepo.findById(id);
+        return userService.findById(id);
     }
+
+    @CrossOrigin
+    @PostMapping("/user/{id}")
+    public ResponseEntity<List<String>> updateUserById (@PathVariable Long id, @RequestBody User user) {
+
+
+        if (userService.changeStatus(id, user.getRoles())){
+            return new ResponseEntity<>(HttpStatus.OK);
+        } else {return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);}
+    }
+
+    // deleting multiply messages DELETE FROM public.feedback WHERE id = 8 OR id = 9;
+    // make multiply messages moderated UPDATE public.feedback SET ismoderated = 1 WHERE id = 10 OR id = 11;
+    //change user status by id
 }
