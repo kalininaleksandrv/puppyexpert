@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -25,10 +26,14 @@ public class UserService {
         }
 
         try {
-            Optional<User> updateduser = userRepo.findById(id);
-            if (updateduser.isPresent()){
-                System.out.println("currentroles "+updateduser.get().getRoles());
-                return true;
+            Optional<User> updateduseropt = userRepo.findById(id);
+            if (updateduseropt.isPresent()){
+                Set<Role> updatedroles = updateduseropt.get().getRoles();
+                if (updatedroles.addAll(roles)){
+                    updateduseropt.get().setRoles(updatedroles);
+                    userRepo.save(updateduseropt.get());
+                    return true;
+                } else return false;
             } else {return false;}
         } catch (Exception e) {
             e.printStackTrace();
