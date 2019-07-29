@@ -41,8 +41,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .mvcMatchers("/login/**").permitAll()
                 .mvcMatchers(HttpMethod.GET, "/feedback/**").permitAll()
                 .mvcMatchers(HttpMethod.POST, "/feedback").hasAnyAuthority(Role.ADMIN.toString(), Role.USER.toString())//hasAnyRole("ADMIN", "USER")
-                .mvcMatchers("/users/signup/*").permitAll()
-                .mvcMatchers("/users/admin/*").hasAuthority(Role.ADMIN.toString())
+                .mvcMatchers("/users/signup").permitAll()
+                .mvcMatchers("/admin/**").hasAuthority(Role.ADMIN.toString())
                 .anyRequest().authenticated()
                 .and()
         .addFilter(new JWTAuthenticationFilter(authenticationManager(), jwtsecret))
@@ -54,14 +54,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsServiceimpl).passwordEncoder(bCryptPasswordEncoder());
     }
-
-//    @Bean
-//    public PrincipalExtractor principalExtractor (UserRepo userRepo){
-//        return map -> {
-//            return new User();
-//        };
-//    }
-
 
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder(){

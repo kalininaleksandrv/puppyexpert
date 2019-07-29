@@ -24,19 +24,6 @@ public class UserController {
         @Autowired
         private BCryptPasswordEncoder bCryptPasswordEncoder;
 
-        @CrossOrigin
-        @GetMapping("/admin/getallusers")
-        public List<User> findAll () {
-        return userRepo.findAll();
-    }
-
-        @CrossOrigin
-        @GetMapping("{id}")
-        public Optional<User> getUserById (@PathVariable long id) {
-            return userRepo.findById(id);
-        }
-
-
         @PostMapping("/signup")
         public void signUp (@RequestBody User user){
             if (!userRepo.findByEmail(user.getEmail()).isPresent()) {

@@ -20,7 +20,7 @@ public class FeedbackService {
 
     public Optional<List<Feedback>> findByDogid (long id){
 
-        return feedbackRepo.findTop10ByDogidOrderByCommenttimeDesc(id);
+        return feedbackRepo.findTop10ByDogidOrderByCommenttimeDesc(id); // TODO: 29.07.2019 make return moderated only
     }
 
     public Boolean saveFeedback (Feedback feedback)  {

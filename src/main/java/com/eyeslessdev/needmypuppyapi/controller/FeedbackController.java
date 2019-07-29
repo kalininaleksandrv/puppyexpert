@@ -30,7 +30,6 @@ public class FeedbackController {
         return feedbackService.findByDogid(id);
     }
 
-
     @PostMapping
     public ResponseEntity<List<String>> sendFeedback(@Valid @RequestBody Feedback feedback,
                                                      BindingResult bindingResult){
