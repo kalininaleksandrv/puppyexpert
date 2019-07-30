@@ -33,6 +33,7 @@ public class FeedbackController {
     @PostMapping
     public ResponseEntity<List<String>> sendFeedback(@Valid @RequestBody Feedback feedback,
                                                      BindingResult bindingResult){
+
         if(bindingResult.hasErrors()){
             List<String> errors = bindingResult.getAllErrors().stream()
                     .map(DefaultMessageSourceResolvable::getDefaultMessage)

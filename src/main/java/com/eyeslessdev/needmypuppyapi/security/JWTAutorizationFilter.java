@@ -64,7 +64,7 @@ public class JWTAutorizationFilter extends BasicAuthenticationFilter {
             if (extrainfo != null){
 
 //                if (extrainfo.get(CommonConsts.EXTERNALID_KEY).endsWith(CommonConsts.ONUS_AUTH)) {
-                    System.out.println(extrainfo.get(CommonConsts.EXTERNALID_KEY).asString());
+                    System.out.println(extrainfo.get(CommonConsts.REALNAME_KEY).asString());
 
                     System.out.println(extrainfo.get(CommonConsts.ISENABLED_KEY).asBoolean());
 
