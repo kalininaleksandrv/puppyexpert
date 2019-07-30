@@ -1,9 +1,7 @@
 package com.eyeslessdev.needmypuppyapi.controller;
 
 import com.eyeslessdev.needmypuppyapi.entity.Feedback;
-import com.eyeslessdev.needmypuppyapi.entity.Role;
 import com.eyeslessdev.needmypuppyapi.entity.User;
-import com.eyeslessdev.needmypuppyapi.repositories.UserRepo;
 import com.eyeslessdev.needmypuppyapi.service.FeedbackService;
 import com.eyeslessdev.needmypuppyapi.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,8 +9,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RestController
 @CrossOrigin
@@ -30,6 +29,37 @@ public class AdminController {
     public Optional<List<Feedback>> getFeedbackById() {
         //here we're return list of unmoderated feedback messages
         return feedbackService.findUnmoderatedFeedback(0);
+    }
+
+    @CrossOrigin
+    @PostMapping("/messagestomod")
+    public ResponseEntity<List<String>> moderateMessages (@RequestBody Map<String, String> moderatedmessages){
+
+        Set<String> myset = new HashSet<>();
+
+        moderatedmessages.entrySet().stream()
+                .filter(m -> m.getValue()
+                        .contains("DELETE"))
+                .map(Map.Entry::getKey)
+                .filter(v -> v instanceof String)
+                .map(c -> myset.add(c))
+                .forEach(v -> System.out.println(v));
+
+        System.out.println(myset);
+
+//                .flatMap(t -> Collection.stream(t))
+//                .collect(Collectors.toSet());
+
+
+//        moderatedmessages.stream()
+//                .filter(isSize)
+//                .forEach(p -> {
+//                    if (!outcomelist.contains(p)) {
+//                        forCompanyList.add(p);
+//                    }
+//                });
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @CrossOrigin
@@ -53,7 +83,8 @@ public class AdminController {
         } else {return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);}
     }
 
-    // deleting multiply messages DELETE FROM public.feedback WHERE id = 8 OR id = 9;
+
+    // deleting multiply messages DELETE from public.feedback WHERE id in (10, 17, 18);
     // make multiply messages moderated UPDATE public.feedback SET ismoderated = 1 WHERE id = 10 OR id = 11;
     //change user status by id
 }
