@@ -35,29 +35,13 @@ public class AdminController {
     @PostMapping("/messagestomod")
     public ResponseEntity<List<String>> moderateMessages (@RequestBody Map<String, String> moderatedmessages){
 
-        Set<String> myset = new HashSet<>();
-
-        moderatedmessages.entrySet().stream()
+        Set<String> myset = moderatedmessages.entrySet().stream()
                 .filter(m -> m.getValue()
                         .contains("DELETE"))
                 .map(Map.Entry::getKey)
-                .filter(v -> v instanceof String)
-                .map(c -> myset.add(c))
-                .forEach(v -> System.out.println(v));
+                .collect(Collectors.toSet());
 
         System.out.println(myset);
-
-//                .flatMap(t -> Collection.stream(t))
-//                .collect(Collectors.toSet());
-
-
-//        moderatedmessages.stream()
-//                .filter(isSize)
-//                .forEach(p -> {
-//                    if (!outcomelist.contains(p)) {
-//                        forCompanyList.add(p);
-//                    }
-//                });
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
