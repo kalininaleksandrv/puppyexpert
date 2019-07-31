@@ -35,15 +35,11 @@ public class AdminController {
     @PostMapping("/messagestomod")
     public ResponseEntity<List<String>> moderateMessages (@RequestBody Map<String, String> moderatedmessages){
 
-        Set<String> myset = moderatedmessages.entrySet().stream()
-                .filter(m -> m.getValue()
-                        .contains("DELETE"))
-                .map(Map.Entry::getKey)
-                .collect(Collectors.toSet());
-
-        System.out.println(myset);
-
-        return new ResponseEntity<>(HttpStatus.OK);
+        if (feedbackService.saveModerationResultToFeedbackDb(moderatedmessages)){
+            return new ResponseEntity<>(HttpStatus.OK);
+        } else {
+          return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @CrossOrigin

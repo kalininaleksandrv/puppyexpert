@@ -8,13 +8,17 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class FeedbackService {
@@ -65,5 +69,48 @@ public class FeedbackService {
     public Optional<List<Feedback>> findUnmoderatedFeedback (Integer ismoderated){
         return feedbackRepo.findByIsmoderated(ismoderated);
     }
+
+    public Boolean saveModerationResultToFeedbackDb (Map<String, String> moderatedmessages){
+
+        if(deleteModeratedFromDb(moderatedmessages)) return true;
+        else return false;
+    }
+
+    @Async("threadPoolTaskExecutor")
+    public Boolean deleteModeratedFromDb (Map<String, String> income){
+
+        Set<String> deletedset = income.entrySet().stream()
+                .filter(m -> m.getValue()
+                        .contains("DELETE"))
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toSet());
+
+
+        System.out.println("ready to delete "+deletedset+ " time "+ Thread.currentThread().getName() + " " + System.currentTimeMillis());
+
+        Set<String> updateset = income.entrySet().stream()
+                .filter(m -> m.getValue()
+                        .contains("UPDATE"))
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toSet());
+
+
+        System.out.println("ready to update "+ updateset + " time "+ Thread.currentThread().getName()+ " " + System.currentTimeMillis());
+
+        return true;
+    }
+
+//    @Async("threadPoolTaskExecutor")
+//    public Boolean updateModeratedInDb (Map<String, String> income){
+//        Set<String> deletedset = income.entrySet().stream()
+//                .filter(m -> m.getValue()
+//                        .contains("UPDATE"))
+//                .map(Map.Entry::getKey)
+//                .collect(Collectors.toSet());
+//
+//
+//        System.out.println("ready to update "+deletedset + " time "+ Thread.currentThread().getName());
+//        return true;
+//    }
 
 }
