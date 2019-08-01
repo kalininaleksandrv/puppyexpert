@@ -70,13 +70,7 @@ public class FeedbackService {
         return feedbackRepo.findByIsmoderated(ismoderated);
     }
 
-    public Boolean saveModerationResultToFeedbackDb (Map<String, String> moderatedmessages){
-
-        if(deleteModeratedFromDb(moderatedmessages)) return true;
-        else return false;
-    }
-
-    @Async("threadPoolTaskExecutor")
+    @Async
     public Boolean deleteModeratedFromDb (Map<String, String> income){
 
         Set<String> deletedset = income.entrySet().stream()
@@ -84,9 +78,19 @@ public class FeedbackService {
                         .contains("DELETE"))
                 .map(Map.Entry::getKey)
                 .collect(Collectors.toSet());
-
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         System.out.println("ready to delete "+deletedset+ " time "+ Thread.currentThread().getName() + " " + System.currentTimeMillis());
+
+        return true;
+    }
+
+    @Async
+    public Boolean updateModeratedInDb (Map<String, String> income){
 
         Set<String> updateset = income.entrySet().stream()
                 .filter(m -> m.getValue()
@@ -94,23 +98,15 @@ public class FeedbackService {
                 .map(Map.Entry::getKey)
                 .collect(Collectors.toSet());
 
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         System.out.println("ready to update "+ updateset + " time "+ Thread.currentThread().getName()+ " " + System.currentTimeMillis());
 
         return true;
     }
-
-//    @Async("threadPoolTaskExecutor")
-//    public Boolean updateModeratedInDb (Map<String, String> income){
-//        Set<String> deletedset = income.entrySet().stream()
-//                .filter(m -> m.getValue()
-//                        .contains("UPDATE"))
-//                .map(Map.Entry::getKey)
-//                .collect(Collectors.toSet());
-//
-//
-//        System.out.println("ready to update "+deletedset + " time "+ Thread.currentThread().getName());
-//        return true;
-//    }
 
 }

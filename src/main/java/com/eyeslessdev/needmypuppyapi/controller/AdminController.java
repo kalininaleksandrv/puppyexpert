@@ -35,11 +35,9 @@ public class AdminController {
     @PostMapping("/messagestomod")
     public ResponseEntity<List<String>> moderateMessages (@RequestBody Map<String, String> moderatedmessages){
 
-        if (feedbackService.saveModerationResultToFeedbackDb(moderatedmessages)){
+        feedbackService.deleteModeratedFromDb(moderatedmessages);
+        feedbackService.updateModeratedInDb(moderatedmessages);
             return new ResponseEntity<>(HttpStatus.OK);
-        } else {
-          return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
     }
 
     @CrossOrigin
@@ -56,7 +54,6 @@ public class AdminController {
     @CrossOrigin
     @PostMapping("/user/{id}")
     public ResponseEntity<List<String>> updateUserById (@PathVariable Long id, @RequestBody User user ) {
-        // TODO: 29.07.2019 could I replace user by Map<String, String[]>??? 
 
         if (userService.changeStatus(id, user.getRoles())){
             return new ResponseEntity<>(HttpStatus.OK);
