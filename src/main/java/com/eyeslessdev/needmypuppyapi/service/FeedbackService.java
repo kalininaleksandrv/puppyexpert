@@ -77,18 +77,16 @@ public class FeedbackService {
 
         CompletableFuture<Boolean> allWrites = new CompletableFuture<>();
 
-        Set<String> deletedset = income.entrySet().stream()
+        Set<Long> deleteset = income.entrySet().stream()
                 .filter(m -> m.getValue()
                         .contains("DELETE"))
                 .map(Map.Entry::getKey)
+                .map(s -> Long.parseLong(s))
                 .collect(Collectors.toSet());
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
 
-        System.out.println("ready to delete "+deletedset+ " time "+ Thread.currentThread().getName() + " " + System.currentTimeMillis());
+        Integer isdeleted = feedbackRepo.deleteFeedbackById(deleteset);
+
+        System.out.println("delete "+ isdeleted.toString() + " time "+ Thread.currentThread().getName() + " " + System.currentTimeMillis());
 
         return CompletableFuture.completedFuture(true);
     }

@@ -25,4 +25,8 @@ public interface FeedbackRepo extends JpaRepository<Feedback, Long> {
     @Query("UPDATE Feedback f set f.ismoderated = :ismoderated where f.id IN :ids")
     Integer updateFeedbackById(@Param("ismoderated") Integer ismoderated, @Param("ids") Collection<Long> ids);
 
+    @Transactional
+    @Modifying
+    @Query("DELETE Feedback f where f.id IN :ids")
+    Integer deleteFeedbackById(@Param("ids") Collection<Long> ids);
 }
