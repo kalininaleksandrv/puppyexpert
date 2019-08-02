@@ -4,6 +4,7 @@ import com.eyeslessdev.needmypuppyapi.entity.Feedback;
 import com.eyeslessdev.needmypuppyapi.entity.User;
 import com.eyeslessdev.needmypuppyapi.repositories.FeedbackRepo;
 import com.eyeslessdev.needmypuppyapi.repositories.UserRepo;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -74,13 +75,15 @@ public class FeedbackService {
     @Async
     public CompletableFuture<Boolean> deleteModeratedFromDb (Map<String, String> income){
 
+        CompletableFuture<Boolean> allWrites = new CompletableFuture<>();
+
         Set<String> deletedset = income.entrySet().stream()
                 .filter(m -> m.getValue()
                         .contains("DELETE"))
                 .map(Map.Entry::getKey)
                 .collect(Collectors.toSet());
         try {
-            Thread.sleep(3000);
+            Thread.sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -93,19 +96,16 @@ public class FeedbackService {
     @Async
     public CompletableFuture<Boolean> updateModeratedInDb (Map<String, String> income){
 
-        Set<String> updateset = income.entrySet().stream()
+        Set<Long> updateset = income.entrySet().stream()
                 .filter(m -> m.getValue()
                         .contains("UPDATE"))
                 .map(Map.Entry::getKey)
+                .map(s -> Long.parseLong(s))
                 .collect(Collectors.toSet());
 
-        try {
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        Integer isupdated = feedbackRepo.updateFeedbackById(1, updateset);
 
-        System.out.println("ready to update "+ updateset + " time "+ Thread.currentThread().getName()+ " " + System.currentTimeMillis());
+        System.out.println("update "+ isupdated.toString() + " time "+ Thread.currentThread().getName()+ " " + System.currentTimeMillis());
 
         return CompletableFuture.completedFuture(true);
     }
