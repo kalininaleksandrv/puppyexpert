@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -35,9 +36,16 @@ public class AdminController {
     @PostMapping("/messagestomod")
     public ResponseEntity<List<String>> moderateMessages (@RequestBody Map<String, String> moderatedmessages){
 
-        feedbackService.deleteModeratedFromDb(moderatedmessages);
-        feedbackService.updateModeratedInDb(moderatedmessages);
-            return new ResponseEntity<>(HttpStatus.OK);
+        CompletableFuture<Boolean> resultofdeleting = feedbackService.deleteModeratedFromDb(moderatedmessages);
+        CompletableFuture<Boolean> resultofupdating = feedbackService.updateModeratedInDb(moderatedmessages);
+
+        CompletableFuture<Boolean> allWrites = resultofdeleting
+                .thenCombine(resultofupdating, (res1, res2) -> {return res1&res2;})
+                .whenComplete((result, ex) -> {
+                    System.out.println("CF result: "+result+"\t"+ex);});
+
+        if(allWrites.join()){return new ResponseEntity<>(HttpStatus.OK);}
+        else {return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);}
     }
 
     @CrossOrigin

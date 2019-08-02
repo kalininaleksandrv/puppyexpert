@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 @Service
@@ -71,7 +72,7 @@ public class FeedbackService {
     }
 
     @Async
-    public Boolean deleteModeratedFromDb (Map<String, String> income){
+    public CompletableFuture<Boolean> deleteModeratedFromDb (Map<String, String> income){
 
         Set<String> deletedset = income.entrySet().stream()
                 .filter(m -> m.getValue()
@@ -86,11 +87,11 @@ public class FeedbackService {
 
         System.out.println("ready to delete "+deletedset+ " time "+ Thread.currentThread().getName() + " " + System.currentTimeMillis());
 
-        return true;
+        return CompletableFuture.completedFuture(true);
     }
 
     @Async
-    public Boolean updateModeratedInDb (Map<String, String> income){
+    public CompletableFuture<Boolean> updateModeratedInDb (Map<String, String> income){
 
         Set<String> updateset = income.entrySet().stream()
                 .filter(m -> m.getValue()
@@ -106,7 +107,7 @@ public class FeedbackService {
 
         System.out.println("ready to update "+ updateset + " time "+ Thread.currentThread().getName()+ " " + System.currentTimeMillis());
 
-        return true;
+        return CompletableFuture.completedFuture(true);
     }
 
 }
