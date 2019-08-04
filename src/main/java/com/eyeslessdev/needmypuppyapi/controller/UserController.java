@@ -7,9 +7,8 @@ import com.eyeslessdev.needmypuppyapi.security.CommonConsts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @RestController
