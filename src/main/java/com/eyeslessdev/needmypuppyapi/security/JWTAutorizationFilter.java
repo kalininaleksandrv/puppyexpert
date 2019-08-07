@@ -2,6 +2,7 @@ package com.eyeslessdev.needmypuppyapi.security;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.eyeslessdev.needmypuppyapi.entity.Role;
@@ -53,15 +54,26 @@ public class JWTAutorizationFilter extends BasicAuthenticationFilter {
         String token = getHeader(request);
         if(token != null){
 
-            DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC512(jwtsecret.getBytes()))
-                    .build()
-                    .verify(token.replace(CommonConsts.TOKEN_PREFIX, ""));
+            String user = null;
 
-                    String user = decodedJWT.getSubject();
+            Map<String, Claim> extrainfo = null;
 
-            Map<String, Claim> extrainfo = decodedJWT.getClaims();
+            try {
+                DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC512(jwtsecret.getBytes()))
+                        .build()
+                        .verify(token.replace(CommonConsts.TOKEN_PREFIX, ""));
 
-            if (extrainfo != null){
+                user = decodedJWT.getSubject();
+
+                extrainfo = decodedJWT.getClaims();
+            } catch (JWTVerificationException e) {
+                System.out.println("expired token exception");
+                // TODO: 07.08.2019 make correct logging 
+            } catch (IllegalArgumentException e) {
+                e.printStackTrace();
+            }
+
+            if (extrainfo != null && user !=null){
 
 //                if (extrainfo.get(CommonConsts.EXTERNALID_KEY).endsWith(CommonConsts.ONUS_AUTH)) {
                     System.out.println(extrainfo.get(CommonConsts.REALNAME_KEY).asString());
