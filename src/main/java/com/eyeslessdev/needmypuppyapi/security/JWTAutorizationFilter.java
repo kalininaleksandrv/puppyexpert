@@ -54,31 +54,25 @@ public class JWTAutorizationFilter extends BasicAuthenticationFilter {
         String token = getHeader(request);
         if(token != null){
 
-            String user = null;
-
-            Map<String, Claim> extrainfo = null;
+            DecodedJWT decodedJWT = null;
 
             try {
-                DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC512(jwtsecret.getBytes()))
+                decodedJWT = JWT.require(Algorithm.HMAC512(jwtsecret.getBytes()))
                         .build()
                         .verify(token.replace(CommonConsts.TOKEN_PREFIX, ""));
 
-                user = decodedJWT.getSubject();
-
-                extrainfo = decodedJWT.getClaims();
             } catch (JWTVerificationException e) {
-                System.out.println("expired token exception");
+                System.out.println("JWT verification exception");
                 // TODO: 07.08.2019 make correct logging 
             } catch (IllegalArgumentException e) {
                 e.printStackTrace();
             }
 
-            if (extrainfo != null && user !=null){
+            if (decodedJWT !=null){
 
-//                if (extrainfo.get(CommonConsts.EXTERNALID_KEY).endsWith(CommonConsts.ONUS_AUTH)) {
-                    System.out.println(extrainfo.get(CommonConsts.REALNAME_KEY).asString());
+                String user = decodedJWT.getSubject();
 
-                    System.out.println(extrainfo.get(CommonConsts.ISENABLED_KEY).asBoolean());
+                Map<String, Claim> extrainfo = decodedJWT.getClaims();
 
                 return new UsernamePasswordAuthenticationToken(user, null, getRolesFromExtrainfo(extrainfo));
             } else {

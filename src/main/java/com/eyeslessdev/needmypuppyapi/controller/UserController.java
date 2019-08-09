@@ -5,6 +5,8 @@ import com.eyeslessdev.needmypuppyapi.entity.User;
 import com.eyeslessdev.needmypuppyapi.repositories.UserRepo;
 import com.eyeslessdev.needmypuppyapi.security.CommonConsts;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,7 +26,7 @@ public class UserController {
         private BCryptPasswordEncoder bCryptPasswordEncoder;
 
         @PostMapping("/signup")
-        public void signUp (@RequestBody User user){
+        public ResponseEntity<String> signUp (@RequestBody User user){
             if (!userRepo.findByEmail(user.getEmail()).isPresent()) {
                 user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
                 if (user.getExternalid() == null) {user.setExternalid(UUID
@@ -33,8 +35,9 @@ public class UserController {
                         .concat(CommonConsts.ONUS_AUTH));}
                 user.setRoles(Collections.singleton(Role.CREATEDUSER));
                 userRepo.save(user);
+                return new ResponseEntity<String>(HttpStatus.OK);
             } else {
-                System.out.println("can't create user cause of email is busy");
+                return new ResponseEntity<String>("Tакой email уже занят", HttpStatus.BAD_REQUEST);
             }
         }
 
