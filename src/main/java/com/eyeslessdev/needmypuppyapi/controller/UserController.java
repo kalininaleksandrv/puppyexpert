@@ -34,6 +34,8 @@ public class UserController {
                         .toString()
                         .concat(CommonConsts.ONUS_AUTH));}
                 user.setRoles(Collections.singleton(Role.CREATEDUSER));
+                user.setRegistrationtime(System.currentTimeMillis());
+                user.setLastvisit(System.currentTimeMillis());
                 userRepo.save(user);
                 return new ResponseEntity<String>(HttpStatus.OK);
             } else {

@@ -96,8 +96,8 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         logger.debug("failed authentication while attempting to access");
 
         //Add more descriptive message
-        response.sendError(HttpServletResponse.SC_UNAUTHORIZED,
-                "Authentication Failed");
+        response.sendError(HttpServletResponse.SC_FORBIDDEN,
+                "Неверный email или пароль");
     }
 
 }
