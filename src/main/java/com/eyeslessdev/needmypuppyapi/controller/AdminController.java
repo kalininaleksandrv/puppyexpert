@@ -69,9 +69,4 @@ public class AdminController {
             return new ResponseEntity<>(HttpStatus.OK);
         } else {return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);}
     }
-
-
-    // deleting multiply messages DELETE from public.feedback WHERE id in (10, 17, 18);
-    // make multiply messages moderated UPDATE public.feedback SET ismoderated = 1 WHERE id = 10 OR id = 11;
-    //change user status by id
 }
