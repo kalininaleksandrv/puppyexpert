@@ -1,24 +1,18 @@
 package com.eyeslessdev.needmypuppyapi.service;
 
 import com.eyeslessdev.needmypuppyapi.entity.Feedback;
-import com.eyeslessdev.needmypuppyapi.entity.User;
+import com.eyeslessdev.needmypuppyapi.entity.Role;
 import com.eyeslessdev.needmypuppyapi.repositories.FeedbackRepo;
 import com.eyeslessdev.needmypuppyapi.repositories.UserRepo;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
@@ -31,42 +25,41 @@ public class FeedbackService {
     @Autowired
     private UserRepo userRepo;
 
-    public Optional<List<Feedback>> findByDogid (long id){
+    @Autowired
+    private UserService userService;
 
-        return feedbackRepo.findTop10ByDogidOrderByCommenttimeDesc(id); // TODO: 29.07.2019 make return moderated only
+    public List findByDogid (long id){
+
+        Optional<List<Feedback>> mylist = feedbackRepo.findTop10ByDogidOrderByCommenttimeDesc(id);
+
+        return mylist.map(feedbacks -> feedbacks.stream()
+                .filter(list -> list.getIsModerated() == 1)
+                .collect(Collectors.toList())).orElse(Collections.EMPTY_LIST);
     }
 
     public Boolean saveFeedback (Feedback feedback)  {
-     try {
 
-         DateTime nowtime = DateTime.now();
-         DateTimeFormatter dtf = DateTimeFormat.forPattern("MM/dd/yyyy HH:mm:ss");
-         feedback.setCommenttime(nowtime.getMillis());
-         feedback.setCommenttimestr(nowtime.toString(dtf));
-         feedback.setIsModerated(0);
-         feedback.setUsername(getAuthenticatedPrincipalUserName());
-         feedbackRepo.save(feedback);
-         return true;
+        Collection<? extends GrantedAuthority> currentPrincipalName = userService.getAuthenticatedPrincipalUserRole();
+
+        try {
+             if (currentPrincipalName.contains(Role.USER) || currentPrincipalName.contains(Role.ADMIN))
+                 feedback.setIsModerated(1);
+             else feedback.setIsModerated(0);
+
+             DateTime nowtime = DateTime.now();
+             DateTimeFormatter dtf = DateTimeFormat.forPattern("MM/dd/yyyy HH:mm:ss");
+             feedback.setCommenttime(nowtime.getMillis());
+             feedback.setCommenttimestr(nowtime.toString(dtf));
+             feedback.setUsername(userService.getAuthenticatedPrincipalUserName());
+             feedbackRepo.save(feedback);
+             return true;
      } catch (Exception e) {
         e.printStackTrace();
         return false;
      }
     }
 
-    private String getAuthenticatedPrincipalUserName() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (!(authentication instanceof AnonymousAuthenticationToken)) {
 
-           Optional<User> user =  userRepo.findByEmail(authentication.getName());
-
-           if (user.isPresent()){
-               return user.get().getName();
-           } else return "anonimous";
-
-        } else {
-            return "anonimous";
-        }
-    }
 
     public Optional<List<Feedback>> findUnmoderatedFeedback (Integer ismoderated){
         return feedbackRepo.findByIsmoderated(ismoderated);
@@ -81,7 +74,7 @@ public class FeedbackService {
                 .filter(m -> m.getValue()
                         .contains("DELETE"))
                 .map(Map.Entry::getKey)
-                .map(s -> Long.parseLong(s))
+                .map(Long::parseLong)
                 .collect(Collectors.toSet());
 
         Integer isdeleted = feedbackRepo.deleteFeedbackById(deleteset);
@@ -98,7 +91,7 @@ public class FeedbackService {
                 .filter(m -> m.getValue()
                         .contains("UPDATE"))
                 .map(Map.Entry::getKey)
-                .map(s -> Long.parseLong(s))
+                .map(Long::parseLong)
                 .collect(Collectors.toSet());
 
         Integer isupdated = feedbackRepo.updateFeedbackById(1, updateset);

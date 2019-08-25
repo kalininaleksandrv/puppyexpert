@@ -40,7 +40,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .mvcMatchers("/login/**", "/breeds/**", "/captcha").permitAll()
                 .mvcMatchers(HttpMethod.GET, "/feedback/**").permitAll()
-                .mvcMatchers(HttpMethod.POST, "/feedback").hasAnyAuthority(Role.ADMIN.toString(), Role.USER.toString())//hasAnyRole("ADMIN", "USER")
+                .mvcMatchers(HttpMethod.POST, "/feedback").hasAnyAuthority(Role.ADMIN.toString(), Role.USER.toString(), Role.CREATEDUSER.toString())//hasAnyRole("ADMIN", "USER")
                 .mvcMatchers("/users/signup").permitAll()
                 .mvcMatchers("/admin/**").hasAuthority(Role.ADMIN.toString())
                 .anyRequest().authenticated()
