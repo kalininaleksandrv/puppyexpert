@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 @RestController
 @CrossOrigin
@@ -34,10 +35,14 @@ public class AdminController {
 
     @CrossOrigin
     @PostMapping("/messagestomod")
-    public ResponseEntity<List<String>> moderateMessages (@RequestBody Map<String, String> moderatedmessages){
+    public ResponseEntity<List<String>> moderateMessages (@RequestBody List<Map<String, String>> moderatedmessages){
 
-        CompletableFuture<Boolean> resultofdeleting = feedbackService.deleteModeratedFromDb(moderatedmessages);
-        CompletableFuture<Boolean> resultofupdating = feedbackService.updateModeratedInDb(moderatedmessages);
+
+        Map<String, String> redusedmap = moderatedmessages.stream()
+                .collect(Collectors.toMap(s -> (String) s.get("id"), s -> (String) s.get("status")));
+
+        CompletableFuture<Boolean> resultofdeleting = feedbackService.deleteModeratedFromDb(redusedmap);
+        CompletableFuture<Boolean> resultofupdating = feedbackService.updateModeratedInDb(redusedmap);
 
         CompletableFuture<Boolean> allWrites = resultofdeleting
                 .thenCombine(resultofupdating, (res1, res2) -> res1&res2)
@@ -48,6 +53,7 @@ public class AdminController {
         if(allWrites.join()){return new ResponseEntity<>(HttpStatus.OK);}
         else {return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);}
     }
+
 
     @CrossOrigin
     @GetMapping("/getallusers")
