@@ -1,6 +1,7 @@
 package com.eyeslessdev.needmypuppyapi.controller;
 
 import com.eyeslessdev.needmypuppyapi.entity.Feedback;
+import com.eyeslessdev.needmypuppyapi.entity.dto.MessageMap;
 import com.eyeslessdev.needmypuppyapi.entity.User;
 import com.eyeslessdev.needmypuppyapi.service.FeedbackService;
 import com.eyeslessdev.needmypuppyapi.service.UserService;
@@ -9,11 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
 
 @RestController
 @CrossOrigin
@@ -35,14 +33,10 @@ public class AdminController {
 
     @CrossOrigin
     @PostMapping("/messagestomod")
-    public ResponseEntity<List<String>> moderateMessages (@RequestBody List<Map<String, String>> moderatedmessages){
+    public ResponseEntity<List<String>> moderateMessages (@RequestBody List<MessageMap> moderatedmessages){
 
-
-        Map<String, String> redusedmap = moderatedmessages.stream()
-                .collect(Collectors.toMap(s -> (String) s.get("id"), s -> (String) s.get("status")));
-
-        CompletableFuture<Boolean> resultofdeleting = feedbackService.deleteModeratedFromDb(redusedmap);
-        CompletableFuture<Boolean> resultofupdating = feedbackService.updateModeratedInDb(redusedmap);
+        CompletableFuture<Boolean> resultofdeleting = feedbackService.deleteModeratedFromDb(moderatedmessages);
+        CompletableFuture<Boolean> resultofupdating = feedbackService.updateModeratedInDb(moderatedmessages);
 
         CompletableFuture<Boolean> allWrites = resultofdeleting
                 .thenCombine(resultofupdating, (res1, res2) -> res1&res2)

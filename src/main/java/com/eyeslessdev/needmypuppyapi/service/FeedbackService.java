@@ -1,6 +1,7 @@
 package com.eyeslessdev.needmypuppyapi.service;
 
 import com.eyeslessdev.needmypuppyapi.entity.Feedback;
+import com.eyeslessdev.needmypuppyapi.entity.dto.MessageMap;
 import com.eyeslessdev.needmypuppyapi.entity.Role;
 import com.eyeslessdev.needmypuppyapi.repositories.FeedbackRepo;
 import com.eyeslessdev.needmypuppyapi.repositories.UserRepo;
@@ -66,16 +67,16 @@ public class FeedbackService {
     }
 
     @Async
-    public CompletableFuture<Boolean> deleteModeratedFromDb (Map<String, String> income){
+    public CompletableFuture<Boolean> deleteModeratedFromDb (List<MessageMap> income){
 
-        CompletableFuture<Boolean> allWrites = new CompletableFuture<>();
-
-        Set<Long> deleteset = income.entrySet().stream()
-                .filter(m -> m.getValue()
-                        .contains("DELETE"))
-                .map(Map.Entry::getKey)
-                .map(Long::parseLong)
+        Set<Long> deleteset = income.stream()
+                .filter(item -> item.getKey().equalsIgnoreCase("DELETE"))
+                .map(MessageMap::getValue)
+                .flatMap(Arrays::stream)
+                .map(Long::valueOf)
                 .collect(Collectors.toSet());
+
+        System.out.println(deleteset);
 
         if(!deleteset.isEmpty()) {
             feedbackRepo.deleteFeedbackById(deleteset);
@@ -84,14 +85,16 @@ public class FeedbackService {
     }
 
     @Async
-    public CompletableFuture<Boolean> updateModeratedInDb (Map<String, String> income){
+    public CompletableFuture<Boolean> updateModeratedInDb (List<MessageMap>  income){
 
-        Set<Long> updateset = income.entrySet().stream()
-                .filter(m -> m.getValue()
-                        .contains("UPDATE"))
-                .map(Map.Entry::getKey)
-                .map(Long::parseLong)
+        Set<Long> updateset = income.stream()
+                .filter(item -> item.getKey().equalsIgnoreCase("UPDATE"))
+                .map(MessageMap::getValue)
+                .flatMap(Arrays::stream)
+                .map(Long::valueOf)
                 .collect(Collectors.toSet());
+
+        System.out.println(updateset);
 
         if(!updateset.isEmpty()) {
             feedbackRepo.updateFeedbackById(1, updateset);
