@@ -77,10 +77,9 @@ public class FeedbackService {
                 .map(Long::parseLong)
                 .collect(Collectors.toSet());
 
-        Integer isdeleted = feedbackRepo.deleteFeedbackById(deleteset);
-
-        System.out.println("delete "+ isdeleted.toString() + " time "+ Thread.currentThread().getName() + " " + System.currentTimeMillis());
-
+        if(!deleteset.isEmpty()) {
+            feedbackRepo.deleteFeedbackById(deleteset);
+        }
         return CompletableFuture.completedFuture(true);
     }
 
@@ -94,9 +93,9 @@ public class FeedbackService {
                 .map(Long::parseLong)
                 .collect(Collectors.toSet());
 
-        Integer isupdated = feedbackRepo.updateFeedbackById(1, updateset);
-
-        System.out.println("update "+ isupdated.toString() + " time "+ Thread.currentThread().getName()+ " " + System.currentTimeMillis());
+        if(!updateset.isEmpty()) {
+            feedbackRepo.updateFeedbackById(1, updateset);
+        }
 
         return CompletableFuture.completedFuture(true);
     }
