@@ -1,7 +1,6 @@
 package com.eyeslessdev.needmypuppyapi.controller;
 
 import com.eyeslessdev.needmypuppyapi.entity.Feedback;
-import com.eyeslessdev.needmypuppyapi.entity.dto.MessageMap;
 import com.eyeslessdev.needmypuppyapi.entity.User;
 import com.eyeslessdev.needmypuppyapi.service.FeedbackService;
 import com.eyeslessdev.needmypuppyapi.service.UserService;
@@ -33,7 +32,7 @@ public class AdminController {
 
     @CrossOrigin
     @PostMapping("/messagestomod")
-    public ResponseEntity<List<String>> moderateMessages (@RequestBody List<MessageMap> moderatedmessages){
+    public ResponseEntity<List<String>> moderateMessages (@RequestBody List<Map<String, List<Integer>>> moderatedmessages){
 
         CompletableFuture<Boolean> resultofdeleting = feedbackService.deleteModeratedFromDb(moderatedmessages);
         CompletableFuture<Boolean> resultofupdating = feedbackService.updateModeratedInDb(moderatedmessages);

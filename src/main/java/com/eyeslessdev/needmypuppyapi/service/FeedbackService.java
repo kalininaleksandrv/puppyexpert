@@ -1,7 +1,6 @@
 package com.eyeslessdev.needmypuppyapi.service;
 
 import com.eyeslessdev.needmypuppyapi.entity.Feedback;
-import com.eyeslessdev.needmypuppyapi.entity.dto.MessageMap;
 import com.eyeslessdev.needmypuppyapi.entity.Role;
 import com.eyeslessdev.needmypuppyapi.repositories.FeedbackRepo;
 import com.eyeslessdev.needmypuppyapi.repositories.UserRepo;
@@ -65,12 +64,13 @@ public class FeedbackService {
     }
 
     @Async
-    public CompletableFuture<Boolean> deleteModeratedFromDb (List<MessageMap> income){
+    public CompletableFuture<Boolean> deleteModeratedFromDb (List<Map<String, List<Integer>>> income){
 
         Set<Long> deleteset = income.stream()
+                .flatMap(item -> item.entrySet().stream())
                 .filter(item -> item.getKey().equalsIgnoreCase("DELETE"))
-                .map(MessageMap::getValue)
-                .flatMap(Arrays::stream)
+                .map(Map.Entry::getValue)
+                .flatMap(Collection::stream)
                 .map(Long::valueOf)
                 .collect(Collectors.toSet());
 
@@ -81,12 +81,13 @@ public class FeedbackService {
     }
 
     @Async
-    public CompletableFuture<Boolean> updateModeratedInDb (List<MessageMap>  income){
+    public CompletableFuture<Boolean> updateModeratedInDb (List<Map<String, List<Integer>>> income){
 
         Set<Long> updateset = income.stream()
+                .flatMap(item -> item.entrySet().stream())
                 .filter(item -> item.getKey().equalsIgnoreCase("UPDATE"))
-                .map(MessageMap::getValue)
-                .flatMap(Arrays::stream)
+                .map(Map.Entry::getValue)
+                .flatMap(Collection::stream)
                 .map(Long::valueOf)
                 .collect(Collectors.toSet());
 
