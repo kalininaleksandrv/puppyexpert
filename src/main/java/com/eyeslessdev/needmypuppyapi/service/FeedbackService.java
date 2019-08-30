@@ -60,8 +60,6 @@ public class FeedbackService {
      }
     }
 
-
-
     public Optional<List<Feedback>> findUnmoderatedFeedback (Integer ismoderated){
         return feedbackRepo.findByIsmoderated(ismoderated);
     }
@@ -75,8 +73,6 @@ public class FeedbackService {
                 .flatMap(Arrays::stream)
                 .map(Long::valueOf)
                 .collect(Collectors.toSet());
-
-        System.out.println(deleteset);
 
         if(!deleteset.isEmpty()) {
             feedbackRepo.deleteFeedbackById(deleteset);
@@ -93,8 +89,6 @@ public class FeedbackService {
                 .flatMap(Arrays::stream)
                 .map(Long::valueOf)
                 .collect(Collectors.toSet());
-
-        System.out.println(updateset);
 
         if(!updateset.isEmpty()) {
             feedbackRepo.updateFeedbackById(1, updateset);
