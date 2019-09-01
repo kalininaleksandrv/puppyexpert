@@ -52,6 +52,9 @@ public class AdminController {
     @GetMapping("/getallusers")
     public List<User> findAll () {return userService.findAll();}
 
+    @CrossOrigin
+    @GetMapping("/getallusers")
+    public List<User> findAllCreated () {return userService.findAllCreated();}
 
     @CrossOrigin
     @GetMapping("/user/{id}")

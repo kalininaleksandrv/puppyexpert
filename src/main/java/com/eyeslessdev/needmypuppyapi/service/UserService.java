@@ -20,6 +20,7 @@ public class UserService {
 
     public Boolean changeStatus(Long id, Set<Role> roles) {
 
+        // TODO: 01.09.2019 delete 
         for (Role s:roles){
             System.out.println("new role is "+s.toString());
         }
@@ -73,4 +74,13 @@ public class UserService {
     private Authentication getCuternAuthentication() {
         return SecurityContextHolder.getContext().getAuthentication();
     }
+
+    public List<User> findAllCreated() {
+        // TODO: 01.09.2019 make implementation
+        //  SELECT email, user_role.roles FROM public.usr INER JOIN public.user_role ON (id = user_id)
+        //  WHERE user_role.roles = 'ADMIN' ORDER BY email;
+        return null;
+    }
+
+
 }
