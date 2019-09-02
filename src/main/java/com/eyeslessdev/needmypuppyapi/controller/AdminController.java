@@ -53,7 +53,7 @@ public class AdminController {
     public List<User> findAll () {return userService.findAll();}
 
     @CrossOrigin
-    @GetMapping("/getallusers")
+    @GetMapping("/getallcreatedusers")
     public List<User> findAllCreated () {return userService.findAllCreated();}
 
     @CrossOrigin

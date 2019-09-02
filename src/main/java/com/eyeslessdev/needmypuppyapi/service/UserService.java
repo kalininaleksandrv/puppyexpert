@@ -20,20 +20,13 @@ public class UserService {
 
     public Boolean changeStatus(Long id, Set<Role> roles) {
 
-        // TODO: 01.09.2019 delete 
-        for (Role s:roles){
-            System.out.println("new role is "+s.toString());
-        }
-
         try {
             Optional<User> updateduseropt = userRepo.findById(id);
             if (updateduseropt.isPresent()){
-                Set<Role> updatedroles = updateduseropt.get().getRoles();
-                if (updatedroles.addAll(roles)){
-                    updateduseropt.get().setRoles(updatedroles);
-                    userRepo.save(updateduseropt.get());
-                    return true;
-                } else return false;
+                updateduseropt.get().getRoles().clear();
+                updateduseropt.get().setRoles(roles);
+                userRepo.save(updateduseropt.get());
+                return true;
             } else {return false;}
         } catch (Exception e) {
             e.printStackTrace();
