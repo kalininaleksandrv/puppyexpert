@@ -1,6 +1,7 @@
 package com.eyeslessdev.needmypuppyapi.controller;
 
 import com.eyeslessdev.needmypuppyapi.entity.Feedback;
+import com.eyeslessdev.needmypuppyapi.entity.Role;
 import com.eyeslessdev.needmypuppyapi.entity.User;
 import com.eyeslessdev.needmypuppyapi.service.FeedbackService;
 import com.eyeslessdev.needmypuppyapi.service.UserService;
@@ -53,8 +54,17 @@ public class AdminController {
     public List<User> findAll () {return userService.findAll();}
 
     @CrossOrigin
-    @GetMapping("/getallcreatedusers")
-    public List<User> findAllCreated () {return userService.findAllCreated();}
+    @GetMapping("/getallusersbystatus")
+    public ResponseEntity<List<User>> findAllByStatus (@RequestParam String status) {
+
+        try {
+            Role role = Role.valueOf(status);
+            Optional<List<User>> fetchedlist = userService.findAllCreated(role.getAuthority());
+            return fetchedlist.map(users -> new ResponseEntity<>(users, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
 
     @CrossOrigin
     @GetMapping("/user/{id}")

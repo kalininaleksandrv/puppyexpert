@@ -68,11 +68,9 @@ public class UserService {
         return SecurityContextHolder.getContext().getAuthentication();
     }
 
-    public List<User> findAllCreated() {
-        // TODO: 01.09.2019 make implementation
-        //  SELECT email, user_role.roles FROM public.usr INER JOIN public.user_role ON (id = user_id)
-        //  WHERE user_role.roles = 'ADMIN' ORDER BY email;
-        return null;
+    public Optional<List<User>> findAllCreated(String status) {
+
+        return userRepo.fetchCustomQuery(status);
     }
 
 
