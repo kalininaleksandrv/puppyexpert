@@ -52,4 +52,5 @@ public class MyUserPrincipal implements UserDetails {
     public String getExternalId(){return user.getExternalid();}
 
     public String getRealName (){return user.getName();}
+
 }

@@ -3,7 +3,9 @@ package com.eyeslessdev.needmypuppyapi.security;
 import com.auth0.jwt.JWT;
 import com.eyeslessdev.needmypuppyapi.entity.MyUserPrincipal;
 import com.eyeslessdev.needmypuppyapi.entity.User;
+import com.eyeslessdev.needmypuppyapi.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -13,14 +15,11 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import static com.auth0.jwt.algorithms.Algorithm.HMAC512;
 
@@ -30,10 +29,13 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     private AuthenticationManager authenticationManager;
     private String jwtsecret;
 
+    @Autowired
+    private UserService userService;
 
-    public JWTAuthenticationFilter(AuthenticationManager authenticationManager, String jwtsecret) {
+    public JWTAuthenticationFilter(AuthenticationManager authenticationManager, String jwtsecret, UserService userService) {
         this.authenticationManager = authenticationManager;
         this.jwtsecret = jwtsecret;
+        this.userService = userService;
     }
 
     @Override
@@ -74,7 +76,6 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         MyUserPrincipal myuser = (MyUserPrincipal) auth.getPrincipal();
 
-
         String[] targetArray = myuser.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority).distinct().toArray(String[]::new);
 
@@ -88,6 +89,8 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         res.addHeader("Access-Control-Expose-Headers", "Authorization");
         res.addHeader(CommonConsts.HEADER_STRING, CommonConsts.TOKEN_PREFIX + token);
+
+        userService.setLastVisitTimeToUser(myuser.getUsername());
     }
 
     @Override

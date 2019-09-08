@@ -1,7 +1,5 @@
 package com.eyeslessdev.needmypuppyapi.entity;
 
-import com.sun.prism.shader.DrawSemiRoundRect_ImagePattern_AlphaTest_Loader;
-
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;

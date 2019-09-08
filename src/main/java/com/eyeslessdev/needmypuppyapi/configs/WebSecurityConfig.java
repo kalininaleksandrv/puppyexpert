@@ -5,6 +5,7 @@ import com.eyeslessdev.needmypuppyapi.repositories.UserRepo;
 import com.eyeslessdev.needmypuppyapi.security.JWTAuthenticationFilter;
 import com.eyeslessdev.needmypuppyapi.security.JWTAutorizationFilter;
 import com.eyeslessdev.needmypuppyapi.service.UserDetailsServiceImpl;
+import com.eyeslessdev.needmypuppyapi.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -28,6 +29,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     UserRepo userDetailsRepo;
 
     @Autowired
+    private UserService userService;
+
+    @Autowired
     private UserDetailsServiceImpl userDetailsServiceimpl;
 
     @Value("${jwttoken.secret}")
@@ -45,7 +49,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .mvcMatchers("/admin/**").hasAuthority(Role.ADMIN.toString())
                 .anyRequest().authenticated()
                 .and()
-        .addFilter(new JWTAuthenticationFilter(authenticationManager(), jwtsecret))
+        .addFilter(new JWTAuthenticationFilter(authenticationManager(), jwtsecret, userService))
         .addFilter(new JWTAutorizationFilter(authenticationManager(), jwtsecret))
         .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }

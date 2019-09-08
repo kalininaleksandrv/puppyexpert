@@ -73,5 +73,15 @@ public class UserService {
         return userRepo.fetchCustomQuery(status);
     }
 
+    public void setLastVisitTimeToUser(String useremail){
+        Optional<User> user = userRepo.findByEmail(useremail);
+        if (user.isPresent()){
+            user.get().setLastvisit(System.currentTimeMillis());
+            userRepo.save(user.get());
+        } else {
+            System.out.println("no such user to post visit time");
+        }
+    }
+
 
 }
