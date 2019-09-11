@@ -7,6 +7,7 @@ import com.eyeslessdev.needmypuppyapi.exceptions.NotFoundException;
 import com.eyeslessdev.needmypuppyapi.service.BreedRequestService;
 import com.eyeslessdev.needmypuppyapi.service.BreedService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,22 +37,26 @@ public class BreedController {
 
     @GetMapping
     @RequestMapping("bytitle")
-    public List<Breed> getAllBreedsOrderedByTitle (){
+    public ResponseEntity<List<Breed>> getAllBreedsOrderedByTitle (){
 
-        return breedService.getAllBreedsOrderedByTitle().orElseThrow(NotFoundException::new);
+        return breedService.getAllBreedsOrderedByTitle()
+                .map(breeds -> new ResponseEntity<>(breeds, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.OK));
     }
 
 
     @CrossOrigin
     @GetMapping("{id}")
-    public Breed getBreedById(@PathVariable long id) {
-        return breedService.getBreedById(id).orElseThrow(NotFoundException::new);
+    public ResponseEntity<Breed> getBreedById(@PathVariable long id) {
+        return breedService.getBreedById(id)
+                .map(breed -> new ResponseEntity<>(breed, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
 
     @CrossOrigin
     @GetMapping("faved/{id}")
-    public ResponseEntity<Object> faveBreed(@PathVariable long id) {
+    public ResponseEntity faveBreed(@PathVariable long id) {
         return breedService.faveBreedById(id);
     }
 

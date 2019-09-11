@@ -71,18 +71,21 @@ public class BreedService {
     }
 
 
-    public ResponseEntity<Object> faveBreedById(long id) {
+    public ResponseEntity faveBreedById(long id) {
 
         Optional<Breed> breedOptional = getBreedById(id);
 
-        if (!breedOptional.isPresent())
-            return ResponseEntity.notFound().build();
-        else {
-            Breed breed = breedOptional.get();
-            breed.setFavorite(increasefav(breed.getFavorite()));
-            breedRepo.save(breed);
-            return ResponseEntity.noContent().build();
-        }
+        if (breedOptional.isPresent()){
+
+            try {
+                Breed breed = breedOptional.get();
+                breed.setFavorite(increasefav(breed.getFavorite()));
+                breedRepo.save(breed);
+                return new ResponseEntity<>(HttpStatus.OK);
+            } catch (Exception e) {
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);            }
+        } else return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
     }
 
 
