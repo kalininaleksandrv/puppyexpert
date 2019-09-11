@@ -26,9 +26,10 @@ public class AdminController {
 
     @CrossOrigin
     @GetMapping("/messagestomod")
-    public Optional<List<Feedback>> getFeedbackById() {
-        //here we're return list of unmoderated feedback messages
-        return feedbackService.findUnmoderatedFeedback(0);
+    public ResponseEntity<List<Feedback>> getFeedbackById() {
+        return feedbackService.findUnmoderatedFeedback(0)
+                .map(feedback -> new ResponseEntity<>(feedback, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.OK));
     }
 
     @CrossOrigin
@@ -51,7 +52,12 @@ public class AdminController {
 
     @CrossOrigin
     @GetMapping("/getallusers")
-    public List<User> findAll () {return userService.findAll();}
+    public ResponseEntity<List<User>> findAll () {
+       return userService
+               .findAll().map(users -> new ResponseEntity<>(users, HttpStatus.OK))
+               .orElseGet(() -> new ResponseEntity<>(HttpStatus.OK));
+    }
+
 
     @CrossOrigin
     @GetMapping("/getallusersbystatus")
@@ -60,7 +66,9 @@ public class AdminController {
         try {
             Role role = Role.valueOf(status);
             Optional<List<User>> fetchedlist = userService.findAllCreated(role.getAuthority());
-            return fetchedlist.map(users -> new ResponseEntity<>(users, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+            return fetchedlist
+                    .map(users -> new ResponseEntity<>(users, HttpStatus.OK))
+                    .orElseGet(() -> new ResponseEntity<>(HttpStatus.OK));
         } catch (IllegalArgumentException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -68,8 +76,10 @@ public class AdminController {
 
     @CrossOrigin
     @GetMapping("/user/{id}")
-    public Optional<User> getUserById (@PathVariable long id) {
-        return userService.findById(id);
+    public ResponseEntity<User> getUserById (@PathVariable long id) {
+        return userService.findById(id)
+                .map(user -> new ResponseEntity<>(user, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @CrossOrigin
