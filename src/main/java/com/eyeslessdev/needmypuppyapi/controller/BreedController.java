@@ -3,7 +3,6 @@ package com.eyeslessdev.needmypuppyapi.controller;
 import com.eyeslessdev.needmypuppyapi.entity.Breed;
 import com.eyeslessdev.needmypuppyapi.entity.BreedRequest;
 import com.eyeslessdev.needmypuppyapi.entity.BreedRequestFactory;
-import com.eyeslessdev.needmypuppyapi.exceptions.NotFoundException;
 import com.eyeslessdev.needmypuppyapi.service.BreedRequestService;
 import com.eyeslessdev.needmypuppyapi.service.BreedService;
 import org.springframework.beans.factory.annotation.Autowired;

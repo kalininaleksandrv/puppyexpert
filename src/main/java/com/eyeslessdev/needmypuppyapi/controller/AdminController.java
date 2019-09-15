@@ -34,6 +34,7 @@ public class AdminController {
 
     @CrossOrigin
     @PostMapping("/messagestomod")
+
     public ResponseEntity<List<String>> moderateMessages (@RequestBody List<Map<String, List<Integer>>> moderatedmessages){
 
         CompletableFuture<Boolean> resultofdeleting = feedbackService.deleteModeratedFromDb(moderatedmessages);
