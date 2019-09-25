@@ -1,16 +1,11 @@
+import com.eyeslessdev.needmypuppyapi.entity.MyUserPrincipal;
+import com.eyeslessdev.needmypuppyapi.entity.User;
 import org.junit.jupiter.api.*;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 class customTests {
-
-    @BeforeAll
-    static void setup() {
-        System.out.println("@BeforeAll - executes once before all test methods in this class");
-    }
-
-    @BeforeEach
-    void init() {
-        System.out.println("@BeforeEach - executes before each test method in this class");
-    }
 
     @DisplayName("Single test successful")
     @Test
@@ -18,18 +13,22 @@ class customTests {
         System.out.println("Success");
     }
 
+    @DisplayName("testing MyUserPrincipal implements UserDetails")
     @Test
-    @Disabled("Not implemented yet")
-    void testShowSomething() {
+    void testIsMyUserPrincipalImplementsUserDetails() {
+        MyUserPrincipal myuserPrincipal = new MyUserPrincipal(new User());
+        User user = new User();
+        assertAll(
+                () -> assertTrue(UserDetails.class.isInstance(myuserPrincipal), "test FAIL cause of class not instance of UserDetails"),
+                () -> assertTrue(User.class.isInstance(user), "test FAIL cause of class not instance of User")
+        );
     }
 
-    @AfterEach
-    void tearDown() {
-        System.out.println("@AfterEach - executed after each test method.");
-    }
 
-    @AfterAll
-    static void done() {
-        System.out.println("@AfterAll - executed after all test methods.");
+    @DisplayName("testing exception")
+    @Test
+    void assertThrowsException() {
+        String str = null;
+        assertThrows(IllegalArgumentException.class, () -> Integer.valueOf(str));
     }
 }
