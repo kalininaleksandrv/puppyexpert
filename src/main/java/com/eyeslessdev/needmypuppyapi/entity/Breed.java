@@ -43,6 +43,12 @@ public class Breed implements Serializable {
     private int forzks;
     private int foragility;
 
+    public Breed(Long i, String dog1, String firstdog) {
+        this.id = i;
+        this.title = dog1;
+        this.description = firstdog;
+    }
+
     public Long getId() {
         return id;
     }

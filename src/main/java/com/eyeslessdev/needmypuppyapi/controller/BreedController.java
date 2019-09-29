@@ -11,7 +11,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.lang.reflect.Array;
 import java.util.*;
 
 @RestController
@@ -28,6 +27,15 @@ public class BreedController {
 
     @Autowired
     private BreedRequestFactory breedRequestFactory;
+
+    @GetMapping(value = "/json", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, List<String>> json() {
+
+        Map <String, List<String>> breedmap = new HashMap();
+        breedmap.put("mybreedmap", new ArrayList<>(Arrays.asList("One", "Two", "Three")));
+
+        return breedmap;
+    }
 
     @CrossOrigin
     @GetMapping (produces = MediaType.APPLICATION_JSON_VALUE)
