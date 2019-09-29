@@ -28,15 +28,6 @@ public class BreedController {
     @Autowired
     private BreedRequestFactory breedRequestFactory;
 
-    @GetMapping(value = "/json", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, List<String>> json() {
-
-        Map <String, List<String>> breedmap = new HashMap();
-        breedmap.put("mybreedmap", new ArrayList<>(Arrays.asList("One", "Two", "Three")));
-
-        return breedmap;
-    }
-
     @CrossOrigin
     @GetMapping (produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Map<String, List<Breed>>> getAllBreedsById (){

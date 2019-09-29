@@ -10,6 +10,12 @@ public class Breed implements Serializable {
     public Breed() {
     }
 
+    public Breed(Long i, String dog1, String firstdog) {
+        this.id = i;
+        this.title = dog1;
+        this.description = firstdog;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -42,12 +48,6 @@ public class Breed implements Serializable {
     private int forguardterritory;
     private int forzks;
     private int foragility;
-
-    public Breed(Long i, String dog1, String firstdog) {
-        this.id = i;
-        this.title = dog1;
-        this.description = firstdog;
-    }
 
     public Long getId() {
         return id;
