@@ -36,6 +36,9 @@ dependencies {
 	implementation('com.auth0:java-jwt:3.4.1')
 	implementation('javax.xml.bind:jaxb-api:2.3.1')
 	runtimeOnly('org.springframework.boot:spring-boot-devtools')
+	testImplementation("org.springframework.boot:spring-boot-starter-test"){
+		exclude group: 'junit', module: 'junit'
+	}
 	testImplementation('org.junit.jupiter:junit-jupiter-api:5.3.1')
 	testRuntimeOnly('org.junit.jupiter:junit-jupiter-engine:5.3.1')
 }

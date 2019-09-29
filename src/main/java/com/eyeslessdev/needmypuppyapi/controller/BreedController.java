@@ -7,11 +7,12 @@ import com.eyeslessdev.needmypuppyapi.service.BreedRequestService;
 import com.eyeslessdev.needmypuppyapi.service.BreedService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Map;
+import java.lang.reflect.Array;
+import java.util.*;
 
 @RestController
 @CrossOrigin
@@ -29,7 +30,7 @@ public class BreedController {
     private BreedRequestFactory breedRequestFactory;
 
     @CrossOrigin
-    @GetMapping
+    @GetMapping (produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Map<String, List<Breed>>> getAllBreedsById (){
             return breedService.getAllBreedsOrderedById();
     }
