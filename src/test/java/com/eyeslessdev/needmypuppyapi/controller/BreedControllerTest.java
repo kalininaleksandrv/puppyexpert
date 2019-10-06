@@ -47,6 +47,8 @@ class BreedControllerTest {
 
     private MockMvc mockMvc;
 
+    private MockMvc mockMvcReal;
+
     @Mock
     private BreedService breedService;
 
@@ -68,6 +70,9 @@ class BreedControllerTest {
 
         mockMvc = MockMvcBuilders.standaloneSetup(breedController)
                 .build();
+
+        mockMvcReal = MockMvcBuilders.standaloneSetup(controller)
+                .build();
     }
 
     @Test
@@ -78,7 +83,8 @@ class BreedControllerTest {
     @Test
     void getAllBreedsById() throws Exception {
 
-        ResultActions resultActions = mockMvc.perform(get("/breeds").accept(MediaType.APPLICATION_JSON));
+        ResultActions resultActions = mockMvc.perform(get("/breeds")
+                .accept(MediaType.APPLICATION_JSON));
 
         assertNotNull(resultActions);
 
@@ -97,6 +103,21 @@ class BreedControllerTest {
 
     @Test
     void getBreedById() throws Exception {
+        ResultActions resultActions = mockMvcReal.perform(get("/breeds/3")
+                .accept(MediaType.APPLICATION_JSON));
+        assertNotNull(resultActions);
+
+        resultActions
+                .andDo(print())
+                .andExpect(status().isOk());
+
+        ResultActions resultActions404 = mockMvcReal.perform(get("/breeds/999")
+                .accept(MediaType.APPLICATION_JSON));
+        assertNotNull(resultActions);
+
+        resultActions404
+                .andDo(print())
+                .andExpect(status().isNotFound());
     }
 
     @Test
