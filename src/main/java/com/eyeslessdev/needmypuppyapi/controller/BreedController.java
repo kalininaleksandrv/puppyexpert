@@ -30,7 +30,7 @@ public class BreedController {
 
     @CrossOrigin
     @GetMapping (produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Map<String, List<Breed>>> getAllBreedsById (){
+    public ResponseEntity<Map<String, List<? extends Breed>>> getAllBreedsById (){
             return breedService.getAllBreedsOrderedById();
     }
 

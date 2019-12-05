@@ -2,6 +2,7 @@ package com.eyeslessdev.needmypuppyapi.service;
 
 import com.eyeslessdev.needmypuppyapi.entity.Breed;
 import com.eyeslessdev.needmypuppyapi.entity.BreedRequest;
+import com.eyeslessdev.needmypuppyapi.entity.BreedTest;
 import com.eyeslessdev.needmypuppyapi.entity.SearchCriteriaBuilder;
 import com.eyeslessdev.needmypuppyapi.repositories.BreedRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,10 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class BreedService {
@@ -33,13 +31,14 @@ public class BreedService {
         return breedRepo.findAll();
     }
 
-    public ResponseEntity<Map<String, List<Breed>>> getAllBreedsOrderedById() {
+    public ResponseEntity<Map<String, List<? extends Breed>>> getAllBreedsOrderedById() {
 
         Optional<List<Breed>> myBreed = breedRepo.findAllByOrderById();
         if(myBreed.isPresent()){
-        Map <String, List<Breed>> searchingresult = new HashMap<>();
-        searchingresult.put("Список всех пород", myBreed.get());
-        return new ResponseEntity<>(searchingresult, HttpStatus.OK);
+        Map <String, List<? extends Breed>> searchingresult = new HashMap<>();
+        searchingresult.put("Список всех пород", new ArrayList<>(myBreed.get()));
+        ResponseEntity<Map<String, List<? extends Breed>>> myRespEnt = new ResponseEntity<>(searchingresult, HttpStatus.OK);
+        return myRespEnt;
         } else {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
