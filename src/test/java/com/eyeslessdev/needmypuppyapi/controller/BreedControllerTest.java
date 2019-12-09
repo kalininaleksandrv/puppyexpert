@@ -17,21 +17,16 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.*;
-import java.util.stream.Stream;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.ArgumentMatchers.doubleThat;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -59,8 +54,9 @@ class BreedControllerTest {
     private BreedController breedController;
 
 
+    @SuppressWarnings("rawtypes")
     @BeforeEach
-    void setUp() throws Exception {
+    void setUp() {
 
 
 
@@ -82,7 +78,7 @@ class BreedControllerTest {
     }
 
     @Test
-    void testingContextLoad() throws Exception {
+    void testingContextLoad() {
         assertNotNull(controller, "BreedController is NULL");
     }
 
@@ -134,13 +130,10 @@ class BreedControllerTest {
                 .andExpect(jsonPath("$.[*]", Matchers.iterableWithSize(350)))
                 .andExpect(jsonPath("$.[0].title", Matchers.startsWith("А")))
                 .andExpect(jsonPath("$.[349].title", Matchers.startsWith("Я")));
-//                .andExpect(jsonPath("$.[*].id", Matchers.arrayContainingInAnyOrder(range)));
-        JSONArray myjarray = JsonPath.parse(resultActions.andReturn().getResponse().getContentAsString()).read("$.[*].title");
-        System.out.println(myjarray.toString());
     }
 
     @Test
-    void getAllBreedsOrderedByTitleAsArray() throws Exception {
+    void getAllBreedsOrderedByTitleCheckOrder() throws Exception {
 
         ResultActions resultActions = mockMvcReal.perform(get("/breeds/bytitle")
                 .accept(MediaType.APPLICATION_JSON));
@@ -149,44 +142,30 @@ class BreedControllerTest {
 
         //get json array from json using regex in .read()
         JSONArray myjsonArray = JsonPath.parse(resultActions.andReturn().getResponse().getContentAsString()).read("$.[*].title");
+
         //convert json array to string and then split it to regular array of string
         String [] mytitleArray = myjsonArray.toString().split(",");
-//        String [] clearedArray = new String[mytitleArray.length];
 
-        Stream<String> stream = Arrays.stream(mytitleArray);
-        stream
-                .map(i -> i.replaceAll("\\[", "").replaceAll("\\]",""))
-                .forEach(s -> System.out.println(s));
+        //remove square brackets and return array for further operations
+        String[] resultArray = Arrays.stream(mytitleArray)
+                .map(i -> i
+                        .replaceAll("\\[", "")
+                        .replaceAll("]", "")
+                        .replaceAll("\"", "")
+                        .replaceAll("ё", "е")
+                        .replaceAll("е́", "е")
+                        .replaceAll("о́", "о")
+                )
+                .toArray(String[]::new);
 
+        assertThat(resultArray, not(emptyArray()));
+        assertThat(resultArray, arrayWithSize(350));
 
-        for (String i : mytitleArray) {
-               String str = i;
-               str = str.replaceAll("\\[", "").replaceAll("\\]","");
-                          }
-
-
-//        System.out.println(Arrays.toString(mytitleArray));
-
-        assertThat(mytitleArray, not(emptyArray()));
-        assertThat(mytitleArray, arrayWithSize(350));
-
-//        String prev = null;
-//        String curr = null;
-//
-//        for (String i : mytitleArray) {
-//
-//            String substr = i.substring(0, 5);
-//
-//            if (curr != null ){
-//                prev = curr;
-//                curr = substr;
-//                assertThat(prev, not(greaterThan(curr)));
-//            } else curr = substr;
-//
-//        }
-
-
-
+        for (int i = 0; i < resultArray.length - 1; i++)
+        {
+                int k=i+1;
+                assertThat(resultArray[i].substring(0, 2), not(greaterThan(resultArray[k].substring(0, 2))));
+        }
     }
 
 
@@ -221,10 +200,10 @@ class BreedControllerTest {
     }
 
     @Test
-    void faveBreed() throws Exception {
+    void faveBreed() {
     }
 
     @Test
-    void getFilteredBreeds() throws Exception {
+    void getFilteredBreeds() {
     }
 }
