@@ -4,6 +4,8 @@ import com.eyeslessdev.needmypuppyapi.entity.Breed;
 import com.eyeslessdev.needmypuppyapi.entity.BreedTest;
 import com.eyeslessdev.needmypuppyapi.service.BreedService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jayway.jsonpath.JsonPath;
+import net.minidev.json.JSONArray;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -22,8 +25,13 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.*;
+import java.util.stream.Stream;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.doubleThat;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -114,7 +122,74 @@ class BreedControllerTest {
 
     @Test
     void getAllBreedsOrderedByTitle() throws Exception {
+
+       ResultActions resultActions = mockMvcReal.perform(get("/breeds/bytitle")
+                .accept(MediaType.APPLICATION_JSON));
+
+        assertNotNull(resultActions);
+
+        resultActions
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.[*]", Matchers.iterableWithSize(350)))
+                .andExpect(jsonPath("$.[0].title", Matchers.startsWith("А")))
+                .andExpect(jsonPath("$.[349].title", Matchers.startsWith("Я")));
+//                .andExpect(jsonPath("$.[*].id", Matchers.arrayContainingInAnyOrder(range)));
+        JSONArray myjarray = JsonPath.parse(resultActions.andReturn().getResponse().getContentAsString()).read("$.[*].title");
+        System.out.println(myjarray.toString());
     }
+
+    @Test
+    void getAllBreedsOrderedByTitleAsArray() throws Exception {
+
+        ResultActions resultActions = mockMvcReal.perform(get("/breeds/bytitle")
+                .accept(MediaType.APPLICATION_JSON));
+
+        assertNotNull(resultActions);
+
+        //get json array from json using regex in .read()
+        JSONArray myjsonArray = JsonPath.parse(resultActions.andReturn().getResponse().getContentAsString()).read("$.[*].title");
+        //convert json array to string and then split it to regular array of string
+        String [] mytitleArray = myjsonArray.toString().split(",");
+//        String [] clearedArray = new String[mytitleArray.length];
+
+        Stream<String> stream = Arrays.stream(mytitleArray);
+        stream
+                .map(i -> i.replaceAll("\\[", "").replaceAll("\\]",""))
+                .forEach(s -> System.out.println(s));
+
+
+        for (String i : mytitleArray) {
+               String str = i;
+               str = str.replaceAll("\\[", "").replaceAll("\\]","");
+                          }
+
+
+//        System.out.println(Arrays.toString(mytitleArray));
+
+        assertThat(mytitleArray, not(emptyArray()));
+        assertThat(mytitleArray, arrayWithSize(350));
+
+//        String prev = null;
+//        String curr = null;
+//
+//        for (String i : mytitleArray) {
+//
+//            String substr = i.substring(0, 5);
+//
+//            if (curr != null ){
+//                prev = curr;
+//                curr = substr;
+//                assertThat(prev, not(greaterThan(curr)));
+//            } else curr = substr;
+//
+//        }
+
+
+
+    }
+
+
 
     @Test
     void getBreedById() throws Exception {
@@ -143,24 +218,6 @@ class BreedControllerTest {
         resultActions400
                 .andDo(print())
                 .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    void getBreedByIdWithString() throws Exception {
-
-        ResultActions resultActions = mockMvcReal.perform(get("/breeds/3")
-                .accept(MediaType.APPLICATION_JSON));
-        assertNotNull(resultActions);
-
-        resultActions
-                .andDo(print())
-                .andExpect(status().isOk());
-        MvcResult result = resultActions.andReturn();
-        String contentAsString = result.getResponse().getContentAsString();
-
-        Breed myBreed = objectMapper.readValue(contentAsString, Breed.class);
-
-        System.out.printf(myBreed.toString());
     }
 
     @Test

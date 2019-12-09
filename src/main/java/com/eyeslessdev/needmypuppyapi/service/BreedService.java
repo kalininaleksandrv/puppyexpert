@@ -87,8 +87,5 @@ public class BreedService {
 
     }
 
-
-
-
     private int increasefav(int favorite) {return ++favorite;}
 }
