@@ -15,6 +15,7 @@ public class BreedTest extends Breed {
     private Long id;
     private String title;
     private String description;
+    private int favorite;
 
     @Override
     public void setId(Long id) {
@@ -44,5 +45,15 @@ public class BreedTest extends Breed {
     @Override
     public String getDescription() {
         return description;
+    }
+
+    @Override
+    public void setFavorite(int favorite) {
+        this.favorite ++;
+    }
+
+    @Override
+    public int getFavorite() {
+        return favorite;
     }
 }

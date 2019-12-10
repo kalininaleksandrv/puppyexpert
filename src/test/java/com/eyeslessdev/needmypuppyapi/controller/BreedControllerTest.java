@@ -27,6 +27,7 @@ import java.util.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -58,8 +59,6 @@ class BreedControllerTest {
     @BeforeEach
     void setUp() {
 
-
-
         HashMap breedmap = new HashMap();
         breedmap.put("allbreeds", new ArrayList<>(Arrays.asList(
                 new BreedTest((long) 1, "Dog1", "Firstdog"),
@@ -69,6 +68,8 @@ class BreedControllerTest {
         ResponseEntity<Map<String, List<? extends Breed>>> searchingresult
                 = new ResponseEntity<>(breedmap, HttpStatus.OK);
         when(breedService.getAllBreedsOrderedById()).thenReturn(searchingresult);
+
+        when(breedService.faveBreedById(anyLong())).thenReturn(searchingresult);
 
         mockMvc = MockMvcBuilders.standaloneSetup(breedController)
                 .build();
@@ -141,7 +142,11 @@ class BreedControllerTest {
         assertNotNull(resultActions);
 
         //get json array from json using regex in .read()
-        JSONArray myjsonArray = JsonPath.parse(resultActions.andReturn().getResponse().getContentAsString()).read("$.[*].title");
+        JSONArray myjsonArray = JsonPath.parse(resultActions
+                .andReturn()
+                .getResponse()
+                .getContentAsString())
+                .read("$.[*].title");
 
         //convert json array to string and then split it to regular array of string
         String [] mytitleArray = myjsonArray.toString().split(",");
@@ -190,7 +195,7 @@ class BreedControllerTest {
                 .andDo(print())
                 .andExpect(status().isNotFound());
 
-        ResultActions resultActions400 = mockMvcReal.perform(get("/breeds/3dhmtdyhmjkdtm")
+        ResultActions resultActions400 = mockMvcReal.perform(get("/breeds/dhmtdyhmjkdtm")
                 .accept(MediaType.APPLICATION_JSON));
         assertNotNull(resultActions400);
 
@@ -200,7 +205,66 @@ class BreedControllerTest {
     }
 
     @Test
-    void faveBreed() {
+    void faveBreed() throws Exception {
+
+        ResultActions resultActions = mockMvcReal.perform(get("/breeds/faved/3")
+                .accept(MediaType.APPLICATION_JSON));
+        assertNotNull(resultActions);
+
+        resultActions
+                .andDo(print())
+                .andExpect(status().isOk());
+
+        ResultActions resultActions404 = mockMvcReal.perform(get("/breeds/faved/999")
+                .accept(MediaType.APPLICATION_JSON));
+        assertNotNull(resultActions404);
+
+        resultActions404
+                .andDo(print())
+                .andExpect(status().isNotFound());
+
+        ResultActions resultActions400 = mockMvcReal.perform(get("/breeds/faved/dhmtdyhmjkdtm")
+                .accept(MediaType.APPLICATION_JSON));
+        assertNotNull(resultActions400);
+
+        resultActions400
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void faveBreedCheckIncreasing() throws Exception {
+
+        ResultActions resultActionsFirst = mockMvcReal.perform(get("/breeds/3")
+                .accept(MediaType.APPLICATION_JSON));
+        assertNotNull(resultActionsFirst);
+
+        Integer firstDogParam = JsonPath.parse(resultActionsFirst
+                .andReturn()
+                .getResponse()
+                .getContentAsString())
+                .read("$.favorite");
+
+        ResultActions resultActionsNext = mockMvcReal.perform(get("/breeds/faved/3")
+                .accept(MediaType.APPLICATION_JSON));
+        assertNotNull(resultActionsNext);
+
+        resultActionsNext
+                .andDo(print())
+                .andExpect(status().isOk());
+
+        ResultActions resultActionsLast = mockMvcReal.perform(get("/breeds/3")
+                .accept(MediaType.APPLICATION_JSON));
+        assertNotNull(resultActionsLast);
+
+        Integer lastDogParam = JsonPath.parse(resultActionsLast
+                .andReturn()
+                .getResponse()
+                .getContentAsString())
+                .read("$.favorite");
+
+        assertThat(firstDogParam, lessThan(lastDogParam));
+
     }
 
     @Test
