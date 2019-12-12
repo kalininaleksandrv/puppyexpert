@@ -286,4 +286,106 @@ public class BreedRequest implements Serializable {
         this.rare = rare;
     }
 
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static class Builder {
+        private BreedRequest breedRequest = new BreedRequest();
+
+        public BreedRequest build() {
+            BreedRequest result = breedRequest;
+            breedRequest = new BreedRequest();
+            return result;
+        }
+
+
+        public Builder time(int time) {
+            breedRequest.thetime = time;
+            return this;
+        }
+        public Builder exp(int exp) {
+            breedRequest.exp = exp;
+            return this;
+        }
+        public Builder age(int age) {
+            breedRequest.age = age;
+            return this;
+        }
+        public Builder athlet(int athlet) {
+            breedRequest.athlet = athlet;
+            return this;
+        }
+        public Builder cynologist(int cynologist) {
+            breedRequest.cynologist = cynologist;
+            return this;
+        }
+        public Builder walk(int walk) {
+            breedRequest.walk = walk;
+            return this;
+        }
+        public Builder family(int family) {
+            breedRequest.family = family;
+            return this;
+        }
+        public Builder grummer(int grummer) {
+            breedRequest.grummer = grummer;
+            return this;
+        }
+        public Builder foragility(int foragility) {
+            breedRequest.foragility = foragility;
+            return this;
+        }
+        public Builder forchild(int forchild) {
+            breedRequest.forchild = forchild;
+            return this;
+        }
+        public Builder forcompany(int forcompany) {
+            breedRequest.forcompany = forcompany;
+            return this;
+        }
+        public Builder forguardter(int forguardter) {
+            breedRequest.forguardter = forguardter;
+            return this;
+        }
+        public Builder forhunt(int forhunt) {
+            breedRequest.forhunt = forhunt;
+            return this;
+        }
+        public Builder forobidience(int forobidience) {
+            breedRequest.forobidience = forobidience;
+            return this;
+        }
+        public Builder forruning(int forruning) {
+            breedRequest.forruning = forruning;
+            return this;
+        }
+        public Builder forzks(int forzks) {
+            breedRequest.forzks = forzks;
+            return this;
+        }
+        public Builder hairsize(String hairsize) {
+            breedRequest.hairsize = hairsize;
+            return this;
+        }
+        public Builder blackorwhite(String blackorwhite) {
+            breedRequest.blackorwhite = blackorwhite;
+            return this;
+        }
+        public Builder sizeconstraintmin(int sizeconstraintmin) {
+            breedRequest.sizeconstraintmin = sizeconstraintmin;
+            return this;
+        }
+        public Builder sizeconstraintmax(int sizeconstraintmax) {
+            breedRequest.sizeconstraintmax = sizeconstraintmax;
+            return this;
+        }
+        public Builder rare(String rare) {
+            breedRequest.rare = rare;
+            return this;
+        }
+
+
+    }
+
 }

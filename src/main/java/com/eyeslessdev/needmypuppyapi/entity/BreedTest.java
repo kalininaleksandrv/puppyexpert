@@ -1,7 +1,5 @@
 package com.eyeslessdev.needmypuppyapi.entity;
 
-import com.eyeslessdev.needmypuppyapi.entity.Breed;
-
 public class BreedTest extends Breed {
     public BreedTest() {
     }
@@ -55,5 +53,23 @@ public class BreedTest extends Breed {
     @Override
     public int getFavorite() {
         return favorite;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return super.equals(o);
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "BreedTest{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                '}';
     }
 }

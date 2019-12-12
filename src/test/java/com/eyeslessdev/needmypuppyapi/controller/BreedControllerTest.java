@@ -65,8 +65,7 @@ class BreedControllerTest {
                 new BreedTest((long) 2, "Dog2", "Seconddog"),
                 new BreedTest((long) 3, "Dog3", "Thirddog")
         )));
-        ResponseEntity<Map<String, List<? extends Breed>>> searchingresult
-                = new ResponseEntity<>(breedmap, HttpStatus.OK);
+        ResponseEntity searchingresult = new ResponseEntity<>(breedmap, HttpStatus.OK);
         when(breedService.getAllBreedsOrderedById()).thenReturn(searchingresult);
 
         when(breedService.faveBreedById(anyLong())).thenReturn(searchingresult);
@@ -268,6 +267,18 @@ class BreedControllerTest {
     }
 
     @Test
-    void getFilteredBreeds() {
+    void getFilteredBreeds() throws Exception {
+
+        ResultActions resultActions = mockMvcReal.perform(get("/breeds/filtered")
+                .param("exp", "1")
+                .param("time", "1")
+                .param("age", "1")
+                .accept(MediaType.APPLICATION_JSON));
+
+        assertNotNull(resultActions);
+
+        resultActions
+                .andDo(print())
+                .andExpect(status().isOk());
     }
 }
