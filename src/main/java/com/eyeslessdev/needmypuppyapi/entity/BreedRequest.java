@@ -2,6 +2,7 @@ package com.eyeslessdev.needmypuppyapi.entity;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Optional;
 
 @Entity
 @Table(name="breedrequests", schema = "public")
@@ -11,34 +12,6 @@ public class BreedRequest implements Serializable {
 
     }
 
-    BreedRequest(int time, int exp, int age, int athlet, int cynologist, int walk,
-                 int family, int grummer, int foragility, int forchild, int forcompany,
-                 int forguardter, int forhunt, int forobidience, int forruning, int forzks,
-                 String hairsize, String blackorwhite, int sizeconstraintmin,
-                 int sizeconstraintmax, String rare) {
-
-        this.thetime = time;
-        this.exp = exp;
-        this.age = age;
-        this.athlet = athlet;
-        this.cynologist = cynologist;
-        this.walk = walk;
-        this.family = family;
-        this.grummer = grummer;
-        this.foragility = foragility;
-        this.forchild = forchild;
-        this.forcompany = forcompany;
-        this.forguardter = forguardter;
-        this.forhunt = forhunt;
-        this.forobidience = forobidience;
-        this.forruning = forruning;
-        this.forzks = forzks;
-        this.hairsize = hairsize;
-        this.blackorwhite = blackorwhite;
-        this.sizeconstraintmin = sizeconstraintmin;
-        this.sizeconstraintmax = sizeconstraintmax;
-        this.rare = rare;
-    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -247,6 +220,9 @@ public class BreedRequest implements Serializable {
     }
 
     String getHairsize() {
+        if (hairsize == null) {
+            return "any";
+        }
         return hairsize;
     }
 
@@ -255,6 +231,9 @@ public class BreedRequest implements Serializable {
     }
 
     String getBlackorwhite() {
+        if (blackorwhite == null) {
+            return "any";
+        }
         return blackorwhite;
     }
 
@@ -279,6 +258,9 @@ public class BreedRequest implements Serializable {
     }
 
     String getRare() {
+        if (rare == null) {
+            return "yes";
+        }
         return rare;
     }
 
