@@ -280,5 +280,14 @@ class BreedControllerTest {
         resultActions
                 .andDo(print())
                 .andExpect(status().isOk());
+
+        ResultActions resultActionsNoParams = mockMvcReal.perform(get("/breeds/filtered")
+                .accept(MediaType.APPLICATION_JSON));
+
+        assertNotNull(resultActionsNoParams);
+
+        resultActionsNoParams
+                .andDo(print())
+                .andExpect(status().isBadRequest());
     }
 }
