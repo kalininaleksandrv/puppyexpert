@@ -37,8 +37,7 @@ public class BreedService {
         if(myBreed.isPresent()){
         Map <String, List<? extends Breed>> searchingresult = new HashMap<>();
         searchingresult.put("Список всех пород", new ArrayList<>(myBreed.get()));
-        ResponseEntity<Map<String, List<? extends Breed>>> myRespEnt = new ResponseEntity<>(searchingresult, HttpStatus.OK);
-        return myRespEnt;
+            return new ResponseEntity<>(searchingresult, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -70,7 +69,7 @@ public class BreedService {
     }
 
 
-    public ResponseEntity faveBreedById(long id) {
+    public ResponseEntity<HttpStatus> faveBreedById(long id) {
 
         Optional<Breed> breedOptional = getBreedById(id);
 

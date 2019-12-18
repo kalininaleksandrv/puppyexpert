@@ -3,6 +3,7 @@ package com.eyeslessdev.needmypuppyapi.service;
 import com.eyeslessdev.needmypuppyapi.entity.Breed;
 import com.eyeslessdev.needmypuppyapi.entity.BreedTest;
 import com.eyeslessdev.needmypuppyapi.repositories.BreedRepo;
+import org.hamcrest.Matcher;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,7 +18,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
@@ -32,6 +35,8 @@ public class BreedServiceTest {
 
     private static List<Breed> breedlist;
 
+    private static Breed testbreed;
+
     @BeforeAll()
     static void setUp() {
 
@@ -40,6 +45,8 @@ public class BreedServiceTest {
                 new BreedTest((long) 2, "Dog2", "Seconddog"),
                 new BreedTest((long) 3, "Dog3", "Thirddog")
         ));
+
+        testbreed = breedlist.get(0);
     }
 
     @BeforeEach
@@ -49,10 +56,15 @@ public class BreedServiceTest {
 
     @Test
     void findAll(){
+
+        assertThat(testbreed).hasSameClassAs(new BreedTest());
+
         assertEquals(3, breedlist.size());
-        assertThat(breedlist).extracting("title").contains("Dog1","Dog2","Dog3");
+        assertTrue(breedlist.stream().allMatch(BreedTest.class::isInstance));
+        assertThat(breedlist).hasSameClassAs(new ArrayList<>());
+        assertThat(breedlist).extractingResultOf("hashCode").doesNotHaveDuplicates();
+        assertThat(breedlist).extracting("title").containsExactly("Dog1","Dog2","Dog3");
+        assertThat(breedlist).extracting("title").containsExactlyInAnyOrder("Dog2","Dog1","Dog3");
+        assertThat(breedlist).extracting("title").doesNotContain("Dog4");
     }
-
-    
-
 }

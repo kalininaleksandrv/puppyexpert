@@ -292,20 +292,17 @@ public class Breed implements Serializable {
         if (getClass() != obj.getClass())
             return false;
         Breed other = (Breed) obj;
-        if (id != other.id)
+        if (!id.equals(other.id))
             return false;
-        if (title != other.title)
-            return false;
-        return true;
+        return title.equals(other.title);
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((title == null) ? 0 : title.hashCode());
-        result = prime * result + description.length(); result = prime * result +
-                ((title == null) ? 0 : title.hashCode()); return result;
+        result = prime * result + ((title == null) ? 0 : title.hashCode()) + ((description == null) ? 0 : description.hashCode());
+        return result;
     }
 
 }

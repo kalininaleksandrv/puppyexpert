@@ -62,7 +62,10 @@ public class BreedTest extends Breed {
 
     @Override
     public int hashCode() {
-        return super.hashCode();
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((title == null) ? 0 : title.hashCode()) + ((description == null) ? 0 : description.hashCode());
+        return result;
     }
 
     @Override

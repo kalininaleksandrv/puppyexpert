@@ -55,7 +55,7 @@ public class BreedController {
 
     @CrossOrigin
     @GetMapping("faved/{id}")
-    public ResponseEntity faveBreed(@PathVariable long id) {
+    public ResponseEntity<HttpStatus> faveBreed(@PathVariable long id) {
         return breedService.faveBreedById(id);
     }
 
@@ -63,6 +63,10 @@ public class BreedController {
     @GetMapping
     @RequestMapping("filtered")
     public ResponseEntity<Map<String, List<Breed>>> getFilteredBreeds(@RequestParam Map<String,String> allparam){
+
+        if (allparam.size() == 0){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
 
         BreedRequest request = breedRequestFactory.getBreedRequest(allparam);
 
