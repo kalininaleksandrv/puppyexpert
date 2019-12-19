@@ -2,7 +2,6 @@ package com.eyeslessdev.needmypuppyapi.service;
 
 import com.eyeslessdev.needmypuppyapi.entity.Breed;
 import com.eyeslessdev.needmypuppyapi.entity.BreedRequest;
-import com.eyeslessdev.needmypuppyapi.entity.BreedTest;
 import com.eyeslessdev.needmypuppyapi.entity.SearchCriteriaBuilder;
 import com.eyeslessdev.needmypuppyapi.repositories.BreedRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +23,13 @@ public class BreedService {
     @Autowired
     private SearchCriteriaBuilder searchCriteriaBuilder;
 
+    public BreedService(BreedRepo breedRepo,
+                        BreedFilterService breedFilterService,
+                        SearchCriteriaBuilder searchCriteriaBuilder) {
+        this.breedRepo = breedRepo;
+        this.breedFilterService = breedFilterService;
+        this.searchCriteriaBuilder = searchCriteriaBuilder;
+    }
 
 
     public List<Breed> findAll() {
@@ -36,9 +42,7 @@ public class BreedService {
         Optional<List<Breed>> myBreed = breedRepo.findAllByOrderById();
         if(myBreed.isPresent()) {
             searchingresult.put("Список всех пород", new ArrayList<>(myBreed.get()));
-        } else {
-            searchingresult.put("Список всех пород", Collections.EMPTY_LIST);
-        }
+        } else searchingresult.put("Список всех пород", Collections.EMPTY_LIST);
             return searchingresult;
     }
 

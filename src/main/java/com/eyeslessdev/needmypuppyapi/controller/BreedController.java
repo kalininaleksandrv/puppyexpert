@@ -28,6 +28,14 @@ public class BreedController {
     @Autowired
     private BreedRequestFactory breedRequestFactory;
 
+    public BreedController(BreedService breedService,
+                           BreedRequestService breedRequestService,
+                           BreedRequestFactory breedRequestFactory) {
+        this.breedService = breedService;
+        this.breedRequestService = breedRequestService;
+        this.breedRequestFactory = breedRequestFactory;
+    }
+
     @CrossOrigin
     @GetMapping (produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Map<String, List<? extends Breed>>> getAllBreedsById (){

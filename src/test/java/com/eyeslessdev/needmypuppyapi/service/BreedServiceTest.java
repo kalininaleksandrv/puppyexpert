@@ -3,23 +3,19 @@ package com.eyeslessdev.needmypuppyapi.service;
 import com.eyeslessdev.needmypuppyapi.entity.Breed;
 import com.eyeslessdev.needmypuppyapi.entity.BreedTest;
 import com.eyeslessdev.needmypuppyapi.repositories.BreedRepo;
-import org.hamcrest.Matcher;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
@@ -35,10 +31,6 @@ public class BreedServiceTest {
 
     private static List<Breed> breedlist;
 
-    private static Breed testbreed;
-
-    private static Map <String, List> breedmap;
-
     @BeforeAll()
     static void setUp() {
 
@@ -47,11 +39,6 @@ public class BreedServiceTest {
                 new BreedTest((long) 2, "Dog2", "Seconddog"),
                 new BreedTest((long) 3, "Dog1", "Thirddog")
         ));
-
-        testbreed = breedlist.get(0);
-
-        breedmap = new HashMap<>();
-        breedmap.put("allbreeds", breedlist);
 
     }
 
@@ -68,8 +55,6 @@ public class BreedServiceTest {
     @Test
     void testFindAll() {
         List<Breed> mybreedlist = breedService.findAll();
-
-        assertThat(testbreed).hasSameClassAs(new BreedTest());
 
         assertEquals(3, mybreedlist.size());
         assertTrue(mybreedlist.stream().allMatch(BreedTest.class::isInstance));
@@ -96,7 +81,7 @@ public class BreedServiceTest {
     @Test
     void getAllBreedsOrderedByTitle() {
         Optional<List<Breed>> mybreedlist = breedService.getAllBreedsOrderedByTitle();
-        assertEquals(3, mybreedlist.get().size());
+        assertEquals(3, mybreedlist.orElse(Collections.EMPTY_LIST).size());
         assertThat(mybreedlist.get()).extracting("title").containsExactly("Dog1","Dog2","Dog3");
     }
 
