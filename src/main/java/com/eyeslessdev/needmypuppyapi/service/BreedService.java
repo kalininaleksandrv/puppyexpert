@@ -31,16 +31,15 @@ public class BreedService {
         return breedRepo.findAll();
     }
 
-    public ResponseEntity<Map<String, List<? extends Breed>>> getAllBreedsOrderedById() {
-
+    public Map<String, List<? extends Breed>> getAllBreedsOrderedById() {
+        Map<String, List<? extends Breed>> searchingresult = new HashMap<>();
         Optional<List<Breed>> myBreed = breedRepo.findAllByOrderById();
-        if(myBreed.isPresent()){
-        Map <String, List<? extends Breed>> searchingresult = new HashMap<>();
-        searchingresult.put("Список всех пород", new ArrayList<>(myBreed.get()));
-            return new ResponseEntity<>(searchingresult, HttpStatus.OK);
+        if(myBreed.isPresent()) {
+            searchingresult.put("Список всех пород", new ArrayList<>(myBreed.get()));
         } else {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            searchingresult.put("Список всех пород", Collections.EMPTY_LIST);
         }
+            return searchingresult;
     }
 
     public ResponseEntity<Map<String, List<Breed>>>  getFilteredListOfBreed(BreedRequest breedrequest) {

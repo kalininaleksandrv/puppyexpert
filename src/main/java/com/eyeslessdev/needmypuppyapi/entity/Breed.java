@@ -292,9 +292,9 @@ public class Breed implements Serializable {
         if (getClass() != obj.getClass())
             return false;
         Breed other = (Breed) obj;
-        if (!id.equals(other.id))
+        if (!id.equals(other.getId()))
             return false;
-        return title.equals(other.title);
+        return title.equals(other.getTitle());
     }
 
     @Override

@@ -31,7 +31,14 @@ public class BreedController {
     @CrossOrigin
     @GetMapping (produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Map<String, List<? extends Breed>>> getAllBreedsById (){
-            return breedService.getAllBreedsOrderedById();
+
+        Map <String, List<? extends Breed>> searchingresult = breedService.getAllBreedsOrderedById();
+
+        if(!searchingresult.get("Список всех пород").isEmpty()){
+            return new ResponseEntity<>(searchingresult, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
     @GetMapping

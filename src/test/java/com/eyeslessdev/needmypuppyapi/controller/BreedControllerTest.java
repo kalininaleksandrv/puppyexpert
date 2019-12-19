@@ -55,23 +55,8 @@ class BreedControllerTest {
     private BreedController breedController;
 
 
-    @SuppressWarnings("rawtypes")
     @BeforeEach
     void setUp() {
-
-        HashMap breedmap = new HashMap();
-        breedmap.put("allbreeds", new ArrayList<>(Arrays.asList(
-                new BreedTest((long) 1, "Dog1", "Firstdog"),
-                new BreedTest((long) 2, "Dog2", "Seconddog"),
-                new BreedTest((long) 3, "Dog3", "Thirddog")
-        )));
-        ResponseEntity searchingresult = new ResponseEntity<>(breedmap, HttpStatus.OK);
-        when(breedService.getAllBreedsOrderedById()).thenReturn(searchingresult);
-
-        when(breedService.faveBreedById(anyLong())).thenReturn(searchingresult);
-
-        mockMvc = MockMvcBuilders.standaloneSetup(breedController)
-                .build();
 
         mockMvcReal = MockMvcBuilders.standaloneSetup(controller)
                 .build();
@@ -84,22 +69,6 @@ class BreedControllerTest {
 
     @Test
     void getAllBreedsById() throws Exception {
-
-        ResultActions resultActions = mockMvc.perform(get("/breeds")
-                .accept(MediaType.APPLICATION_JSON));
-
-        assertNotNull(resultActions);
-
-        resultActions
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$", Matchers.hasKey("allbreeds")))
-                .andExpect(jsonPath("$.allbreeds.[*]", Matchers.iterableWithSize(3)))
-                .andExpect(jsonPath("$.allbreeds.[0].title", Matchers.containsString("Dog1")));
-    }
-
-    @Test
-    void getAllBreedsByIdIntegration() throws Exception {
 
         ResultActions resultActions = mockMvcReal.perform(get("/breeds")
                 .accept(MediaType.APPLICATION_JSON));

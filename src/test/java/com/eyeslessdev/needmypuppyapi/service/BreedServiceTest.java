@@ -10,17 +10,17 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
@@ -37,34 +37,78 @@ public class BreedServiceTest {
 
     private static Breed testbreed;
 
+    private static Map <String, List> breedmap;
+
     @BeforeAll()
     static void setUp() {
 
         breedlist = new  ArrayList<>(Arrays.asList(
-                new BreedTest((long) 1, "Dog1", "Firstdog"),
+                new BreedTest((long) 1, "Dog3", "Firstdog"),
                 new BreedTest((long) 2, "Dog2", "Seconddog"),
-                new BreedTest((long) 3, "Dog3", "Thirddog")
+                new BreedTest((long) 3, "Dog1", "Thirddog")
         ));
 
         testbreed = breedlist.get(0);
+
+        breedmap = new HashMap<>();
+        breedmap.put("allbreeds", breedlist);
+
     }
 
     @BeforeEach
     void init(){
-        when(breedService.findAll()).thenReturn(breedlist);
+        when(breedRepo.findAll()).thenReturn(breedlist);
+        when(breedRepo.findAllByOrderById()).thenReturn(Optional.of(breedlist));
+        when(breedRepo.findAllByOrderByTitle()).thenReturn(breedlist
+                .stream()
+                .sorted(Comparator.comparing(Breed::getTitle))
+                .collect(Collectors.toList()));
     }
 
     @Test
-    void findAll(){
+    void testFindAll() {
+        List<Breed> mybreedlist = breedService.findAll();
 
         assertThat(testbreed).hasSameClassAs(new BreedTest());
 
-        assertEquals(3, breedlist.size());
-        assertTrue(breedlist.stream().allMatch(BreedTest.class::isInstance));
-        assertThat(breedlist).hasSameClassAs(new ArrayList<>());
-        assertThat(breedlist).extractingResultOf("hashCode").doesNotHaveDuplicates();
-        assertThat(breedlist).extracting("title").containsExactly("Dog1","Dog2","Dog3");
-        assertThat(breedlist).extracting("title").containsExactlyInAnyOrder("Dog2","Dog1","Dog3");
-        assertThat(breedlist).extracting("title").doesNotContain("Dog4");
+        assertEquals(3, mybreedlist.size());
+        assertTrue(mybreedlist.stream().allMatch(BreedTest.class::isInstance));
+        assertThat(mybreedlist).hasSameClassAs(new ArrayList<>());
+        assertThat(mybreedlist).extractingResultOf("hashCode").doesNotHaveDuplicates();
+        assertThat(mybreedlist).extracting("title").containsExactlyInAnyOrder("Dog2","Dog1","Dog3");
+        assertThat(mybreedlist).extracting("title").doesNotContain("Dog4");
+    }
+
+    @Test
+    void testGetAllBreedsOrderedById() {
+
+        Map<String, List<? extends Breed>> searchingresult = breedService.getAllBreedsOrderedById();
+        List<Long> listofid = searchingresult.get("Список всех пород").stream().map(Breed::getId).collect(Collectors.toList());
+
+        assertEquals(1, searchingresult.size());
+        assertTrue(searchingresult.containsKey("Список всех пород"));
+        assertNotNull(searchingresult.get("Список всех пород"));
+        assertTrue(searchingresult.get("Список всех пород").containsAll(breedlist));
+        assertThat(listofid).containsOnly(1L,2L,3L); //check order!
+
+    }
+
+    @Test
+    void getAllBreedsOrderedByTitle() {
+        Optional<List<Breed>> mybreedlist = breedService.getAllBreedsOrderedByTitle();
+        assertEquals(3, mybreedlist.get().size());
+        assertThat(mybreedlist.get()).extracting("title").containsExactly("Dog1","Dog2","Dog3");
+    }
+
+    @Test
+    void getBreedById() {
+    }
+
+    @Test
+    void faveBreedById() {
+    }
+
+    @Test
+    void getFilteredListOfBreed() {
     }
 }
