@@ -3,14 +3,18 @@ package com.eyeslessdev.needmypuppyapi.service;
 import com.eyeslessdev.needmypuppyapi.entity.Breed;
 import com.eyeslessdev.needmypuppyapi.entity.BreedTest;
 import com.eyeslessdev.needmypuppyapi.repositories.BreedRepo;
+import org.aspectj.lang.annotation.Before;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.DataAccessException;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.*;
@@ -36,21 +40,34 @@ public class BreedServiceTest {
     @BeforeAll()
     static void setUp() {
 
-        breedlist = new  ArrayList<>(Arrays.asList(
-                new BreedTest((long) 1, "Dog3", "Firstdog"),
-                new BreedTest((long) 2, "Dog2", "Seconddog"),
-                new BreedTest((long) 3, "Dog1", "Thirddog")
-        ));
+        Breed breed1 = new Breed();
+        breed1.setId(1L);
+        breed1.setTitle("Dog3");
+        breed1.setDescription("Thirddog");
+
+        Breed breed2 = new Breed();
+        breed2.setId(2L);
+        breed2.setTitle("Dog2");
+        breed2.setDescription("Seconddog");
+
+        Breed breed3 = new Breed();
+        breed3.setId(3L);
+        breed3.setTitle("Dog1");
+        breed3.setDescription("Firstdog");
+
+        breedlist = new  ArrayList<>(Arrays.asList(breed1, breed2, breed3));
 
     }
 
     @Test
     void testFindAll() {
 
+        when(breedRepo.findAll()).thenReturn(breedlist);
+
         List<Breed> mybreedlist = breedService.findAll();
 
         assertEquals(3, mybreedlist.size());
-        assertTrue(mybreedlist.stream().allMatch(BreedTest.class::isInstance));
+        assertTrue(mybreedlist.stream().allMatch(Breed.class::isInstance));
         assertThat(mybreedlist).hasSameClassAs(new ArrayList<>());
         assertThat(mybreedlist).extractingResultOf("hashCode").doesNotHaveDuplicates();
         assertThat(mybreedlist).extracting("title").containsExactlyInAnyOrder("Dog2","Dog1","Dog3");
@@ -60,8 +77,6 @@ public class BreedServiceTest {
 
     @Test
     void testGetAllBreedsOrderedById() {
-
-        when(breedRepo.findAll()).thenReturn(breedlist);
 
         when(breedRepo.findAllByOrderById()).thenReturn(Optional.of(breedlist));
 
@@ -113,7 +128,6 @@ public class BreedServiceTest {
         int argint = (int) arg;
 
         when(breedRepo.findById(arg)).thenReturn(Optional.of(breedlist.get(argint)));
-
         Optional<Breed> testingBreed = breedService.getBreedById(arg);
 
         assertNotNull(testingBreed);
@@ -125,7 +139,6 @@ public class BreedServiceTest {
     void getBreedByIdNotFound() {
 
         when(breedRepo.findById(anyLong())).thenReturn(Optional.empty());
-
         Optional<Breed> testingBreed = breedService.getBreedById(999);
 
         assertEquals(testingBreed, Optional.empty());
@@ -133,6 +146,39 @@ public class BreedServiceTest {
 
     @Test
     void faveBreedById() {
+
+        when(breedRepo.findById(anyLong())).thenReturn(Optional.of(breedlist.get(0)));
+
+        Breed testingBreed = breedService.getBreedById(999L).get();
+        HttpStatus httpStatus = breedService.faveBreedById(anyLong());
+        testingBreed.setFavorite(2);
+
+        assertThat(testingBreed.getId()).isEqualTo(breedlist.get(0).getId());
+        assertEquals(httpStatus, HttpStatus.OK);
+
+        Mockito.verify(breedRepo, Mockito.times(1)).findById(999L);
+        Mockito.verify(breedRepo, Mockito.times(1)).save(testingBreed);
+
+        ArgumentCaptor<Breed> breedArgumentCaptor = ArgumentCaptor.forClass(Breed.class);
+        Mockito.verify(breedRepo).save(breedArgumentCaptor.capture());
+
+        Breed savedBreed = breedArgumentCaptor.getValue();
+        assertEquals(savedBreed.getFavorite(), 2);
+
+    }
+
+    @Test
+    void faveBreedByIdNotFound() {
+        when(breedRepo.findById(anyLong())).thenReturn(Optional.empty());
+
+        Optional<Breed> testingBreed = breedService.getBreedById(999L);
+        HttpStatus httpStatus = breedService.faveBreedById(anyLong());
+
+        assertEquals(testingBreed, Optional.empty());
+        assertEquals(httpStatus, HttpStatus.NOT_FOUND);
+
+        Mockito.verify(breedRepo, Mockito.times(1)).findById(999L);
+        Mockito.verify(breedRepo, Mockito.never()).save(new Breed());
     }
 
     @Test

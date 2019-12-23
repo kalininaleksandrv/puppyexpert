@@ -72,7 +72,7 @@ public class BreedController {
     @CrossOrigin
     @GetMapping("faved/{id}")
     public ResponseEntity<HttpStatus> faveBreed(@PathVariable long id) {
-        return breedService.faveBreedById(id);
+        return new ResponseEntity<>(breedService.faveBreedById(id));
     }
 
     @CrossOrigin

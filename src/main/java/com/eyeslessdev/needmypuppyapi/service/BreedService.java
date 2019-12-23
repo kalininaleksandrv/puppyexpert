@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
+import static org.springframework.http.HttpStatus.*;
+
 @Service
 public class BreedService {
 
@@ -56,7 +58,7 @@ public class BreedService {
     }
 
 
-    public ResponseEntity<HttpStatus> faveBreedById(long id) {
+    public HttpStatus faveBreedById(long id) {
 
         Optional<Breed> breedOptional = getBreedById(id);
 
@@ -66,10 +68,10 @@ public class BreedService {
                 Breed breed = breedOptional.get();
                 breed.setFavorite(increasefav(breed.getFavorite()));
                 breedRepo.save(breed);
-                return new ResponseEntity<>(HttpStatus.OK);
+                return HttpStatus.OK;
             } catch (Exception e) {
-                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);            }
-        } else return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                return HttpStatus.INTERNAL_SERVER_ERROR;}
+        } else return HttpStatus.NOT_FOUND;
 
     }
 
@@ -80,9 +82,9 @@ public class BreedService {
 
         if(myBreed.isPresent() && topRecomended.isPresent()){
             Map<String, List<Breed>> searchingresult = breedFilterService.getProperBreeds(myBreed.get(), topRecomended.get(), breedrequest);
-            return new ResponseEntity<>(searchingresult, HttpStatus.OK);
+            return new ResponseEntity<>(searchingresult, OK);
         } else {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(BAD_REQUEST);
         }
     }
 
