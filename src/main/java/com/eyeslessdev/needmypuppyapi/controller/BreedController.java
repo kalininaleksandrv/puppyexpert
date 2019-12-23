@@ -21,19 +21,8 @@ public class BreedController {
     @Autowired
     private BreedService breedService;
 
-    @Autowired
-    private BreedRequestService breedRequestService;
-
-
-    @Autowired
-    private BreedRequestFactory breedRequestFactory;
-
-    public BreedController(BreedService breedService,
-                           BreedRequestService breedRequestService,
-                           BreedRequestFactory breedRequestFactory) {
+    public BreedController(BreedService breedService) {
         this.breedService = breedService;
-        this.breedRequestService = breedRequestService;
-        this.breedRequestFactory = breedRequestFactory;
     }
 
     @CrossOrigin
@@ -82,12 +71,11 @@ public class BreedController {
 
         if (allparam.size() == 0){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } else {
+            Map<String, List<Breed>> mapOfFilteredBreeds = breedService.getFilteredListOfBreed(allparam);
+            if (mapOfFilteredBreeds.isEmpty()){
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            } else return new ResponseEntity<>(mapOfFilteredBreeds, HttpStatus.OK);
         }
-
-        BreedRequest request = breedRequestFactory.getBreedRequest(allparam);
-
-        breedRequestService.saveBreedRequest(request);
-
-        return breedService.getFilteredListOfBreed(request);
     }
 }

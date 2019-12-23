@@ -2,9 +2,11 @@ package com.eyeslessdev.needmypuppyapi.service;
 
 import com.eyeslessdev.needmypuppyapi.entity.Breed;
 import com.eyeslessdev.needmypuppyapi.entity.BreedRequest;
+import com.eyeslessdev.needmypuppyapi.entity.BreedRequestFactory;
 import com.eyeslessdev.needmypuppyapi.entity.SearchCriteriaBuilder;
 import com.eyeslessdev.needmypuppyapi.repositories.BreedRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -23,13 +25,24 @@ public class BreedService {
     private BreedFilterService breedFilterService;
 
     @Autowired
+    private BreedRequestService breedRequestService;
+
+
+    @Autowired
+    private BreedRequestFactory breedRequestFactory;
+
+    @Autowired
     private SearchCriteriaBuilder searchCriteriaBuilder;
     public BreedService(BreedRepo breedRepo,
                         BreedFilterService breedFilterService,
+                        BreedRequestService breedRequestService,
+                        BreedRequestFactory breedRequestFactory,
                         SearchCriteriaBuilder searchCriteriaBuilder) {
         this.breedRepo = breedRepo;
         this.breedFilterService = breedFilterService;
         this.searchCriteriaBuilder = searchCriteriaBuilder;
+        this.breedRequestService = breedRequestService;
+        this.breedRequestFactory = breedRequestFactory;
     }
 
 
@@ -75,17 +88,25 @@ public class BreedService {
 
     }
 
-    public ResponseEntity<Map<String, List<Breed>>>  getFilteredListOfBreed(BreedRequest breedrequest) {
+    public Map<String, List<Breed>> getFilteredListOfBreed(Map<String,String> allparam) {
 
-        Optional<List<Breed>> myBreed = Optional.ofNullable(breedRepo.findAll(searchCriteriaBuilder.buildListOfCriteria(breedrequest)));
-        Optional<List<Breed>> topRecomended = Optional.ofNullable(breedRepo.findTop6ByOrderByFavoriteDesc());
+        BreedRequest breedrequest = breedRequestFactory.getBreedRequest(allparam);
+
+        breedRequestService.saveBreedRequest(breedrequest);
+
+        Specification<Breed> mySpec = searchCriteriaBuilder.buildListOfCriteria(breedrequest);
+
+        Optional<List<Breed>> myBreed =
+                Optional.ofNullable(breedRepo.findAll(mySpec));
+
+        Optional<List<Breed>> topRecomended =
+                Optional.ofNullable(breedRepo.findTop6ByOrderByFavoriteDesc());
 
         if(myBreed.isPresent() && topRecomended.isPresent()){
-            Map<String, List<Breed>> searchingresult = breedFilterService.getProperBreeds(myBreed.get(), topRecomended.get(), breedrequest);
-            return new ResponseEntity<>(searchingresult, OK);
-        } else {
-            return new ResponseEntity<>(BAD_REQUEST);
-        }
+            Map<String, List<Breed>> searchingresult
+                    = breedFilterService.getProperBreeds(myBreed.get(), topRecomended.get(), breedrequest);
+            return searchingresult;
+        } else return Collections.EMPTY_MAP;
     }
 
     private int increasefav(int favorite) {return ++favorite;}
