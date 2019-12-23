@@ -22,7 +22,6 @@ public class BreedService {
 
     @Autowired
     private SearchCriteriaBuilder searchCriteriaBuilder;
-
     public BreedService(BreedRepo breedRepo,
                         BreedFilterService breedFilterService,
                         SearchCriteriaBuilder searchCriteriaBuilder) {
@@ -33,41 +32,26 @@ public class BreedService {
 
 
     public List<Breed> findAll() {
-
         return breedRepo.findAll();
     }
 
     public Map<String, List<? extends Breed>> getAllBreedsOrderedById() {
+
         Map<String, List<? extends Breed>> searchingresult = new HashMap<>();
         Optional<List<Breed>> myBreed = breedRepo.findAllByOrderById();
+
         if(myBreed.isPresent()) {
             searchingresult.put("Список всех пород", new ArrayList<>(myBreed.get()));
         } else searchingresult.put("Список всех пород", Collections.EMPTY_LIST);
             return searchingresult;
     }
 
-    public ResponseEntity<Map<String, List<Breed>>>  getFilteredListOfBreed(BreedRequest breedrequest) {
-
-
-        Optional<List<Breed>> myBreed = Optional.ofNullable(breedRepo.findAll(searchCriteriaBuilder.buildListOfCriteria(breedrequest)));
-
-        Optional<List<Breed>> topRecomended = Optional.ofNullable(breedRepo.findTop6ByOrderByFavoriteDesc());
-
-        if(myBreed.isPresent() && topRecomended.isPresent()){
-            Map<String, List<Breed>> searchingresult = breedFilterService.getProperBreeds(myBreed.get(), topRecomended.get(), breedrequest);
-            return new ResponseEntity<>(searchingresult, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-    }
-
-
-    public Optional<List<Breed>> getAllBreedsOrderedByTitle() {return Optional.ofNullable(breedRepo.findAllByOrderByTitle());
+    public Optional<List<Breed>> getAllBreedsOrderedByTitle() {
+        return Optional.ofNullable(breedRepo.findAllByOrderByTitle());
     }
 
 
     public Optional<Breed> getBreedById(long id) {
-
         return breedRepo.findById(id);
     }
 
@@ -87,6 +71,19 @@ public class BreedService {
                 return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);            }
         } else return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
+    }
+
+    public ResponseEntity<Map<String, List<Breed>>>  getFilteredListOfBreed(BreedRequest breedrequest) {
+
+        Optional<List<Breed>> myBreed = Optional.ofNullable(breedRepo.findAll(searchCriteriaBuilder.buildListOfCriteria(breedrequest)));
+        Optional<List<Breed>> topRecomended = Optional.ofNullable(breedRepo.findTop6ByOrderByFavoriteDesc());
+
+        if(myBreed.isPresent() && topRecomended.isPresent()){
+            Map<String, List<Breed>> searchingresult = breedFilterService.getProperBreeds(myBreed.get(), topRecomended.get(), breedrequest);
+            return new ResponseEntity<>(searchingresult, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
     private int increasefav(int favorite) {return ++favorite;}
