@@ -1,11 +1,11 @@
 package com.eyeslessdev.needmypuppyapi.service;
 
 import com.eyeslessdev.needmypuppyapi.entity.Breed;
-import com.eyeslessdev.needmypuppyapi.entity.BreedTest;
+import com.eyeslessdev.needmypuppyapi.entity.BreedRequest;
+import com.eyeslessdev.needmypuppyapi.entity.BreedRequestFactory;
+import com.eyeslessdev.needmypuppyapi.entity.SearchCriteriaBuilder;
 import com.eyeslessdev.needmypuppyapi.repositories.BreedRepo;
-import org.aspectj.lang.annotation.Before;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -13,7 +13,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.dao.DataAccessException;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -31,6 +31,18 @@ public class BreedServiceTest {
 
     @Mock
     private BreedRepo breedRepo;
+
+    @Mock
+    private BreedRequestFactory breedRequestFactory;
+
+    @Mock
+    private BreedRequestService breedRequestService;
+
+    @Mock
+    private SearchCriteriaBuilder searchCriteriaBuilder;
+
+    @Mock
+    private Specification<Breed> specification;
 
     @InjectMocks
     private BreedService breedService;
@@ -183,5 +195,19 @@ public class BreedServiceTest {
 
     @Test
     void getFilteredListOfBreed() {
+
+        when(breedRequestFactory.getBreedRequest(anyMap())).thenReturn(new BreedRequest());
+        when(searchCriteriaBuilder.buildListOfCriteria(any(BreedRequest.class))).thenReturn(specification);
+
+        BreedRequest breedRequest = breedRequestFactory.getBreedRequest(new HashMap<>());
+        breedRequestService.saveBreedRequest(breedRequest);
+        Specification<Breed> mySpec = searchCriteriaBuilder.buildListOfCriteria(breedRequest);
+
+        when(breedRepo.findAll(mySpec)).thenReturn(breedlist);
+
+
+        Mockito.verify(breedRequestFactory, Mockito.times(1)).getBreedRequest(anyMap());
+        Mockito.verify(breedRequestService, Mockito.times(1)).saveBreedRequest(any(BreedRequest.class));
+        Mockito.verify(searchCriteriaBuilder, Mockito.times(1)).buildListOfCriteria(any(BreedRequest.class));
     }
 }

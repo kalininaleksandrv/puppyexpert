@@ -8,12 +8,9 @@ import com.eyeslessdev.needmypuppyapi.repositories.BreedRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-
-import static org.springframework.http.HttpStatus.*;
 
 @Service
 public class BreedService {
@@ -27,12 +24,12 @@ public class BreedService {
     @Autowired
     private BreedRequestService breedRequestService;
 
-
     @Autowired
     private BreedRequestFactory breedRequestFactory;
 
     @Autowired
     private SearchCriteriaBuilder searchCriteriaBuilder;
+
     public BreedService(BreedRepo breedRepo,
                         BreedFilterService breedFilterService,
                         BreedRequestService breedRequestService,
@@ -90,6 +87,20 @@ public class BreedService {
 
     public Map<String, List<Breed>> getFilteredListOfBreed(Map<String,String> allparam) {
 
+        //1. передаем мапу с параметрами в breedRequestFactory, возвращаем объект BreedRequest
+        //2.1. передаем BreedRequest в BreedRequestService
+        //2.2. BreedRequestService сохраняет BreedRequest через BreedRequestRepo
+        //3.1. Передаем BreedRequest в searchCriteriaBuilder, где он предобразовывается в List SearchCriteria
+        //3.2. Там же в searchCriteriaBuilder передаем List SearchCriteria в BreedSpecificationBuilder
+        //      - итерируем конструктором с with
+        //3.3. BreedSpecificationBuilder в методе build создает через лист BreedSpecification лист Specification
+        //4. делаем запрос в BreedRepo методом findAll передавая Specification
+        //5. делаем запрос в BreedRepo получая 6 наиболее популярных пород
+        //6. если запрос 4 или 5 вернулся пустым то формируем и возвращаем из метода EmptyMap
+        //7. если запросы 4 и 5 не пустые, то передаем их а также BreedRequest в breedFilterService
+        //  breedFilterService возвращает Map с ключами String и значениями List<Breed> т.е. несколько озаглавленных списков
+        //  возвращаем эту Map из метода
+
         BreedRequest breedrequest = breedRequestFactory.getBreedRequest(allparam);
 
         breedRequestService.saveBreedRequest(breedrequest);
@@ -103,9 +114,7 @@ public class BreedService {
                 Optional.ofNullable(breedRepo.findTop6ByOrderByFavoriteDesc());
 
         if(myBreed.isPresent() && topRecomended.isPresent()){
-            Map<String, List<Breed>> searchingresult
-                    = breedFilterService.getProperBreeds(myBreed.get(), topRecomended.get(), breedrequest);
-            return searchingresult;
+            return breedFilterService.getProperBreeds(myBreed.get(), topRecomended.get(), breedrequest);
         } else return Collections.EMPTY_MAP;
     }
 

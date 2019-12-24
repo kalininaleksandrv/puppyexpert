@@ -24,7 +24,7 @@ public class BreedSpecificationBuilder {
             return null;
         }
 
-        List<Specification> specs = params.stream()
+        List<BreedSpecification> specs = params.stream()
                 .map(BreedSpecification::new)
                 .collect(Collectors.toList());
 

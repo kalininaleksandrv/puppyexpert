@@ -2,19 +2,12 @@ package com.eyeslessdev.needmypuppyapi.entity;
 
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 @Component
 public class BreedRequestFactory {
 
     public BreedRequest getBreedRequest (Map<String, String> allparam){
-
-
-        Map<String, Optional<Integer>> outcomemap = new HashMap<>();
-
-        Map<String, Optional<String>> outcomemapstr = new HashMap<>();
 
         BreedRequest.Builder mybuilder = new BreedRequest.Builder();
 
