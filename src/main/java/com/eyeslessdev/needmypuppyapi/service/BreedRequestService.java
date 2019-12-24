@@ -9,13 +9,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class BreedRequestService {
 
-    @Autowired
-    private BreedRequestRepo breedRequestRepo;
 
-    @Async("threadPoolTaskExecutor")
-    public void saveBreedRequest (BreedRequest request){
 
-         breedRequestRepo.save(request);
 
-    }
 }

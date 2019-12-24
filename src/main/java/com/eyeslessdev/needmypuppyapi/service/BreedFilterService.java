@@ -2,6 +2,9 @@ package com.eyeslessdev.needmypuppyapi.service;
 
 import com.eyeslessdev.needmypuppyapi.entity.Breed;
 import com.eyeslessdev.needmypuppyapi.entity.BreedRequest;
+import com.eyeslessdev.needmypuppyapi.repositories.BreedRequestRepo;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -10,6 +13,13 @@ import java.util.stream.Collectors;
 
 @Service
 class BreedFilterService {
+
+    @Autowired
+    private BreedRequestRepo breedRequestRepo;
+
+    BreedFilterService(BreedRequestRepo breedRequestRepo) {
+        this.breedRequestRepo = breedRequestRepo;
+    }
 
     Map<String, List<Breed>> getProperBreeds(List<Breed> myBreed, List<Breed> topRecomended, BreedRequest breedRequest) {
 
@@ -59,5 +69,11 @@ class BreedFilterService {
 
         return searchingresult;
 
+    }
+
+    @Async("threadPoolTaskExecutor")
+    public void saveBreedRequest (BreedRequest request){
+
+        breedRequestRepo.save(request);
     }
 }

@@ -22,9 +22,6 @@ public class BreedService {
     private BreedFilterService breedFilterService;
 
     @Autowired
-    private BreedRequestService breedRequestService;
-
-    @Autowired
     private BreedRequestFactory breedRequestFactory;
 
     @Autowired
@@ -32,13 +29,11 @@ public class BreedService {
 
     public BreedService(BreedRepo breedRepo,
                         BreedFilterService breedFilterService,
-                        BreedRequestService breedRequestService,
                         BreedRequestFactory breedRequestFactory,
                         SearchCriteriaBuilder searchCriteriaBuilder) {
         this.breedRepo = breedRepo;
         this.breedFilterService = breedFilterService;
         this.searchCriteriaBuilder = searchCriteriaBuilder;
-        this.breedRequestService = breedRequestService;
         this.breedRequestFactory = breedRequestFactory;
     }
 
@@ -87,23 +82,23 @@ public class BreedService {
 
     public Map<String, List<Breed>> getFilteredListOfBreed(Map<String,String> allparam) {
 
+        //этот код денормализован для улучшения читаемости
+
         //1. передаем мапу с параметрами в breedRequestFactory, возвращаем объект BreedRequest
-        //2.1. передаем BreedRequest в BreedRequestService
-        //2.2. BreedRequestService сохраняет BreedRequest через BreedRequestRepo
-        //3.1. Передаем BreedRequest в searchCriteriaBuilder, где он предобразовывается в List SearchCriteria
-        //3.2. Там же в searchCriteriaBuilder передаем List SearchCriteria в BreedSpecificationBuilder
+        //2.1. Передаем BreedRequest в searchCriteriaBuilder, где он предобразовывается в List SearchCriteria
+        //2.2. Там же в searchCriteriaBuilder передаем List SearchCriteria в BreedSpecificationBuilder
         //      - итерируем конструктором с with
         //3.3. BreedSpecificationBuilder в методе build создает через лист BreedSpecification лист Specification
         //4. делаем запрос в BreedRepo методом findAll передавая Specification
         //5. делаем запрос в BreedRepo получая 6 наиболее популярных пород
-        //6. если запрос 4 или 5 вернулся пустым то формируем и возвращаем из метода EmptyMap
-        //7. если запросы 4 и 5 не пустые, то передаем их а также BreedRequest в breedFilterService
+        //6.1. передаем BreedRequest в BreedFilterService
+        //6.2. BreedFilterService сохраняет BreedRequest через BreedRequestRepo
+        //7. если запрос 4 или 5 вернулся пустым то формируем и возвращаем из метода EmptyMap
+        //8. если запросы 4 и 5 не пустые, то передаем их а также BreedRequest в breedFilterService
         //  breedFilterService возвращает Map с ключами String и значениями List<Breed> т.е. несколько озаглавленных списков
         //  возвращаем эту Map из метода
 
         BreedRequest breedrequest = breedRequestFactory.getBreedRequest(allparam);
-
-        breedRequestService.saveBreedRequest(breedrequest);
 
         Specification<Breed> mySpec = searchCriteriaBuilder.buildListOfCriteria(breedrequest);
 
@@ -113,9 +108,11 @@ public class BreedService {
         Optional<List<Breed>> topRecomended =
                 Optional.ofNullable(breedRepo.findTop6ByOrderByFavoriteDesc());
 
-        if(myBreed.isPresent() && topRecomended.isPresent()){
+        breedFilterService.saveBreedRequest(breedrequest);
+
+        if(myBreed.isPresent() && topRecomended.isPresent())
             return breedFilterService.getProperBreeds(myBreed.get(), topRecomended.get(), breedrequest);
-        } else return Collections.EMPTY_MAP;
+        else return Collections.EMPTY_MAP;
     }
 
     private int increasefav(int favorite) {return ++favorite;}

@@ -36,7 +36,7 @@ public class BreedServiceTest {
     private BreedRequestFactory breedRequestFactory;
 
     @Mock
-    private BreedRequestService breedRequestService;
+    private BreedFilterService breedFilterService;
 
     @Mock
     private SearchCriteriaBuilder searchCriteriaBuilder;
@@ -200,14 +200,21 @@ public class BreedServiceTest {
         when(searchCriteriaBuilder.buildListOfCriteria(any(BreedRequest.class))).thenReturn(specification);
 
         BreedRequest breedRequest = breedRequestFactory.getBreedRequest(new HashMap<>());
-        breedRequestService.saveBreedRequest(breedRequest);
+        breedFilterService.saveBreedRequest(breedRequest);
         Specification<Breed> mySpec = searchCriteriaBuilder.buildListOfCriteria(breedRequest);
 
         when(breedRepo.findAll(mySpec)).thenReturn(breedlist);
+        when(breedFilterService.getProperBreeds(anyList(),anyList(),any(BreedRequest.class))).thenReturn(new HashMap<>());
 
+        breedFilterService.getProperBreeds(new ArrayList<>(), new ArrayList<>(), breedRequest);
 
-        Mockito.verify(breedRequestFactory, Mockito.times(1)).getBreedRequest(anyMap());
-        Mockito.verify(breedRequestService, Mockito.times(1)).saveBreedRequest(any(BreedRequest.class));
-        Mockito.verify(searchCriteriaBuilder, Mockito.times(1)).buildListOfCriteria(any(BreedRequest.class));
+        Mockito.verify(breedRequestFactory, Mockito.times(1))
+                .getBreedRequest(anyMap());
+        Mockito.verify(breedFilterService, Mockito.times(1))
+                .saveBreedRequest(any(BreedRequest.class));
+        Mockito.verify(breedFilterService, Mockito.times(1))
+                .getProperBreeds(any(ArrayList.class), any(ArrayList.class), any(BreedRequest.class));
+        Mockito.verify(searchCriteriaBuilder, Mockito.times(1))
+                .buildListOfCriteria(any(BreedRequest.class));
     }
 }
