@@ -20,9 +20,6 @@ class BreedFilterService {
     @Autowired
     private BreedRequestRepo breedRequestRepo;
 
-    @Autowired
-    private UserService userService;
-
     BreedFilterService(BreedRequestRepo breedRequestRepo) {
         this.breedRequestRepo = breedRequestRepo;
     }
@@ -78,14 +75,14 @@ class BreedFilterService {
     }
 
     @Async("threadPoolTaskExecutor")
-    public void saveBreedRequest (BreedRequest request){
+    public void saveBreedRequest(BreedRequest request, String authenticatedPrincipalUserName){
 
         DateTime nowtime = DateTime.now();
         DateTimeFormatter dtf = DateTimeFormat.forPattern("MM/dd/yyyy HH:mm:ss");
 
         StringBuilder sb = new StringBuilder();
         sb.append("Created by: ");
-        sb.append(userService.getAuthenticatedPrincipalUserName());
+        sb.append(authenticatedPrincipalUserName);
         sb.append(", at: ");
         sb.append(nowtime.toString(dtf));
 

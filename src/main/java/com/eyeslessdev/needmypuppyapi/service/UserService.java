@@ -41,7 +41,11 @@ public class UserService {
     String getAuthenticatedPrincipalUserName() {
         if (!(getCuternAuthentication() instanceof AnonymousAuthenticationToken)) {
 
-            Optional<User> user =  userRepo.findByEmail(getCuternAuthentication().getName());
+            Authentication authentication = getCuternAuthentication();
+
+            if (authentication == null) return "anonimous";
+
+            Optional<User> user =  userRepo.findByEmail(authentication.getName());
 
             if (user.isPresent()){
                 return user.get().getName();

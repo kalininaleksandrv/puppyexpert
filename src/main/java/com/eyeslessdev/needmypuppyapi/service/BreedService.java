@@ -27,14 +27,18 @@ public class BreedService {
     @Autowired
     private SearchCriteriaBuilder searchCriteriaBuilder;
 
+    @Autowired
+    private UserService userService;
+
     public BreedService(BreedRepo breedRepo,
                         BreedFilterService breedFilterService,
                         BreedRequestFactory breedRequestFactory,
-                        SearchCriteriaBuilder searchCriteriaBuilder) {
+                        SearchCriteriaBuilder searchCriteriaBuilder, UserService userService) {
         this.breedRepo = breedRepo;
         this.breedFilterService = breedFilterService;
         this.searchCriteriaBuilder = searchCriteriaBuilder;
         this.breedRequestFactory = breedRequestFactory;
+        this.userService = userService;
     }
 
 
@@ -91,7 +95,7 @@ public class BreedService {
         //3.3. BreedSpecificationBuilder в методе build создает через лист BreedSpecification лист Specification
         //4. делаем запрос в BreedRepo методом findAll передавая Specification
         //5. делаем запрос в BreedRepo получая 6 наиболее популярных пород
-        //6.1. передаем BreedRequest в BreedFilterService
+        //6.1. передаем BreedRequest и текущего пользователя полученного из userService.getAuthenticatedPrincipalUserName() в BreedFilterService
         //6.2. BreedFilterService сохраняет BreedRequest через BreedRequestRepo
         //7. если запрос 4 или 5 вернулся пустым то формируем и возвращаем из метода EmptyMap
         //8. если запросы 4 и 5 не пустые, то передаем их а также BreedRequest в breedFilterService
@@ -108,7 +112,7 @@ public class BreedService {
         Optional<List<Breed>> topRecomended =
                 Optional.ofNullable(breedRepo.findTop6ByOrderByFavoriteDesc());
 
-        breedFilterService.saveBreedRequest(breedrequest);
+        breedFilterService.saveBreedRequest(breedrequest, userService.getAuthenticatedPrincipalUserName());
 
         if(myBreed.isPresent() && topRecomended.isPresent())
             return breedFilterService.getProperBreeds(myBreed.get(), topRecomended.get(), breedrequest);
