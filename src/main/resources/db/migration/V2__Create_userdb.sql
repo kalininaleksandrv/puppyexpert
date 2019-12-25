@@ -1,4 +1,3 @@
-
 CREATE SEQUENCE IF NOT EXISTS public.usr_id_seq;
 
 CREATE TABLE IF NOT EXISTS public.user_role(

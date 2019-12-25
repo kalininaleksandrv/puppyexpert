@@ -24,6 +24,8 @@ CREATE TABLE IF NOT EXISTS public.breedrequests
     sizeconstraintmin integer NOT NULL,
     sizeconstraintmax integer NOT NULL,
     rare character varying(32),
+    requestcreatetime bigint,
+    creator character varying(255) COLLATE pg_catalog."default",
 
     CONSTRAINT breedrequests_pkey PRIMARY KEY (id)
 )WITH (

@@ -44,8 +44,11 @@ public class BreedRequest implements Serializable {
     private int sizeconstraintmax;
     private String rare;
 
+    //service info
+    private Long requestcreatetime;
+    private String creator;
 
-        public String getRequestParamsAsString() {
+    public String getRequestParamsAsString() {
 
         return "-------\n" +
                 "BreedRequest{" +
@@ -267,6 +270,24 @@ public class BreedRequest implements Serializable {
     public void setRare(String rare) {
         this.rare = rare;
     }
+
+    public Long getRequestcreatetime() {
+        return requestcreatetime;
+    }
+
+    public void setRequestcreatetime(Long requestcreatetime) {
+        this.requestcreatetime = requestcreatetime;
+    }
+
+    public String getCreator() {
+        return creator;
+    }
+
+    public void setCreator(String creator) {
+        this.creator = creator;
+    }
+
+    //builder for breedRequest - service params not included
 
     public static Builder builder() {
         return new Builder();

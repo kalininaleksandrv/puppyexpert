@@ -98,7 +98,7 @@ public class BreedService {
         //  breedFilterService возвращает Map с ключами String и значениями List<Breed> т.е. несколько озаглавленных списков
         //  возвращаем эту Map из метода
 
-        BreedRequest breedrequest = breedRequestFactory.getBreedRequest(allparam);
+        BreedRequest breedrequest = breedRequestFactory.getBreedRequest(allparam); // TODO: 24.12.2019 add this to BreedFilterService 
 
         Specification<Breed> mySpec = searchCriteriaBuilder.buildListOfCriteria(breedrequest);
 

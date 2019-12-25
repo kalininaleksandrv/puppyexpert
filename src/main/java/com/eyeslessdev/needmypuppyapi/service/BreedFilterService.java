@@ -3,6 +3,9 @@ package com.eyeslessdev.needmypuppyapi.service;
 import com.eyeslessdev.needmypuppyapi.entity.Breed;
 import com.eyeslessdev.needmypuppyapi.entity.BreedRequest;
 import com.eyeslessdev.needmypuppyapi.repositories.BreedRequestRepo;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -16,6 +19,9 @@ class BreedFilterService {
 
     @Autowired
     private BreedRequestRepo breedRequestRepo;
+
+    @Autowired
+    private UserService userService;
 
     BreedFilterService(BreedRequestRepo breedRequestRepo) {
         this.breedRequestRepo = breedRequestRepo;
@@ -73,6 +79,18 @@ class BreedFilterService {
 
     @Async("threadPoolTaskExecutor")
     public void saveBreedRequest (BreedRequest request){
+
+        DateTime nowtime = DateTime.now();
+        DateTimeFormatter dtf = DateTimeFormat.forPattern("MM/dd/yyyy HH:mm:ss");
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("Created by: ");
+        sb.append(userService.getAuthenticatedPrincipalUserName());
+        sb.append(", at: ");
+        sb.append(nowtime.toString(dtf));
+
+        request.setRequestcreatetime(nowtime.getMillis());
+        request.setCreator(sb.toString());
 
         breedRequestRepo.save(request);
     }
