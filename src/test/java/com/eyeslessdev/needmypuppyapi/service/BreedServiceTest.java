@@ -2,7 +2,6 @@ package com.eyeslessdev.needmypuppyapi.service;
 
 import com.eyeslessdev.needmypuppyapi.entity.Breed;
 import com.eyeslessdev.needmypuppyapi.entity.BreedRequest;
-import com.eyeslessdev.needmypuppyapi.entity.BreedRequestFactory;
 import com.eyeslessdev.needmypuppyapi.entity.SearchCriteriaBuilder;
 import com.eyeslessdev.needmypuppyapi.repositories.BreedRepo;
 import org.junit.jupiter.api.BeforeAll;
@@ -31,9 +30,6 @@ public class BreedServiceTest {
 
     @Mock
     private BreedRepo breedRepo;
-
-    @Mock
-    private BreedRequestFactory breedRequestFactory;
 
     @Mock
     private BreedFilterService breedFilterService;
@@ -196,11 +192,11 @@ public class BreedServiceTest {
     @Test
     void getFilteredListOfBreed() {
 
-        when(breedRequestFactory.getBreedRequest(anyMap())).thenReturn(new BreedRequest());
+        when(breedFilterService.getBreedRequest(anyMap())).thenReturn(new BreedRequest());
         when(searchCriteriaBuilder.buildListOfCriteria(any(BreedRequest.class))).thenReturn(specification);
 
-        BreedRequest breedRequest = breedRequestFactory.getBreedRequest(new HashMap<>());
-        breedFilterService.saveBreedRequest(breedRequest);
+        BreedRequest breedRequest = breedFilterService.getBreedRequest(new HashMap<>());
+        breedFilterService.saveBreedRequest(breedRequest, "anyname");
         Specification<Breed> mySpec = searchCriteriaBuilder.buildListOfCriteria(breedRequest);
 
         when(breedRepo.findAll(mySpec)).thenReturn(breedlist);
@@ -208,10 +204,10 @@ public class BreedServiceTest {
 
         breedFilterService.getProperBreeds(new ArrayList<>(), new ArrayList<>(), breedRequest);
 
-        Mockito.verify(breedRequestFactory, Mockito.times(1))
+        Mockito.verify(breedFilterService, Mockito.times(1))
                 .getBreedRequest(anyMap());
         Mockito.verify(breedFilterService, Mockito.times(1))
-                .saveBreedRequest(any(BreedRequest.class));
+                .saveBreedRequest(any(BreedRequest.class), anyString());
         Mockito.verify(breedFilterService, Mockito.times(1))
                 .getProperBreeds(any(ArrayList.class), any(ArrayList.class), any(BreedRequest.class));
         Mockito.verify(searchCriteriaBuilder, Mockito.times(1))

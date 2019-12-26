@@ -4,6 +4,7 @@ import com.eyeslessdev.needmypuppyapi.entity.Role;
 import com.eyeslessdev.needmypuppyapi.entity.User;
 import com.eyeslessdev.needmypuppyapi.repositories.UserRepo;
 import com.eyeslessdev.needmypuppyapi.security.CommonConsts;
+import com.eyeslessdev.needmypuppyapi.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,29 +19,13 @@ import java.util.UUID;
 @RequestMapping("users")
 public class UserController {
 
-
         @Autowired
-        private UserRepo userRepo;
-
-        @Autowired
-        private BCryptPasswordEncoder bCryptPasswordEncoder;
+        private UserService userService;
 
         @PostMapping("/signup")
         public ResponseEntity<String> signUp (@RequestBody User user){
-            if (!userRepo.findByEmail(user.getEmail()).isPresent()) {
-                user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-                if (user.getExternalid() == null) {user.setExternalid(UUID
-                        .randomUUID()
-                        .toString()
-                        .concat(CommonConsts.ONUS_AUTH));}
-                user.setRoles(Collections.singleton(Role.CREATEDUSER));
-                user.setRegistrationtime(System.currentTimeMillis());
-                user.setLastvisit(System.currentTimeMillis());
-                userRepo.save(user);
-                return new ResponseEntity<String>(HttpStatus.OK);
-            } else {
-                return new ResponseEntity<String>("Tакой email уже занят", HttpStatus.BAD_REQUEST);
-            }
+            if (userService.saveNewUser(user).isPresent()) {
+                return new ResponseEntity<>(HttpStatus.OK);
+            } else return new ResponseEntity<>("Tакой email уже занят", HttpStatus.BAD_REQUEST);
         }
-
 }

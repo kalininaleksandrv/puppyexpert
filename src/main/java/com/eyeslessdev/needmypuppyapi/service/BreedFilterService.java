@@ -2,6 +2,7 @@ package com.eyeslessdev.needmypuppyapi.service;
 
 import com.eyeslessdev.needmypuppyapi.entity.Breed;
 import com.eyeslessdev.needmypuppyapi.entity.BreedRequest;
+import com.eyeslessdev.needmypuppyapi.entity.BreedRequestFactory;
 import com.eyeslessdev.needmypuppyapi.repositories.BreedRequestRepo;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -20,8 +21,16 @@ class BreedFilterService {
     @Autowired
     private BreedRequestRepo breedRequestRepo;
 
-    BreedFilterService(BreedRequestRepo breedRequestRepo) {
+    @Autowired
+    private BreedRequestFactory breedRequestFactory;
+
+    BreedFilterService(BreedRequestRepo breedRequestRepo, BreedRequestFactory breedRequestFactory) {
         this.breedRequestRepo = breedRequestRepo;
+        this.breedRequestFactory = breedRequestFactory;
+    }
+
+    public BreedRequest getBreedRequest(Map<String, String> allparam) {
+        return breedRequestFactory.getBreedRequest(allparam);
     }
 
     Map<String, List<Breed>> getProperBreeds(List<Breed> myBreed, List<Breed> topRecomended, BreedRequest breedRequest) {

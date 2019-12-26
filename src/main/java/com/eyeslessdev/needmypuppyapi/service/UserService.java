@@ -3,11 +3,15 @@ package com.eyeslessdev.needmypuppyapi.service;
 import com.eyeslessdev.needmypuppyapi.entity.Role;
 import com.eyeslessdev.needmypuppyapi.entity.User;
 import com.eyeslessdev.needmypuppyapi.repositories.UserRepo;
+import com.eyeslessdev.needmypuppyapi.security.CommonConsts;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -18,25 +22,35 @@ public class UserService {
     @Autowired
     private UserRepo userRepo;
 
-    public Boolean changeStatus(Long id, Set<Role> roles) {
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
-        try {
-            Optional<User> updateduseropt = userRepo.findById(id);
-            if (updateduseropt.isPresent()){
-                updateduseropt.get().getRoles().clear();
-                updateduseropt.get().setRoles(roles);
-                userRepo.save(updateduseropt.get());
-                return true;
-            } else {return false;}
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
+    public UserService(UserRepo userRepo,
+                       BCryptPasswordEncoder bCryptPasswordEncoder) {
+        this.userRepo = userRepo;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
     public Optional<List<User>> findAll() {return Optional.ofNullable(userRepo.findAll());}
 
     public Optional<User> findById(long id) {return userRepo.findById(id);}
+
+    public Optional<User> saveNewUser (User user){
+        if (!userRepo.findByEmail(user.getEmail()).isPresent()) {
+            user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+            if (user.getExternalid() == null) {user.setExternalid(UUID
+                    .randomUUID()
+                    .toString()
+                    .concat(CommonConsts.ONUS_AUTH));}
+            user.setRoles(Collections.singleton(Role.CREATEDUSER));
+            user.setRegistrationtime(System.currentTimeMillis());
+            user.setLastvisit(System.currentTimeMillis());
+
+            return Optional.of(userRepo.save(user));
+        } else {
+            return Optional.empty();
+        }
+    }
 
     String getAuthenticatedPrincipalUserName() {
         if (!(getCuternAuthentication() instanceof AnonymousAuthenticationToken)) {
@@ -87,5 +101,20 @@ public class UserService {
         }
     }
 
+    public Boolean changeStatus(Long id, Set<Role> roles) {
+
+        try {
+            Optional<User> updateduseropt = userRepo.findById(id);
+            if (updateduseropt.isPresent()){
+                updateduseropt.get().getRoles().clear();
+                updateduseropt.get().setRoles(roles);
+                userRepo.save(updateduseropt.get());
+                return true;
+            } else {return false;}
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 
 }

@@ -31,12 +31,12 @@ class BreedControllerTest {
     @Autowired
     private BreedController controller;
 
-    private MockMvc mockMvcReal;
+    private MockMvc mockMvc;
 
     @BeforeEach
     void setUp() {
 
-        mockMvcReal = MockMvcBuilders.standaloneSetup(controller)
+        mockMvc = MockMvcBuilders.standaloneSetup(controller)
                 .build();
     }
 
@@ -48,7 +48,7 @@ class BreedControllerTest {
     @Test
     void getAllBreedsById() throws Exception {
 
-        ResultActions resultActions = mockMvcReal.perform(get("/breeds")
+        ResultActions resultActions = mockMvc.perform(get("/breeds")
                 .accept(MediaType.APPLICATION_JSON));
 
         assertNotNull(resultActions);
@@ -66,7 +66,7 @@ class BreedControllerTest {
     @Test
     void getAllBreedsOrderedByTitle() throws Exception {
 
-       ResultActions resultActions = mockMvcReal.perform(get("/breeds/bytitle")
+       ResultActions resultActions = mockMvc.perform(get("/breeds/bytitle")
                 .accept(MediaType.APPLICATION_JSON));
 
         assertNotNull(resultActions);
@@ -82,7 +82,7 @@ class BreedControllerTest {
     @Test
     void getAllBreedsOrderedByTitleCheckOrder() throws Exception {
 
-        ResultActions resultActions = mockMvcReal.perform(get("/breeds/bytitle")
+        ResultActions resultActions = mockMvc.perform(get("/breeds/bytitle")
                 .accept(MediaType.APPLICATION_JSON));
 
         assertNotNull(resultActions);
@@ -123,7 +123,7 @@ class BreedControllerTest {
 
     @Test
     void getBreedById() throws Exception {
-        ResultActions resultActions = mockMvcReal.perform(get("/breeds/3")
+        ResultActions resultActions = mockMvc.perform(get("/breeds/3")
                 .accept(MediaType.APPLICATION_JSON));
         assertNotNull(resultActions);
 
@@ -133,7 +133,7 @@ class BreedControllerTest {
                 .andExpect(jsonPath("$.id", Matchers.comparesEqualTo(3)))
                 .andExpect(jsonPath("$.title", Matchers.containsString("Австралийская овчарка (Аусси)")));
 
-        ResultActions resultActions404 = mockMvcReal.perform(get("/breeds/999")
+        ResultActions resultActions404 = mockMvc.perform(get("/breeds/999")
                 .accept(MediaType.APPLICATION_JSON));
         assertNotNull(resultActions404);
 
@@ -141,7 +141,7 @@ class BreedControllerTest {
                 .andDo(print())
                 .andExpect(status().isNotFound());
 
-        ResultActions resultActions400 = mockMvcReal.perform(get("/breeds/dhmtdyhmjkdtm")
+        ResultActions resultActions400 = mockMvc.perform(get("/breeds/dhmtdyhmjkdtm")
                 .accept(MediaType.APPLICATION_JSON));
         assertNotNull(resultActions400);
 
@@ -153,7 +153,7 @@ class BreedControllerTest {
     @Test
     void faveBreed() throws Exception {
 
-        ResultActions resultActions = mockMvcReal.perform(get("/breeds/faved/3")
+        ResultActions resultActions = mockMvc.perform(get("/breeds/faved/3")
                 .accept(MediaType.APPLICATION_JSON));
         assertNotNull(resultActions);
 
@@ -161,7 +161,7 @@ class BreedControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk());
 
-        ResultActions resultActions404 = mockMvcReal.perform(get("/breeds/faved/999")
+        ResultActions resultActions404 = mockMvc.perform(get("/breeds/faved/999")
                 .accept(MediaType.APPLICATION_JSON));
         assertNotNull(resultActions404);
 
@@ -169,7 +169,7 @@ class BreedControllerTest {
                 .andDo(print())
                 .andExpect(status().isNotFound());
 
-        ResultActions resultActions400 = mockMvcReal.perform(get("/breeds/faved/dhmtdyhmjkdtm")
+        ResultActions resultActions400 = mockMvc.perform(get("/breeds/faved/dhmtdyhmjkdtm")
                 .accept(MediaType.APPLICATION_JSON));
         assertNotNull(resultActions400);
 
@@ -181,7 +181,7 @@ class BreedControllerTest {
     @Test
     void faveBreedCheckIncreasing() throws Exception {
 
-        ResultActions resultActionsFirst = mockMvcReal.perform(get("/breeds/3")
+        ResultActions resultActionsFirst = mockMvc.perform(get("/breeds/3")
                 .accept(MediaType.APPLICATION_JSON));
         assertNotNull(resultActionsFirst);
 
@@ -191,7 +191,7 @@ class BreedControllerTest {
                 .getContentAsString())
                 .read("$.favorite");
 
-        ResultActions resultActionsNext = mockMvcReal.perform(get("/breeds/faved/3")
+        ResultActions resultActionsNext = mockMvc.perform(get("/breeds/faved/3")
                 .accept(MediaType.APPLICATION_JSON));
         assertNotNull(resultActionsNext);
 
@@ -199,7 +199,7 @@ class BreedControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk());
 
-        ResultActions resultActionsLast = mockMvcReal.perform(get("/breeds/3")
+        ResultActions resultActionsLast = mockMvc.perform(get("/breeds/3")
                 .accept(MediaType.APPLICATION_JSON));
         assertNotNull(resultActionsLast);
 
@@ -216,7 +216,7 @@ class BreedControllerTest {
     @Test
     void getFilteredBreeds() throws Exception {
 
-        ResultActions resultActions = mockMvcReal.perform(get("/breeds/filtered")
+        ResultActions resultActions = mockMvc.perform(get("/breeds/filtered")
                 .param("exp", "1")
                 .param("time", "1")
                 .param("age", "1")
@@ -228,7 +228,7 @@ class BreedControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk());
 
-        ResultActions resultActionsNoParams = mockMvcReal.perform(get("/breeds/filtered")
+        ResultActions resultActionsNoParams = mockMvc.perform(get("/breeds/filtered")
                 .accept(MediaType.APPLICATION_JSON));
 
         assertNotNull(resultActionsNoParams);

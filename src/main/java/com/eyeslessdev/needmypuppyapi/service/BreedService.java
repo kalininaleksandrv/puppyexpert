@@ -2,7 +2,6 @@ package com.eyeslessdev.needmypuppyapi.service;
 
 import com.eyeslessdev.needmypuppyapi.entity.Breed;
 import com.eyeslessdev.needmypuppyapi.entity.BreedRequest;
-import com.eyeslessdev.needmypuppyapi.entity.BreedRequestFactory;
 import com.eyeslessdev.needmypuppyapi.entity.SearchCriteriaBuilder;
 import com.eyeslessdev.needmypuppyapi.repositories.BreedRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,9 +21,6 @@ public class BreedService {
     private BreedFilterService breedFilterService;
 
     @Autowired
-    private BreedRequestFactory breedRequestFactory;
-
-    @Autowired
     private SearchCriteriaBuilder searchCriteriaBuilder;
 
     @Autowired
@@ -32,12 +28,11 @@ public class BreedService {
 
     public BreedService(BreedRepo breedRepo,
                         BreedFilterService breedFilterService,
-                        BreedRequestFactory breedRequestFactory,
-                        SearchCriteriaBuilder searchCriteriaBuilder, UserService userService) {
+                        SearchCriteriaBuilder searchCriteriaBuilder,
+                        UserService userService) {
         this.breedRepo = breedRepo;
         this.breedFilterService = breedFilterService;
         this.searchCriteriaBuilder = searchCriteriaBuilder;
-        this.breedRequestFactory = breedRequestFactory;
         this.userService = userService;
     }
 
@@ -54,6 +49,7 @@ public class BreedService {
         if(myBreed.isPresent()) {
             searchingresult.put("Список всех пород", new ArrayList<>(myBreed.get()));
         } else searchingresult.put("Список всех пород", Collections.EMPTY_LIST);
+        // TODO: 26.12.2019 make logging
             return searchingresult;
     }
 
@@ -79,6 +75,7 @@ public class BreedService {
                 breedRepo.save(breed);
                 return HttpStatus.OK;
             } catch (Exception e) {
+                // TODO: 26.12.2019 make logging
                 return HttpStatus.INTERNAL_SERVER_ERROR;}
         } else return HttpStatus.NOT_FOUND;
 
@@ -88,7 +85,7 @@ public class BreedService {
 
         //этот код денормализован для улучшения читаемости
 
-        //1. передаем мапу с параметрами в breedRequestFactory, возвращаем объект BreedRequest
+        //1. передаем мапу с параметрами в breedFilterService, возвращаем объект BreedRequest
         //2.1. Передаем BreedRequest в searchCriteriaBuilder, где он предобразовывается в List SearchCriteria
         //2.2. Там же в searchCriteriaBuilder передаем List SearchCriteria в BreedSpecificationBuilder
         //      - итерируем конструктором с with
@@ -102,7 +99,7 @@ public class BreedService {
         //  breedFilterService возвращает Map с ключами String и значениями List<Breed> т.е. несколько озаглавленных списков
         //  возвращаем эту Map из метода
 
-        BreedRequest breedrequest = breedRequestFactory.getBreedRequest(allparam); // TODO: 24.12.2019 add this to BreedFilterService 
+        BreedRequest breedrequest = breedFilterService.getBreedRequest(allparam);
 
         Specification<Breed> mySpec = searchCriteriaBuilder.buildListOfCriteria(breedrequest);
 
@@ -116,8 +113,10 @@ public class BreedService {
 
         if(myBreed.isPresent() && topRecomended.isPresent())
             return breedFilterService.getProperBreeds(myBreed.get(), topRecomended.get(), breedrequest);
-        else return Collections.EMPTY_MAP;
+        else return Collections.EMPTY_MAP; // TODO: 26.12.2019 make logging
     }
+
+
 
     private int increasefav(int favorite) {return ++favorite;}
 }
