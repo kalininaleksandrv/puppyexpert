@@ -18,10 +18,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import javax.transaction.Transactional;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -50,9 +47,9 @@ class UserControllerTest {
                 .build();
 
         firstUser = new User();
-        firstUser.setName("user03");
-        firstUser.setPassword("user03");
-        firstUser.setEmail("user03@test.com");
+        firstUser.setName("myuser");
+        firstUser.setPassword("myuser");
+        firstUser.setEmail("myuser@test.com");
 
         secondUser = new User();
         secondUser.setName("user100");

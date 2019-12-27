@@ -51,9 +51,9 @@ public class UserService {
     }
 
     String getAuthenticatedPrincipalUserName() {
-        if (!(getCuternAuthentication() instanceof AnonymousAuthenticationToken)) {
+        if (!(getCurrentAuthentication() instanceof AnonymousAuthenticationToken)) {
 
-            Authentication authentication = getCuternAuthentication();
+            Authentication authentication = getCurrentAuthentication();
 
             if (authentication == null) return "anonimous";
 
@@ -71,22 +71,22 @@ public class UserService {
 
     Collection<? extends GrantedAuthority> getAuthenticatedPrincipalUserRole() {
 
-        if (!(getCuternAuthentication() instanceof AnonymousAuthenticationToken)) {
+        if (!(getCurrentAuthentication() instanceof AnonymousAuthenticationToken)) {
 
-            return getCuternAuthentication().getAuthorities();
+            return getCurrentAuthentication().getAuthorities();
 
         } else {
             return Collections.EMPTY_LIST;
         }
     }
 
-    private Authentication getCuternAuthentication() {
+    private Authentication getCurrentAuthentication() {
         return SecurityContextHolder.getContext().getAuthentication();
     }
 
     public Optional<List<User>> findAllCreated(String status) {
 
-        return userRepo.fetchCustomQuery(status);
+        return userRepo.fetchUserListComparedStatus(status);
     }
 
     public void setLastVisitTimeToUser(String useremail){
