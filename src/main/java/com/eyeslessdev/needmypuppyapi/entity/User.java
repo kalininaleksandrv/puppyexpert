@@ -49,6 +49,10 @@ public class User implements Serializable {
                 '}';
     }
 
+    public boolean hasRole(Role role) {
+        return roles.contains(role);
+    }
+
     public String getUsername(){
         return name;
     }

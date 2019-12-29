@@ -150,13 +150,12 @@ class UserServiceTest {
 
         Set<Role> status = Collections.singleton(Role.CREATEDUSER);
 
+        //this method could check if user contains more than one role, for the single role it could be significant simplifying
         final List<User> persons = userList;
         List<User> filteredPersons =  status.stream()
                 .flatMap(n ->
-                        persons.stream().filter(p -> p.getRoles().contains(n))
-                )
+                        persons.stream().filter(p -> p.hasRole(n))                )
                 .collect(Collectors.toCollection(ArrayList::new));
-
 
         when(userRepo.fetchUserListComparedStatus(status.toString())).thenReturn(Optional.of(filteredPersons));
 
