@@ -6,6 +6,7 @@ import com.eyeslessdev.needmypuppyapi.repositories.UserRepo;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -19,8 +20,7 @@ import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
@@ -42,12 +42,16 @@ class UserServiceTest {
 
     @BeforeAll()
     static void setUp() {
+
+        Set<Role> roles = new HashSet<>();
+        roles.add(Role.USER);
+
         User firstUser = new User();
         firstUser.setId(1L);
         firstUser.setName("myuser");
         firstUser.setPassword("myuser");
         firstUser.setEmail("myuser@test.com");
-        firstUser.setRoles(Collections.singleton(Role.USER));
+        firstUser.setRoles(roles);
 
         User secondUser = new User();
         secondUser.setId(2L);
@@ -172,10 +176,52 @@ class UserServiceTest {
 
     @Test
     void setLastVisitTimeToUser() {
+        long currentTime = System.currentTimeMillis();
+        when(userRepo.findByEmail(anyString())).thenReturn(Optional.of(userList.get(1)));
+
+        userService.setLastVisitTimeToUser("some@some.com");
+        User currentUser = userRepo.findByEmail("some@some.com").get();
+
+        Mockito.verify(userRepo, Mockito.times(1)).save(currentUser);
+
+        ArgumentCaptor<User> breedArgumentCaptor = ArgumentCaptor.forClass(User.class);
+        Mockito.verify(userRepo).save(breedArgumentCaptor.capture());
+
+        User savedUser = breedArgumentCaptor.getValue();
+        long expectedVisitTime = savedUser.getLastvisit();
+        assertThat(expectedVisitTime - currentTime).isLessThan(100);
+    }
+
+    @Test
+    void setLastVisitTimeToUserIfUserNotFoundInDb() {
+        when(userRepo.findByEmail(anyString())).thenReturn(Optional.empty());
+        userService.setLastVisitTimeToUser("incorrect@some.com");
+        Mockito.verify(userRepo, Mockito.never()).save(any(User.class));
     }
 
     @Test
     void changeStatus() {
+
+        when(userRepo.findById(anyLong())).thenReturn(Optional.of(userList.get(0)));
+
+        userService.changeStatus(1L, Collections.singleton(Role.ADMIN));
+        User currentUser = userRepo.findById(1L).get();
+
+        Mockito.verify(userRepo, Mockito.times(1)).save(currentUser);
+
+        ArgumentCaptor<User> breedArgumentCaptor = ArgumentCaptor.forClass(User.class);
+        Mockito.verify(userRepo).save(breedArgumentCaptor.capture());
+
+        User savedUser = breedArgumentCaptor.getValue();
+        Set<Role> expectedRoles = savedUser.getRoles();
+        assertThat(expectedRoles).containsOnly(Role.ADMIN);
+    }
+
+    @Test
+    void changeStatusIfUserNotFoundInDb() {
+        when(userRepo.findById(anyLong())).thenReturn(Optional.empty());
+        userService.changeStatus(999L, Collections.singleton(Role.USER));
+        Mockito.verify(userRepo, Mockito.never()).save(any(User.class));
     }
 
 }

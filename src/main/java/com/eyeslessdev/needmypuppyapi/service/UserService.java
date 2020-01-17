@@ -96,6 +96,7 @@ public class UserService {
             userRepo.save(user.get());
         } else {
             System.out.println("no such user to post visit time");
+            // TODO: 29.12.2019 log this 
         }
     }
 
@@ -108,10 +109,13 @@ public class UserService {
                 updateduseropt.get().setRoles(roles);
                 userRepo.save(updateduseropt.get());
                 return true;
-            } else {return false;}
+            } else {
+                return false;
+            }
         } catch (Exception e) {
             e.printStackTrace();
             return false;
+            // TODO: 29.12.2019 log this 
         }
     }
 
