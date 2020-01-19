@@ -84,8 +84,7 @@ public class UserService {
         return SecurityContextHolder.getContext().getAuthentication();
     }
 
-    public Optional<List<User>> findAllCreated(String status) {
-
+    public List<User> findAllCreated(String status) {
         return userRepo.fetchUserListComparedStatus(status);
     }
 

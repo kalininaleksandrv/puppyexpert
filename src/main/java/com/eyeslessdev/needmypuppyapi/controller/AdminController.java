@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 @RestController
@@ -67,10 +66,8 @@ public class AdminController {
 
         try {
             Role role = Role.valueOf(status);
-            Optional<List<User>> fetchedlist = userService.findAllCreated(role.getAuthority());
-            return fetchedlist
-                    .map(users -> new ResponseEntity<>(users, HttpStatus.OK))
-                    .orElseGet(() -> new ResponseEntity<>(HttpStatus.OK));
+            List<User> fetchedlist = userService.findAllCreated(role.getAuthority());
+            return new ResponseEntity<>(fetchedlist, HttpStatus.OK);
         } catch (IllegalArgumentException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }

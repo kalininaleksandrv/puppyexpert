@@ -15,6 +15,6 @@ public interface UserRepo extends JpaRepository<User, Long> {
     User findByName(String username);
 
     @Query(value = "SELECT * FROM public.usr INER JOIN public.user_role ON (id = user_id) WHERE user_role.roles = ?1 ORDER BY id", nativeQuery = true)
-    Optional<List<User>> fetchUserListComparedStatus(String userstatus);
+    List<User> fetchUserListComparedStatus(String userstatus);
 
 }
