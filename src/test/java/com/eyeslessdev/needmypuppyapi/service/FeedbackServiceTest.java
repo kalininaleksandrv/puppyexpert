@@ -4,12 +4,24 @@ import com.eyeslessdev.needmypuppyapi.entity.Feedback;
 import com.eyeslessdev.needmypuppyapi.repositories.FeedbackRepo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.when;
+
+@ExtendWith(SpringExtension.class)
+@SpringBootTest
 class FeedbackServiceTest {
 
     @Mock
@@ -20,9 +32,13 @@ class FeedbackServiceTest {
 
     private static ArrayList<Feedback> listOfFeedback;
 
+    Feedback feedbackOne;
+    Feedback feedbackTwo;
+    Feedback feedbackThree;
+
     @BeforeEach
     void setUp() {
-        Feedback feedbackOne = new Feedback();
+        feedbackOne = new Feedback();
         feedbackOne.setId(99L);
         feedbackOne.setDogid(3L);
         feedbackOne.setTitle("my feedback one");
@@ -33,7 +49,7 @@ class FeedbackServiceTest {
         feedbackOne.setCommenttimestr("01/17/2020 16:32:47");
         feedbackOne.setIsModerated(1);
 
-        Feedback feedbackTwo = new Feedback();
+        feedbackTwo = new Feedback();
         feedbackTwo.setId(99L);
         feedbackTwo.setDogid(3L);
         feedbackTwo.setTitle("my feedback two");
@@ -44,9 +60,9 @@ class FeedbackServiceTest {
         feedbackTwo.setCommenttimestr("01/17/2020 16:32:47");
         feedbackTwo.setIsModerated(0);
 
-        Feedback feedbackThree = new Feedback();
+        feedbackThree = new Feedback();
         feedbackThree.setId(99L);
-        feedbackThree.setDogid(3L);
+        feedbackThree.setDogid(4L);
         feedbackThree.setTitle("my feedback three");
         feedbackThree.setDescription("I'am so much awesome");
         feedbackThree.setEmail("111@some.com");
@@ -59,7 +75,20 @@ class FeedbackServiceTest {
     }
 
     @Test
-    void findByDogid() {
+    void findByDogId() {
+
+        long arg = 3L;
+
+        List<Feedback> filteredFeedbackList = listOfFeedback.stream()
+                .filter(l -> l.getDogid() == arg)
+                .collect(Collectors.toList());
+
+        when(feedbackRepo.findTop10ByDogidOrderByCommenttimeDesc(anyLong())).thenReturn(filteredFeedbackList);
+        List<Feedback> testingFeedback = feedbackService.findByDogId(arg);
+
+        assertNotNull(testingFeedback);
+        assertThat(testingFeedback.get(0)).hasSameClassAs(listOfFeedback.get(0));
+        assertThat(testingFeedback).containsOnly(feedbackOne); //feedbackTwo wont pass cause of no moderated status
     }
 
     @Test
@@ -67,7 +96,11 @@ class FeedbackServiceTest {
     }
 
     @Test
-    void findUnmoderatedFeedback() {
+    void findUnmoderatedFeedback_inCaseUnmoderated() {
+    }
+
+    @Test
+    void findUnmoderatedFeedback_inCaseModerated() {
     }
 
     @Test

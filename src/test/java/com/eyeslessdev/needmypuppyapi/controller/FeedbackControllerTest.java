@@ -89,6 +89,19 @@ class FeedbackControllerTest {
     }
 
     @Test
+    void getFeedbackById_caseNotPresentId() throws Exception {
+        int id = 999;
+        ResultActions resultActions = mockMvc.perform(get("/feedback/{id}", id)
+                .accept(MediaType.APPLICATION_JSON));
+        assertNotNull(resultActions);
+
+        resultActions
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.[*]", Matchers.iterableWithSize(0)));
+    }
+
+    @Test
     @WithUserDetails("admin@test.com")
     void sendFeedbackNoErrors() throws Exception {
 

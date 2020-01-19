@@ -48,7 +48,7 @@ public class BreedService {
 
         if(myBreed.isPresent()) {
             searchingresult.put("Список всех пород", new ArrayList<>(myBreed.get()));
-        } else searchingresult.put("Список всех пород", Collections.EMPTY_LIST);
+        } else searchingresult.put("Список всех пород", Collections.emptyList());
         // TODO: 26.12.2019 make logging
             return searchingresult;
     }
@@ -113,7 +113,7 @@ public class BreedService {
 
         if(myBreed.isPresent() && topRecomended.isPresent())
             return breedFilterService.getProperBreeds(myBreed.get(), topRecomended.get(), breedrequest);
-        else return Collections.EMPTY_MAP; // TODO: 26.12.2019 make logging
+        else return Collections.emptyMap(); // TODO: 26.12.2019 make logging
     }
 
 

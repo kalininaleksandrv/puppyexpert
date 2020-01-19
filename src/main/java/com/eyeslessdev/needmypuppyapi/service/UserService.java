@@ -76,7 +76,7 @@ public class UserService {
             return getCurrentAuthentication().getAuthorities();
 
         } else {
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
     }
 

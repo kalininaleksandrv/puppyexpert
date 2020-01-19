@@ -10,7 +10,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 @RestController
@@ -27,9 +29,8 @@ public class AdminController {
     @CrossOrigin
     @GetMapping("/messagestomod")
     public ResponseEntity<List<Feedback>> getFeedbackById() {
-        return feedbackService.findUnmoderatedFeedback(0)
-                .map(feedback -> new ResponseEntity<>(feedback, HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.OK));
+        List<Feedback> feedback = feedbackService.findUnmoderatedFeedback(0);
+        return new ResponseEntity<>(feedback, HttpStatus.OK);
     }
 
     @CrossOrigin

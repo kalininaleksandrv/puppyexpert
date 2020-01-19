@@ -12,7 +12,10 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
@@ -28,13 +31,13 @@ public class FeedbackService {
     @Autowired
     private UserService userService;
 
-    public List findByDogid (long id){
+    public List<Feedback> findByDogId(long id){
 
-        Optional<List<Feedback>> mylist = feedbackRepo.findTop10ByDogidOrderByCommenttimeDesc(id);
+        List<Feedback> mylist = feedbackRepo.findTop10ByDogidOrderByCommenttimeDesc(id);
 
-        return mylist.map(feedbacks -> feedbacks.stream()
+        return mylist.stream()
                 .filter(list -> list.getIsModerated() == 1)
-                .collect(Collectors.toList())).orElse(Collections.EMPTY_LIST);
+                .collect(Collectors.toList());
     }
 
     public Boolean saveFeedback (Feedback feedback)  {
@@ -59,7 +62,7 @@ public class FeedbackService {
      }
     }
 
-    public Optional<List<Feedback>> findUnmoderatedFeedback (Integer ismoderated){
+    public List<Feedback> findUnmoderatedFeedback (Integer ismoderated){
         return feedbackRepo.findByIsmoderated(ismoderated);
     }
 
