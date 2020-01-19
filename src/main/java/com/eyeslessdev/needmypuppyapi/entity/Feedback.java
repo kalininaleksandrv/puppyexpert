@@ -1,7 +1,9 @@
 package com.eyeslessdev.needmypuppyapi.entity;
 
 import javax.persistence.*;
-import javax.validation.constraints.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 
     @Entity
@@ -88,7 +90,7 @@ import java.io.Serializable;
 
         public void setCommenttimestr(String commenttimestr) {this.commenttimestr = commenttimestr;}
 
-        public Integer getIsModerated() {return ismoderated;}
+        public Integer isModerated() {return ismoderated;}
 
         public void setIsModerated(Integer isModerated) {this.ismoderated = isModerated;}
     }

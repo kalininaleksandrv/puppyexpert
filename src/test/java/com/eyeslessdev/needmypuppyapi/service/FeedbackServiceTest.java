@@ -1,22 +1,26 @@
 package com.eyeslessdev.needmypuppyapi.service;
 
 import com.eyeslessdev.needmypuppyapi.entity.Feedback;
+import com.eyeslessdev.needmypuppyapi.entity.Role;
 import com.eyeslessdev.needmypuppyapi.repositories.FeedbackRepo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.stubbing.OngoingStubbing;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
@@ -26,6 +30,9 @@ class FeedbackServiceTest {
 
     @Mock
     FeedbackRepo feedbackRepo;
+
+    @Mock
+    UserService userService;
 
     @InjectMocks
     FeedbackService feedbackService;
@@ -44,10 +51,6 @@ class FeedbackServiceTest {
         feedbackOne.setTitle("my feedback one");
         feedbackOne.setDescription("I'am awesome");
         feedbackOne.setEmail("admin@test.com");
-        feedbackOne.setUsername("admin");
-        feedbackOne.setCommenttime(1579267967549L);
-        feedbackOne.setCommenttimestr("01/17/2020 16:32:47");
-        feedbackOne.setIsModerated(1);
 
         feedbackTwo = new Feedback();
         feedbackTwo.setId(99L);
@@ -56,9 +59,6 @@ class FeedbackServiceTest {
         feedbackTwo.setDescription("I'am too awesome");
         feedbackTwo.setEmail("some@some.com");
         feedbackTwo.setUsername("someone");
-        feedbackTwo.setCommenttime(1579267967549L);
-        feedbackTwo.setCommenttimestr("01/17/2020 16:32:47");
-        feedbackTwo.setIsModerated(0);
 
         feedbackThree = new Feedback();
         feedbackThree.setId(99L);
@@ -67,15 +67,17 @@ class FeedbackServiceTest {
         feedbackThree.setDescription("I'am so much awesome");
         feedbackThree.setEmail("111@some.com");
         feedbackThree.setUsername("111");
-        feedbackThree.setCommenttime(1579267967549L);
-        feedbackThree.setCommenttimestr("01/17/2020 16:32:47");
-        feedbackThree.setIsModerated(0);
 
         listOfFeedback = new ArrayList<>(Arrays.asList(feedbackOne, feedbackTwo, feedbackThree));
     }
 
     @Test
     void findByDogId() {
+
+        feedbackOne.setIsModerated(1);
+        feedbackTwo.setIsModerated(0);
+        feedbackThree.setIsModerated(0);
+
 
         long arg = 3L;
 
@@ -89,18 +91,101 @@ class FeedbackServiceTest {
         assertNotNull(testingFeedback);
         assertThat(testingFeedback.get(0)).hasSameClassAs(listOfFeedback.get(0));
         assertThat(testingFeedback).containsOnly(feedbackOne); //feedbackTwo wont pass cause of no moderated status
+
+        Mockito.verify(feedbackRepo, Mockito.times(1)).findTop10ByDogidOrderByCommenttimeDesc(arg);
     }
 
     @Test
-    void saveFeedback() {
+    void saveFeedback_caseSetUpModeratedStatus() {
+
+        Collection<Role> collectionsOfRoles = Collections.singleton(Role.USER);
+
+        OngoingStubbing<Collection<? extends GrantedAuthority>> stub = when(userService.getAuthenticatedPrincipalUserRole());
+        stub.thenReturn(collectionsOfRoles);
+        when(userService.getAuthenticatedPrincipalUserName()).thenReturn("user");
+
+        Boolean isFeedbackSaved = feedbackService.saveFeedback(feedbackOne);
+
+        assertTrue(isFeedbackSaved);
+
+        Mockito.verify(feedbackRepo, Mockito.times(1)).save(feedbackOne);
+
+        ArgumentCaptor<Feedback> breedArgumentCaptor = ArgumentCaptor.forClass(Feedback.class);
+        Mockito.verify(feedbackRepo).save(breedArgumentCaptor.capture());
+
+        Feedback savedUser = breedArgumentCaptor.getValue();
+        assertThat(savedUser.isModerated()).isEqualTo(1);
+        assertThat(savedUser.getCommenttime() - System.currentTimeMillis()).isLessThan(100);
+        assertNotNull(savedUser.getCommenttimestr());
+        assertEquals(savedUser.getUsername(), "user");
+
+    }
+
+    @Test
+    void saveFeedback_caseSetUpUnmoderatedStatus() {
+
+        Collection<Role> collectionsOfRoles = Collections.singleton(Role.CREATEDUSER);
+
+        OngoingStubbing<Collection<? extends GrantedAuthority>> stub = when(userService.getAuthenticatedPrincipalUserRole());
+        stub.thenReturn(collectionsOfRoles);
+
+        when(userService.getAuthenticatedPrincipalUserName()).thenReturn("anonimous");
+
+        Boolean isFeedbackSaved = feedbackService.saveFeedback(feedbackThree);
+
+        assertTrue(isFeedbackSaved);
+
+        Mockito.verify(feedbackRepo, Mockito.times(1)).save(feedbackThree);
+
+        ArgumentCaptor<Feedback> breedArgumentCaptor = ArgumentCaptor.forClass(Feedback.class);
+        Mockito.verify(feedbackRepo).save(breedArgumentCaptor.capture());
+
+        Feedback savedUser = breedArgumentCaptor.getValue();
+        assertThat(savedUser.isModerated()).isEqualTo(0);
+        assertThat(savedUser.getCommenttime() - System.currentTimeMillis()).isLessThan(100);
+        assertNotNull(savedUser.getCommenttimestr());
+        assertEquals(savedUser.getUsername(), "anonimous");
+
     }
 
     @Test
     void findUnmoderatedFeedback_inCaseUnmoderated() {
+
+        feedbackOne.setIsModerated(1);
+        feedbackTwo.setIsModerated(0);
+        feedbackThree.setIsModerated(0);
+
+        List<Feedback> filteredFeedbackList = listOfFeedback.stream()
+                .filter(l -> l.isModerated() == 0)
+                .collect(Collectors.toList());
+
+        when(feedbackRepo.findByIsmoderated(anyInt())).thenReturn(filteredFeedbackList);
+        List<Feedback> testingFeedback = feedbackService.findUnmoderatedFeedback(0);
+
+        assertNotNull(testingFeedback);
+        assertThat(testingFeedback).containsOnly(feedbackTwo, feedbackThree);
+
+        Mockito.verify(feedbackRepo, Mockito.times(1)).findByIsmoderated(0);
     }
 
     @Test
     void findUnmoderatedFeedback_inCaseModerated() {
+
+        feedbackOne.setIsModerated(1);
+        feedbackTwo.setIsModerated(0);
+        feedbackThree.setIsModerated(0);
+
+        List<Feedback> filteredFeedbackList = listOfFeedback.stream()
+                .filter(l -> l.isModerated() == 1)
+                .collect(Collectors.toList());
+
+        when(feedbackRepo.findByIsmoderated(anyInt())).thenReturn(filteredFeedbackList);
+        List<Feedback> testingFeedback = feedbackService.findUnmoderatedFeedback(0);
+
+        assertNotNull(testingFeedback);
+        assertThat(testingFeedback).containsOnly(feedbackOne);
+
+        Mockito.verify(feedbackRepo, Mockito.times(1)).findByIsmoderated(0);
     }
 
     @Test

@@ -161,9 +161,9 @@ class UserServiceTest {
                         persons.stream().filter(p -> p.hasRole(n))                )
                 .collect(Collectors.toCollection(ArrayList::new));
 
-        when(userRepo.fetchUserListComparedStatus(status.toString())).thenReturn(Optional.of(filteredPersons));
+        when(userRepo.fetchUserListComparedStatus(status.toString())).thenReturn(filteredPersons);
 
-        List<User> result = userRepo.fetchUserListComparedStatus(status.toString()).get();
+        List<User> result = userRepo.fetchUserListComparedStatus(status.toString());
         List<Role> roles = result.stream()
                 .flatMap(i -> Stream.of(i.getRoles())
                         .flatMap(Collection::stream))

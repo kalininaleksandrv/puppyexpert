@@ -36,16 +36,16 @@ public class FeedbackService {
         List<Feedback> mylist = feedbackRepo.findTop10ByDogidOrderByCommenttimeDesc(id);
 
         return mylist.stream()
-                .filter(list -> list.getIsModerated() == 1)
+                .filter(list -> list.isModerated() == 1)
                 .collect(Collectors.toList());
     }
 
     public Boolean saveFeedback (Feedback feedback)  {
 
-        Collection<? extends GrantedAuthority> currentPrincipalName = userService.getAuthenticatedPrincipalUserRole();
+        Collection<? extends GrantedAuthority> currentPrincipalUserRole = userService.getAuthenticatedPrincipalUserRole();
 
         try {
-             if (currentPrincipalName.contains(Role.USER) || currentPrincipalName.contains(Role.ADMIN))
+             if (currentPrincipalUserRole.contains(Role.USER) || currentPrincipalUserRole.contains(Role.ADMIN))
                  feedback.setIsModerated(1);
              else feedback.setIsModerated(0);
 
@@ -54,8 +54,8 @@ public class FeedbackService {
              feedback.setCommenttime(nowtime.getMillis());
              feedback.setCommenttimestr(nowtime.toString(dtf));
              feedback.setUsername(userService.getAuthenticatedPrincipalUserName());
-             feedbackRepo.save(feedback);
-             return true;
+            feedbackRepo.save(feedback);
+            return true;
      } catch (Exception e) {
         e.printStackTrace();
         return false;
