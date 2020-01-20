@@ -43,6 +43,8 @@ class FeedbackServiceTest {
     Feedback feedbackTwo;
     Feedback feedbackThree;
 
+    List<Map<String, List<Integer>>> income;
+
     @BeforeEach
     void setUp() {
         feedbackOne = new Feedback();
@@ -69,6 +71,13 @@ class FeedbackServiceTest {
         feedbackThree.setUsername("111");
 
         listOfFeedback = new ArrayList<>(Arrays.asList(feedbackOne, feedbackTwo, feedbackThree));
+
+        ArrayList<Integer> listForDeleting = new ArrayList<>(Arrays.asList(1, 2, 3));
+        ArrayList<Integer> listForUpdating = new ArrayList<>(Arrays.asList(4, 5, 6));
+
+//        income.add("DELETE", listForDeleting);
+
+
     }
 
     @Test
@@ -190,6 +199,11 @@ class FeedbackServiceTest {
 
     @Test
     void deleteModeratedFromDb() {
+
+        when(feedbackRepo.deleteFeedbackById(Collections.singleton(anyLong()))).thenReturn(1);
+
+
+
     }
 
     @Test

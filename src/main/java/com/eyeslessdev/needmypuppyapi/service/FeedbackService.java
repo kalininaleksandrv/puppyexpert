@@ -67,15 +67,15 @@ public class FeedbackService {
     }
 
     @Async
-    public CompletableFuture<Boolean> deleteModeratedFromDb (List<Map<String, List<Integer>>> income){
+    public CompletableFuture<Boolean> deleteModeratedFromDb (Map<String, List<Integer>> income){
 
-        Set<Long> deleteset = income.stream()
-                .flatMap(item -> item.entrySet().stream())
+        Set<Long> deleteset = income.entrySet().stream()
                 .filter(item -> item.getKey().equalsIgnoreCase("DELETE"))
                 .map(Map.Entry::getValue)
                 .flatMap(Collection::stream)
                 .map(Long::valueOf)
                 .collect(Collectors.toSet());
+
 
         if(!deleteset.isEmpty()) {
             feedbackRepo.deleteFeedbackById(deleteset);
@@ -84,10 +84,9 @@ public class FeedbackService {
     }
 
     @Async
-    public CompletableFuture<Boolean> updateModeratedInDb (List<Map<String, List<Integer>>> income){
+    public CompletableFuture<Boolean> updateModeratedInDb (Map<String, List<Integer>> income){
 
-        Set<Long> updateset = income.stream()
-                .flatMap(item -> item.entrySet().stream())
+        Set<Long> updateset = income.entrySet().stream()
                 .filter(item -> item.getKey().equalsIgnoreCase("UPDATE"))
                 .map(Map.Entry::getValue)
                 .flatMap(Collection::stream)
