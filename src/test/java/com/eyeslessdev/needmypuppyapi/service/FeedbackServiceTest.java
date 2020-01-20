@@ -20,8 +20,7 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
@@ -43,7 +42,7 @@ class FeedbackServiceTest {
     Feedback feedbackTwo;
     Feedback feedbackThree;
 
-    List<Map<String, List<Integer>>> income;
+    Map<String, List<Integer>> income;
 
     @BeforeEach
     void setUp() {
@@ -72,10 +71,9 @@ class FeedbackServiceTest {
 
         listOfFeedback = new ArrayList<>(Arrays.asList(feedbackOne, feedbackTwo, feedbackThree));
 
-        ArrayList<Integer> listForDeleting = new ArrayList<>(Arrays.asList(1, 2, 3));
-        ArrayList<Integer> listForUpdating = new ArrayList<>(Arrays.asList(4, 5, 6));
-
-//        income.add("DELETE", listForDeleting);
+        income = new HashMap<>();
+        income.put("DELETE", new ArrayList<>(Arrays.asList(1, 2, 3)));
+        income.put("UPDATE", new ArrayList<>(Arrays.asList(4, 5, 6)));
 
 
     }
@@ -202,11 +200,36 @@ class FeedbackServiceTest {
 
         when(feedbackRepo.deleteFeedbackById(Collections.singleton(anyLong()))).thenReturn(1);
 
+        feedbackService.deleteModeratedFromDb(income);
 
+        Mockito.verify(feedbackRepo, Mockito.times(1)).deleteFeedbackById(any(Collection.class));
+
+        ArgumentCaptor<Set<Long>> breedArgumentCaptor = ArgumentCaptor.forClass(HashSet.class);
+        Mockito.verify(feedbackRepo).deleteFeedbackById(breedArgumentCaptor.capture());
+        Set<Long>capturedValues = breedArgumentCaptor.getValue();
+
+        assertThat(capturedValues).containsOnly(1L, 2L, 3L);
 
     }
 
     @Test
     void updateModeratedInDb() {
+
+        when(feedbackRepo.deleteFeedbackById(Collections.singleton(anyLong()))).thenReturn(1);
+
+        feedbackService.updateModeratedInDb(income);
+
+        Mockito.verify(feedbackRepo, Mockito.times(1)).updateFeedbackById(anyInt(), any(Collection.class));
+
+        ArgumentCaptor<Integer> integerArgumentCaptor = ArgumentCaptor.forClass(Integer.class);
+        ArgumentCaptor<Set<Long>> setArgumentCaptor = ArgumentCaptor.forClass(HashSet.class);
+
+        Mockito.verify(feedbackRepo).updateFeedbackById(integerArgumentCaptor.capture(), setArgumentCaptor.capture());
+
+        Integer capturedValuesIsModerated = integerArgumentCaptor.getValue();
+        Set<Long> capturedValuesMap = setArgumentCaptor.getValue();
+
+        assertThat(capturedValuesIsModerated).isEqualTo(1);
+        assertThat(capturedValuesMap).containsOnly(4L, 5L, 6L);
     }
 }
