@@ -29,7 +29,7 @@ public class UserService {
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
-    public Optional<List<User>> findAll() {return Optional.ofNullable(userRepo.findAll());}
+    public List<User> findAll() {return userRepo.findAll();}
 
     public Optional<User> findById(long id) {return userRepo.findById(id);}
 

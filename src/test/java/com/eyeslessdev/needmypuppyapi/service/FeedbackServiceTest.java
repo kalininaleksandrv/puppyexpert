@@ -74,8 +74,6 @@ class FeedbackServiceTest {
         income = new HashMap<>();
         income.put("DELETE", new ArrayList<>(Arrays.asList(1, 2, 3)));
         income.put("UPDATE", new ArrayList<>(Arrays.asList(4, 5, 6)));
-
-
     }
 
     @Test

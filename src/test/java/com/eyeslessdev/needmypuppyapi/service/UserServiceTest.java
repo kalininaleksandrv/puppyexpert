@@ -74,13 +74,13 @@ class UserServiceTest {
     void findAll() {
         when(userRepo.findAll()).thenReturn(userList);
 
-        Optional<List<User>> users = userService.findAll();
+       List<User> users = userService.findAll();
 
-        assertEquals(3, userList.size());
-        assertTrue(userList.stream().allMatch(User.class::isInstance));
-        assertThat(userList).extractingResultOf("hashCode").doesNotHaveDuplicates();
-        assertThat(userList).extracting("name").containsExactlyInAnyOrder("myuser","user100","admin");
-        assertThat(userList).extracting("name").doesNotContain("vasya");
+        assertEquals(3, users.size());
+        assertTrue(users.stream().allMatch(User.class::isInstance));
+        assertThat(users).extractingResultOf("hashCode").doesNotHaveDuplicates();
+        assertThat(users).extracting("name").containsExactlyInAnyOrder("myuser","user100","admin");
+        assertThat(users).extracting("name").doesNotContain("vasya");
         Mockito.verify(userRepo, Mockito.times(1)).findAll();
     }
 

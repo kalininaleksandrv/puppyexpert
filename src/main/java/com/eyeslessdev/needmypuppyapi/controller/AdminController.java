@@ -27,7 +27,7 @@ public class AdminController {
 
     @CrossOrigin
     @GetMapping("/messagestomod")
-    public ResponseEntity<List<Feedback>> getFeedbackById() {
+    public ResponseEntity<List<Feedback>> getFeedbackByStatus() {
         List<Feedback> feedback = feedbackService.findUnmoderatedFeedback(0);
         return new ResponseEntity<>(feedback, HttpStatus.OK);
     }
@@ -54,9 +54,8 @@ public class AdminController {
     @CrossOrigin
     @GetMapping("/getallusers")
     public ResponseEntity<List<User>> findAll () {
-       return userService
-               .findAll().map(users -> new ResponseEntity<>(users, HttpStatus.OK))
-               .orElseGet(() -> new ResponseEntity<>(HttpStatus.OK));
+        List<User> userList = userService.findAll();
+        return new ResponseEntity<>(userList, HttpStatus.OK);
     }
 
 
