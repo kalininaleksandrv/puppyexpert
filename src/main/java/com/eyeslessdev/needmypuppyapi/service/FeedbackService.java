@@ -57,6 +57,7 @@ public class FeedbackService {
             feedbackRepo.save(feedback);
             return true;
      } catch (Exception e) {
+            // TODO: 20.01.2020 add logging
         e.printStackTrace();
         return false;
      }
