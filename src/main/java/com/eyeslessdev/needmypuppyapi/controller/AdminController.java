@@ -25,6 +25,11 @@ public class AdminController {
     @Autowired
     private UserService userService;
 
+    public AdminController(FeedbackService feedbackService, UserService userService) {
+        this.feedbackService = feedbackService;
+        this.userService = userService;
+    }
+
     @CrossOrigin
     @GetMapping("/messagestomod")
     public ResponseEntity<List<Feedback>> getFeedbackByStatus() {
@@ -35,7 +40,7 @@ public class AdminController {
     @CrossOrigin
     @PostMapping("/messagestomod")
 
-    public ResponseEntity<List<String>> moderateMessages (@RequestBody Map<String, List<Integer>> moderatedmessages){
+    public ResponseEntity<HttpStatus> moderateMessages (@RequestBody Map<String, List<Integer>> moderatedmessages){
 
         CompletableFuture<Boolean> resultofdeleting = feedbackService.deleteModeratedFromDb(moderatedmessages);
         CompletableFuture<Boolean> resultofupdating = feedbackService.updateModeratedInDb(moderatedmessages);
@@ -43,7 +48,10 @@ public class AdminController {
         CompletableFuture<Boolean> allWrites = resultofdeleting
                 .thenCombine(resultofupdating, (res1, res2) -> res1&res2)
                 .whenComplete((result, ex) -> {
-                    if (ex!=null){System.out.println(ex.toString());}
+                    if (ex!=null){
+                        System.out.println(ex.toString());
+                        // TODO: 21.01.2020 log it
+                    }
                 });
 
         if(allWrites.join()){return new ResponseEntity<>(HttpStatus.OK);}
