@@ -5,7 +5,6 @@ import com.eyeslessdev.needmypuppyapi.entity.Role;
 import com.eyeslessdev.needmypuppyapi.entity.User;
 import com.eyeslessdev.needmypuppyapi.service.FeedbackService;
 import com.eyeslessdev.needmypuppyapi.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,10 +18,8 @@ import java.util.concurrent.CompletableFuture;
 @RequestMapping("admin")
 public class AdminController {
 
-    @Autowired
     private FeedbackService feedbackService;
 
-    @Autowired
     private UserService userService;
 
     public AdminController(FeedbackService feedbackService, UserService userService) {
@@ -76,6 +73,7 @@ public class AdminController {
             List<User> fetchedlist = userService.findAllCreated(role.getAuthority());
             return new ResponseEntity<>(fetchedlist, HttpStatus.OK);
         } catch (IllegalArgumentException e) {
+            // TODO: 21.01.2020 log it
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }

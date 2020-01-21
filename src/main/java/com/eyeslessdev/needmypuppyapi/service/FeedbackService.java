@@ -7,7 +7,6 @@ import com.eyeslessdev.needmypuppyapi.repositories.UserRepo;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
@@ -22,14 +21,17 @@ import java.util.stream.Collectors;
 @Service
 public class FeedbackService {
 
-    @Autowired
     private FeedbackRepo feedbackRepo;
 
-    @Autowired
     private UserRepo userRepo;
 
-    @Autowired
     private UserService userService;
+
+    public FeedbackService(FeedbackRepo feedbackRepo, UserRepo userRepo, UserService userService) {
+        this.feedbackRepo = feedbackRepo;
+        this.userRepo = userRepo;
+        this.userService = userService;
+    }
 
     public List<Feedback> findByDogId(long id){
 

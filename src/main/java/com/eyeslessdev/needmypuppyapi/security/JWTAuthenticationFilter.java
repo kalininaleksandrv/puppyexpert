@@ -5,7 +5,6 @@ import com.eyeslessdev.needmypuppyapi.entity.MyUserPrincipal;
 import com.eyeslessdev.needmypuppyapi.entity.User;
 import com.eyeslessdev.needmypuppyapi.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -28,8 +27,6 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     private AuthenticationManager authenticationManager;
     private String jwtsecret;
-
-    @Autowired
     private UserService userService;
 
     public JWTAuthenticationFilter(AuthenticationManager authenticationManager, String jwtsecret, UserService userService) {

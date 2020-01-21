@@ -7,21 +7,21 @@ import com.eyeslessdev.needmypuppyapi.repositories.BreedRequestRepo;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Service
 class BreedFilterService {
 
-    @Autowired
     private BreedRequestRepo breedRequestRepo;
 
-    @Autowired
     private BreedRequestFactory breedRequestFactory;
 
     BreedFilterService(BreedRequestRepo breedRequestRepo, BreedRequestFactory breedRequestFactory) {

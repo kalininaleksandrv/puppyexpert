@@ -4,7 +4,6 @@ import com.eyeslessdev.needmypuppyapi.entity.Role;
 import com.eyeslessdev.needmypuppyapi.entity.User;
 import com.eyeslessdev.needmypuppyapi.repositories.UserRepo;
 import com.eyeslessdev.needmypuppyapi.security.CommonConsts;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -17,10 +16,8 @@ import java.util.*;
 @Service
 public class UserService {
 
-    @Autowired
     private UserRepo userRepo;
 
-    @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     public UserService(UserRepo userRepo,

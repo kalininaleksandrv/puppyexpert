@@ -2,7 +2,6 @@ package com.eyeslessdev.needmypuppyapi.controller;
 
 import com.eyeslessdev.needmypuppyapi.entity.Feedback;
 import com.eyeslessdev.needmypuppyapi.service.FeedbackService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,8 +18,11 @@ import java.util.stream.Collectors;
 @RequestMapping("feedback")
 public class FeedbackController {
 
-    @Autowired
     private FeedbackService feedbackService;
+
+    public FeedbackController(FeedbackService feedbackService) {
+        this.feedbackService = feedbackService;
+    }
 
     @CrossOrigin
     @GetMapping("{id}")

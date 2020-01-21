@@ -4,7 +4,6 @@ import com.eyeslessdev.needmypuppyapi.entity.Breed;
 import com.eyeslessdev.needmypuppyapi.entity.BreedRequest;
 import com.eyeslessdev.needmypuppyapi.entity.SearchCriteriaBuilder;
 import com.eyeslessdev.needmypuppyapi.repositories.BreedRepo;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -14,16 +13,12 @@ import java.util.*;
 @Service
 public class BreedService {
 
-    @Autowired
     private BreedRepo breedRepo;
 
-    @Autowired
     private BreedFilterService breedFilterService;
 
-    @Autowired
     private SearchCriteriaBuilder searchCriteriaBuilder;
 
-    @Autowired
     private UserService userService;
 
     public BreedService(BreedRepo breedRepo,
