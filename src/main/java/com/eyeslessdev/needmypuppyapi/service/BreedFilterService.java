@@ -87,7 +87,7 @@ class BreedFilterService {
     public void saveBreedRequest(BreedRequest request, String authenticatedPrincipalUserName){
 
         DateTime nowtime = DateTime.now();
-        DateTimeFormatter dtf = DateTimeFormat.forPattern("MM/dd/yyyy HH:mm:ss");
+        DateTimeFormatter dtf = DateTimeFormat.forPattern("dd/MM/yyyy - HH:mm");
 
         StringBuilder sb = new StringBuilder();
         sb.append("Created by: ");

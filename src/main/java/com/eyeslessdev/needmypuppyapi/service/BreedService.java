@@ -80,18 +80,18 @@ public class BreedService {
 
         //этот код денормализован для улучшения читаемости
 
-        //1. передаем мапу с параметрами в breedFilterService, возвращаем объект BreedRequest
+        //1. передаем мапу с параметрами в breedFilterService.getBreedRequest(), возвращаем объект BreedRequest
         //2.1. Передаем BreedRequest в searchCriteriaBuilder, где он предобразовывается в List SearchCriteria
         //2.2. Там же в searchCriteriaBuilder передаем List SearchCriteria в BreedSpecificationBuilder
         //      - итерируем конструктором с with
         //3.3. BreedSpecificationBuilder в методе build создает через лист BreedSpecification лист Specification
         //4. делаем запрос в BreedRepo методом findAll передавая Specification
         //5. делаем запрос в BreedRepo получая 6 наиболее популярных пород
-        //6.1. передаем BreedRequest и текущего пользователя полученного из userService.getAuthenticatedPrincipalUserName() в BreedFilterService
-        //6.2. BreedFilterService сохраняет BreedRequest через BreedRequestRepo
+        //6.1. передаем BreedRequest и текущего пользователя полученного из userService.getAuthenticatedPrincipalUserName() в BreedFilterService.saveBreedRequest()
+        //6.2. BreedFilterService.saveBreedRequest() сохраняет BreedRequest через BreedRequestRepo
         //7. если запрос 4 или 5 вернулся пустым то формируем и возвращаем из метода EmptyMap
-        //8. если запросы 4 и 5 не пустые, то передаем их а также BreedRequest в breedFilterService
-        //  breedFilterService возвращает Map с ключами String и значениями List<Breed> т.е. несколько озаглавленных списков
+        //8. если запросы 4 и 5 не пустые, то передаем их а также BreedRequest в breedFilterService.getProperBreeds()
+        //  breedFilterService.getProperBreeds() возвращает Map с ключами String и значениями List<Breed> т.е. несколько озаглавленных списков
         //  возвращаем эту Map из метода
 
         BreedRequest breedrequest = breedFilterService.getBreedRequest(allparam);
@@ -110,8 +110,6 @@ public class BreedService {
             return breedFilterService.getProperBreeds(myBreed.get(), topRecomended.get(), breedrequest);
         else return Collections.emptyMap(); // TODO: 26.12.2019 make logging
     }
-
-
 
     private int increasefav(int favorite) {return ++favorite;}
 }
