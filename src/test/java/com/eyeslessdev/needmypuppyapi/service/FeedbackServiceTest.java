@@ -95,7 +95,8 @@ class FeedbackServiceTest {
 
         assertNotNull(testingFeedback);
         assertThat(testingFeedback.get(0)).hasSameClassAs(listOfFeedback.get(0));
-        assertThat(testingFeedback).containsOnly(feedbackOne); //feedbackTwo wont pass cause of no moderated status
+        assertThat(testingFeedback).containsOnly(feedbackOne);//feedbackTwo wont pass cause of no moderated status
+        assertThat(testingFeedback).extracting("email").containsOnly("access not allowed");
 
         Mockito.verify(feedbackRepo, Mockito.times(1)).findTop10ByDogidOrderByCommenttimeDesc(arg);
     }
@@ -107,7 +108,7 @@ class FeedbackServiceTest {
 
         OngoingStubbing<Collection<? extends GrantedAuthority>> stub = when(userService.getAuthenticatedPrincipalUserRole());
         stub.thenReturn(collectionsOfRoles);
-        when(userService.getAuthenticatedPrincipalUserName()).thenReturn("user");
+        when(userService.getAuthenticatedPrincipalUserEmail()).thenReturn("newemail@user.com");
 
         Boolean isFeedbackSaved = feedbackService.saveFeedback(feedbackOne);
 
@@ -122,7 +123,7 @@ class FeedbackServiceTest {
         assertThat(savedUser.isModerated()).isEqualTo(1);
         assertThat(savedUser.getCommenttime() - System.currentTimeMillis()).isLessThan(100);
         assertNotNull(savedUser.getCommenttimestr());
-        assertEquals(savedUser.getUsername(), "user");
+        assertEquals(savedUser.getEmail(), "newemail@user.com");
 
     }
 
@@ -134,7 +135,7 @@ class FeedbackServiceTest {
         OngoingStubbing<Collection<? extends GrantedAuthority>> stub = when(userService.getAuthenticatedPrincipalUserRole());
         stub.thenReturn(collectionsOfRoles);
 
-        when(userService.getAuthenticatedPrincipalUserName()).thenReturn("anonimous");
+        when(userService.getAuthenticatedPrincipalUserEmail()).thenReturn("newemail@user.com");
 
         Boolean isFeedbackSaved = feedbackService.saveFeedback(feedbackThree);
 
@@ -149,7 +150,7 @@ class FeedbackServiceTest {
         assertThat(savedUser.isModerated()).isEqualTo(0);
         assertThat(savedUser.getCommenttime() - System.currentTimeMillis()).isLessThan(100);
         assertNotNull(savedUser.getCommenttimestr());
-        assertEquals(savedUser.getUsername(), "anonimous");
+        assertEquals(savedUser.getEmail(), "newemail@user.com");
 
     }
 

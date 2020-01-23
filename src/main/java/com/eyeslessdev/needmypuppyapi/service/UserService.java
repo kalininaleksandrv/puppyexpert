@@ -47,18 +47,16 @@ public class UserService {
         }
     }
 
-    String getAuthenticatedPrincipalUserName() {
+    String getAuthenticatedPrincipalUserEmail() {
         if (!(getCurrentAuthentication() instanceof AnonymousAuthenticationToken)) {
 
             Authentication authentication = getCurrentAuthentication();
 
-            if (authentication == null) return "anonimous";
-
-            Optional<User> user =  userRepo.findByEmail(authentication.getName());
-
-            if (user.isPresent()){
-                return user.get().getName();
-            } else return "anonimous";
+            if (authentication == null) {
+                return "anonimous";
+            } else {
+                return authentication.getName();
+            }
 
         } else {
             return "anonimous";

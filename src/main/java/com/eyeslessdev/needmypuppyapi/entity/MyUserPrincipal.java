@@ -46,7 +46,7 @@ public class MyUserPrincipal implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true; // TODO: 21.07.19 implement User.isRegistered 
+        return true;
     }
 
     public String getExternalId(){return user.getExternalid();}

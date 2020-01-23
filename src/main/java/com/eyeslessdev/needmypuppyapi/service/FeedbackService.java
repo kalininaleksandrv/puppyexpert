@@ -35,13 +35,12 @@ public class FeedbackService {
 
     public List<Feedback> findByDogId(long id){
 
-        List<Feedback> mylist = feedbackRepo.findTop10ByDogidOrderByCommenttimeDesc(id);
+        List<Feedback> changedList = feedbackRepo.findTop10ByDogidOrderByCommenttimeDesc(id);
 
-        return mylist.stream()
+        return changedList.stream()
                 .filter(list -> list.isModerated() == 1)
+                .peek(item -> item.setEmail("access not allowed"))
                 .collect(Collectors.toList());
-
-        // TODO: 21.01.2020 make email erasure
     }
 
     public Boolean saveFeedback (Feedback feedback)  {
@@ -57,8 +56,8 @@ public class FeedbackService {
              DateTimeFormatter dtf = DateTimeFormat.forPattern("MM/dd/yyyy HH:mm:ss");
              feedback.setCommenttime(nowtime.getMillis());
              feedback.setCommenttimestr(nowtime.toString(dtf));
-             feedback.setUsername(userService.getAuthenticatedPrincipalUserName()); // TODO: 21.01.2020 add principal email
-            feedbackRepo.save(feedback);
+             feedback.setEmail(userService.getAuthenticatedPrincipalUserEmail());
+             feedbackRepo.save(feedback);
             return true;
      } catch (Exception e) {
             // TODO: 20.01.2020 add logging

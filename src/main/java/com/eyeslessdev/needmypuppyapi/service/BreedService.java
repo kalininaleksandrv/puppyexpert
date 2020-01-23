@@ -104,7 +104,7 @@ public class BreedService {
         Optional<List<Breed>> topRecomended =
                 Optional.ofNullable(breedRepo.findTop6ByOrderByFavoriteDesc());
 
-        breedFilterService.saveBreedRequest(breedrequest, userService.getAuthenticatedPrincipalUserName());
+        breedFilterService.saveBreedRequest(breedrequest, userService.getAuthenticatedPrincipalUserEmail());
 
         if(myBreed.isPresent() && topRecomended.isPresent())
             return breedFilterService.getProperBreeds(myBreed.get(), topRecomended.get(), breedrequest);
