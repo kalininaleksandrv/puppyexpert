@@ -48,7 +48,6 @@ class BreedFilterServiceTest {
         allParam.put("age", "4");
 
         brBuilder = new BreedRequest.Builder();
-
     }
 
     @Test
@@ -60,7 +59,6 @@ class BreedFilterServiceTest {
         assertThat(breedRequest.getRequestParamsAsString()).contains("BreedRequest", "time=4", "exp=4", "age=4");
 
         Mockito.verify(breedRequestFactory, Mockito.times(1)).getBreedRequest(allParam);
-
     }
 
     @Test
