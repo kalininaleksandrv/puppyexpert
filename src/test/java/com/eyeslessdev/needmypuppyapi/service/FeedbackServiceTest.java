@@ -2,7 +2,9 @@ package com.eyeslessdev.needmypuppyapi.service;
 
 import com.eyeslessdev.needmypuppyapi.entity.Feedback;
 import com.eyeslessdev.needmypuppyapi.entity.Role;
+import com.eyeslessdev.needmypuppyapi.entity.User;
 import com.eyeslessdev.needmypuppyapi.repositories.FeedbackRepo;
+import com.eyeslessdev.needmypuppyapi.repositories.UserRepo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,6 +35,9 @@ class FeedbackServiceTest {
     @Mock
     UserService userService;
 
+    @Mock
+    UserRepo userRepo;
+
     @InjectMocks
     FeedbackService feedbackService;
 
@@ -42,10 +47,23 @@ class FeedbackServiceTest {
     Feedback feedbackTwo;
     Feedback feedbackThree;
 
+    User firstUser;
+
     Map<String, List<Integer>> income;
 
     @BeforeEach
     void setUp() {
+
+        Set<Role> roles = new HashSet<>();
+        roles.add(Role.USER);
+
+        firstUser = new User();
+        firstUser.setId(1L);
+        firstUser.setName("myuser");
+        firstUser.setPassword("myuser");
+        firstUser.setEmail("myuser@test.com");
+        firstUser.setRoles(roles);
+
         feedbackOne = new Feedback();
         feedbackOne.setId(99L);
         feedbackOne.setDogid(3L);
@@ -108,7 +126,8 @@ class FeedbackServiceTest {
 
         OngoingStubbing<Collection<? extends GrantedAuthority>> stub = when(userService.getAuthenticatedPrincipalUserRole());
         stub.thenReturn(collectionsOfRoles);
-        when(userService.getAuthenticatedPrincipalUserEmail()).thenReturn("newemail@user.com");
+        when(userService.getAuthenticatedPrincipalUserEmail()).thenReturn("myuser@test.com");
+        when(userRepo.findByEmail(anyString())).thenReturn(Optional.of(firstUser));
 
         Boolean isFeedbackSaved = feedbackService.saveFeedback(feedbackOne);
 
@@ -123,7 +142,9 @@ class FeedbackServiceTest {
         assertThat(savedUser.isModerated()).isEqualTo(1);
         assertThat(savedUser.getCommenttime() - System.currentTimeMillis()).isLessThan(100);
         assertNotNull(savedUser.getCommenttimestr());
-        assertEquals(savedUser.getEmail(), "newemail@user.com");
+        assertEquals(savedUser.getEmail(), "myuser@test.com");
+        assertEquals(savedUser.getUsername(), "myuser");
+
 
     }
 
@@ -135,7 +156,8 @@ class FeedbackServiceTest {
         OngoingStubbing<Collection<? extends GrantedAuthority>> stub = when(userService.getAuthenticatedPrincipalUserRole());
         stub.thenReturn(collectionsOfRoles);
 
-        when(userService.getAuthenticatedPrincipalUserEmail()).thenReturn("newemail@user.com");
+        when(userService.getAuthenticatedPrincipalUserEmail()).thenReturn("myuser@test.com");
+        when(userRepo.findByEmail(anyString())).thenReturn(Optional.of(firstUser));
 
         Boolean isFeedbackSaved = feedbackService.saveFeedback(feedbackThree);
 
@@ -150,7 +172,8 @@ class FeedbackServiceTest {
         assertThat(savedUser.isModerated()).isEqualTo(0);
         assertThat(savedUser.getCommenttime() - System.currentTimeMillis()).isLessThan(100);
         assertNotNull(savedUser.getCommenttimestr());
-        assertEquals(savedUser.getEmail(), "newemail@user.com");
+        assertEquals(savedUser.getEmail(), "myuser@test.com");
+        assertEquals(savedUser.getUsername(), "myuser");
 
     }
 

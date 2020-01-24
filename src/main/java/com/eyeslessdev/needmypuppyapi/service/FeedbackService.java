@@ -2,6 +2,7 @@ package com.eyeslessdev.needmypuppyapi.service;
 
 import com.eyeslessdev.needmypuppyapi.entity.Feedback;
 import com.eyeslessdev.needmypuppyapi.entity.Role;
+import com.eyeslessdev.needmypuppyapi.entity.User;
 import com.eyeslessdev.needmypuppyapi.repositories.FeedbackRepo;
 import com.eyeslessdev.needmypuppyapi.repositories.UserRepo;
 import org.joda.time.DateTime;
@@ -11,10 +12,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
@@ -48,16 +46,27 @@ public class FeedbackService {
         Collection<? extends GrantedAuthority> currentPrincipalUserRole = userService.getAuthenticatedPrincipalUserRole();
 
         try {
-             if (currentPrincipalUserRole.contains(Role.USER) || currentPrincipalUserRole.contains(Role.ADMIN))
+            if (currentPrincipalUserRole.contains(Role.USER) || currentPrincipalUserRole.contains(Role.ADMIN))
                  feedback.setIsModerated(1);
-             else feedback.setIsModerated(0);
+            else feedback.setIsModerated(0);
 
-             DateTime nowtime = DateTime.now();
-             DateTimeFormatter dtf = DateTimeFormat.forPattern("MM/dd/yyyy HH:mm:ss");
-             feedback.setCommenttime(nowtime.getMillis());
-             feedback.setCommenttimestr(nowtime.toString(dtf));
-             feedback.setEmail(userService.getAuthenticatedPrincipalUserEmail());
-             feedbackRepo.save(feedback);
+            DateTime nowtime = DateTime.now();
+            DateTimeFormatter dtf = DateTimeFormat.forPattern("MM/dd/yyyy HH:mm:ss");
+            feedback.setCommenttime(nowtime.getMillis());
+            feedback.setCommenttimestr(nowtime.toString(dtf));
+
+            String userEmail = userService.getAuthenticatedPrincipalUserEmail();
+
+            if(!userEmail.equals("anonimous")){
+                Optional<User> user  = userRepo.findByEmail(userEmail);
+                user.ifPresent(value -> feedback.setUsername(value.getName()));
+                feedback.setEmail(userEmail);
+            } else {
+                feedback.setUsername("anonimous");
+                feedback.setEmail("anonimous");
+            }
+
+            feedbackRepo.save(feedback);
             return true;
      } catch (Exception e) {
             // TODO: 20.01.2020 add logging
