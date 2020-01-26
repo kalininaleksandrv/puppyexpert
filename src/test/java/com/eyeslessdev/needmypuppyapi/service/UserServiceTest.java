@@ -10,6 +10,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.slf4j.Logger;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -33,6 +34,9 @@ class UserServiceTest {
 
     @Mock
     private UserRepo userRepo;
+
+    @Mock
+    private Logger logger;
 
     @InjectMocks
     private UserService userService;

@@ -11,6 +11,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.slf4j.Logger;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
@@ -39,6 +40,9 @@ public class BreedServiceTest {
 
     @Mock
     private Specification<Breed> specification;
+
+    @Mock
+    private Logger logger;
 
     @InjectMocks
     private BreedService breedService;

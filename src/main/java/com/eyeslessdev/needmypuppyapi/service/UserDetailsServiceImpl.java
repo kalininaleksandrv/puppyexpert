@@ -3,6 +3,7 @@ package com.eyeslessdev.needmypuppyapi.service;
 import com.eyeslessdev.needmypuppyapi.entity.MyUserPrincipal;
 import com.eyeslessdev.needmypuppyapi.entity.User;
 import com.eyeslessdev.needmypuppyapi.repositories.UserRepo;
+import org.slf4j.Logger;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -15,8 +16,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     private UserRepo userRepo;
 
-    public UserDetailsServiceImpl(UserRepo userRepo) {
+    private Logger logger;
+
+    public UserDetailsServiceImpl(UserRepo userRepo, Logger logger) {
         this.userRepo = userRepo;
+        this.logger = logger;
     }
 
     @Override
@@ -28,7 +32,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             //wrap founded user on userprincipal, get in from optional with .get()
             return new MyUserPrincipal(user.get());
         } else {
-            System.out.println("User "+useremail+ " not found"); // TODO: 28.07.2019 add correct logger 
+            logger.warn("UserDetailsServiceImpl, " +
+                    "loadUserByUsername(String useremail) , " +
+                    "User "+useremail+ " not found");
             throw new UsernameNotFoundException("User "+useremail+ " not found");
         }
     }

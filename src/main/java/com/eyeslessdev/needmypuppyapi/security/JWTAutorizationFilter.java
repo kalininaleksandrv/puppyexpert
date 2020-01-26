@@ -17,7 +17,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -61,10 +60,7 @@ public class JWTAutorizationFilter extends BasicAuthenticationFilter {
                         .build()
                         .verify(token.replace(CommonConsts.TOKEN_PREFIX, ""));
 
-            } catch (JWTVerificationException e) {
-                System.out.println("JWT verification exception");
-                // TODO: 07.08.2019 make correct logging 
-            } catch (IllegalArgumentException e) {
+            } catch (JWTVerificationException | IllegalArgumentException e) {
                 e.printStackTrace();
             }
 

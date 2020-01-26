@@ -4,6 +4,7 @@ import com.eyeslessdev.needmypuppyapi.entity.Breed;
 import com.eyeslessdev.needmypuppyapi.entity.BreedRequest;
 import com.eyeslessdev.needmypuppyapi.entity.SearchCriteriaBuilder;
 import com.eyeslessdev.needmypuppyapi.repositories.BreedRepo;
+import org.slf4j.Logger;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -21,14 +22,17 @@ public class BreedService {
 
     private UserService userService;
 
+    private Logger logger;
+
     public BreedService(BreedRepo breedRepo,
                         BreedFilterService breedFilterService,
                         SearchCriteriaBuilder searchCriteriaBuilder,
-                        UserService userService) {
+                        UserService userService, Logger logger) {
         this.breedRepo = breedRepo;
         this.breedFilterService = breedFilterService;
         this.searchCriteriaBuilder = searchCriteriaBuilder;
         this.userService = userService;
+        this.logger = logger;
     }
 
 
@@ -44,7 +48,9 @@ public class BreedService {
         if(myBreed.isPresent()) {
             searchingresult.put("Список всех пород", new ArrayList<>(myBreed.get()));
         } else searchingresult.put("Список всех пород", Collections.emptyList());
-        // TODO: 26.12.2019 make logging
+        logger.warn("BreedService, " +
+                "getAllBreedsOrderedById() , " +
+                "for some reason method returns empty collection");
             return searchingresult;
     }
 
@@ -70,7 +76,9 @@ public class BreedService {
                 breedRepo.save(breed);
                 return HttpStatus.OK;
             } catch (Exception e) {
-                // TODO: 26.12.2019 make logging
+                logger.warn("BreedService, " +
+                        "faveBreedById(long id) , " +
+                        "Exception: "+e);
                 return HttpStatus.INTERNAL_SERVER_ERROR;}
         } else return HttpStatus.NOT_FOUND;
 
@@ -108,7 +116,12 @@ public class BreedService {
 
         if(myBreed.isPresent() && topRecomended.isPresent())
             return breedFilterService.getProperBreeds(myBreed.get(), topRecomended.get(), breedrequest);
-        else return Collections.emptyMap(); // TODO: 26.12.2019 make logging
+        else {
+            logger.warn("BreedService, " +
+                    "getFilteredListOfBreed(Map<String,String> allparam), " +
+                    "for some reason method returns empty map");
+            return Collections.emptyMap();
+        }
     }
 
     private int increasefav(int favorite) {return ++favorite;}

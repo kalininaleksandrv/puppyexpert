@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.slf4j.Logger;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -28,6 +29,9 @@ class UserDetailsServiceImplTest {
 
     @Mock
     private UserRepo userRepo;
+
+    @Mock
+    private Logger logger;
 
     @InjectMocks
     private UserDetailsServiceImpl userDetailsService;

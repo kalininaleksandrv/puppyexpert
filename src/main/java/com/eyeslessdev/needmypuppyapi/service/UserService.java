@@ -4,6 +4,7 @@ import com.eyeslessdev.needmypuppyapi.entity.Role;
 import com.eyeslessdev.needmypuppyapi.entity.User;
 import com.eyeslessdev.needmypuppyapi.repositories.UserRepo;
 import com.eyeslessdev.needmypuppyapi.security.CommonConsts;
+import org.slf4j.Logger;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -20,10 +21,13 @@ public class UserService {
 
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
+    private Logger logger;
+
     public UserService(UserRepo userRepo,
-                       BCryptPasswordEncoder bCryptPasswordEncoder) {
+                       BCryptPasswordEncoder bCryptPasswordEncoder, Logger logger) {
         this.userRepo = userRepo;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.logger = logger;
     }
 
     public List<User> findAll() {return userRepo.findAll();}
@@ -89,8 +93,9 @@ public class UserService {
             user.get().setLastvisit(System.currentTimeMillis());
             userRepo.save(user.get());
         } else {
-            System.out.println("no such user to post visit time");
-            // TODO: 29.12.2019 log this 
+            logger.warn("UserService, " +
+                    "setLastVisitTimeToUser(String useremail), " +
+                    "no such user to post visit time: "+useremail);
         }
     }
 
@@ -107,9 +112,10 @@ public class UserService {
                 return false;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.warn("UserService, " +
+                    "changeStatus(Long id, Set<Role> roles), " +
+                    "Exception: "+e);
             return false;
-            // TODO: 29.12.2019 log this 
         }
     }
 

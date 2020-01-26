@@ -1,7 +1,5 @@
 package com.eyeslessdev.needmypuppyapi.entity;
 
-import org.springframework.data.jpa.domain.Specification;
-
 public class SearchCriteria {
 
     private String key;

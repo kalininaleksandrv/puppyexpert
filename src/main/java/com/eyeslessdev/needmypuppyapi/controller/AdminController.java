@@ -5,6 +5,7 @@ import com.eyeslessdev.needmypuppyapi.entity.Role;
 import com.eyeslessdev.needmypuppyapi.entity.User;
 import com.eyeslessdev.needmypuppyapi.service.FeedbackService;
 import com.eyeslessdev.needmypuppyapi.service.UserService;
+import org.slf4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,9 +23,12 @@ public class AdminController {
 
     private UserService userService;
 
-    public AdminController(FeedbackService feedbackService, UserService userService) {
+    private Logger logger;
+
+    public AdminController(FeedbackService feedbackService, UserService userService, Logger logger) {
         this.feedbackService = feedbackService;
         this.userService = userService;
+        this.logger = logger;
     }
 
     @CrossOrigin
@@ -46,8 +50,9 @@ public class AdminController {
                 .thenCombine(resultofupdating, (res1, res2) -> res1&res2)
                 .whenComplete((result, ex) -> {
                     if (ex!=null){
-                        System.out.println(ex.toString());
-                        // TODO: 21.01.2020 log it
+                        logger.warn("AdminController, " +
+                                "moderateMessages (@RequestBody Map<String, List<Integer>> moderatedmessages), " +
+                                "exception in async operation whenComplete: "+ex);
                     }
                 });
 
@@ -73,7 +78,9 @@ public class AdminController {
             List<User> fetchedlist = userService.findAllCreated(role.getAuthority());
             return new ResponseEntity<>(fetchedlist, HttpStatus.OK);
         } catch (IllegalArgumentException e) {
-            // TODO: 21.01.2020 log it
+            logger.warn("AdminController, " +
+                    "findAllByStatus (@RequestParam String status), " +
+                    "exception IllegalArgumentException: "+e);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }

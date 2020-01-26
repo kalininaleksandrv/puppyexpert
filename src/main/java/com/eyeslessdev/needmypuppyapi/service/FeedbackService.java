@@ -8,6 +8,7 @@ import com.eyeslessdev.needmypuppyapi.repositories.UserRepo;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.slf4j.Logger;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
@@ -25,10 +26,13 @@ public class FeedbackService {
 
     private UserService userService;
 
-    public FeedbackService(FeedbackRepo feedbackRepo, UserRepo userRepo, UserService userService) {
+    private Logger logger;
+
+    public FeedbackService(FeedbackRepo feedbackRepo, UserRepo userRepo, UserService userService, Logger logger) {
         this.feedbackRepo = feedbackRepo;
         this.userRepo = userRepo;
         this.userService = userService;
+        this.logger = logger;
     }
 
     public List<Feedback> findByDogId(long id){
@@ -69,8 +73,9 @@ public class FeedbackService {
             feedbackRepo.save(feedback);
             return true;
      } catch (Exception e) {
-            // TODO: 20.01.2020 add logging
-        e.printStackTrace();
+            logger.warn("FeedbackService, " +
+                    "saveFeedback (Feedback feedback) , " +
+                    "Exception: "+e);
         return false;
      }
     }
