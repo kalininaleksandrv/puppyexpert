@@ -2,6 +2,7 @@ package com.eyeslessdev.needmypuppyapi.service;
 
 import com.eyeslessdev.needmypuppyapi.entity.Breed;
 import com.eyeslessdev.needmypuppyapi.entity.BreedRequest;
+import com.eyeslessdev.needmypuppyapi.entity.SearchCriteria;
 import com.eyeslessdev.needmypuppyapi.entity.SearchCriteriaBuilder;
 import com.eyeslessdev.needmypuppyapi.repositories.BreedRepo;
 import org.slf4j.Logger;
@@ -104,7 +105,7 @@ public class BreedService {
 
         BreedRequest breedrequest = breedFilterService.getBreedRequest(allparam);
 
-        Specification<Breed> mySpec = searchCriteriaBuilder.buildListOfCriteria(breedrequest);
+        Specification<SearchCriteria> mySpec = searchCriteriaBuilder.buildListOfCriteria(breedrequest);
 
         Optional<List<Breed>> myBreed =
                 Optional.ofNullable(breedRepo.findAll(mySpec));

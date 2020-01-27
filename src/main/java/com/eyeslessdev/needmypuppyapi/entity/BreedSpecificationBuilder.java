@@ -19,7 +19,7 @@ public class BreedSpecificationBuilder {
         return this;
     }
 
-    public Specification<Breed> build() {
+    public Specification<SearchCriteria> build() {
         if (params.size() == 0) {
             return null;
         }
@@ -28,7 +28,7 @@ public class BreedSpecificationBuilder {
                 .map(BreedSpecification::new)
                 .collect(Collectors.toList());
 
-        Specification result = specs.get(0);
+        Specification<SearchCriteria> result = specs.get(0);
 
         for (int i = 1; i < params.size(); i++) {
             result = Specification.where(result)

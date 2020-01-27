@@ -2,6 +2,7 @@ package com.eyeslessdev.needmypuppyapi.service;
 
 import com.eyeslessdev.needmypuppyapi.entity.Breed;
 import com.eyeslessdev.needmypuppyapi.entity.BreedRequest;
+import com.eyeslessdev.needmypuppyapi.entity.SearchCriteria;
 import com.eyeslessdev.needmypuppyapi.entity.SearchCriteriaBuilder;
 import com.eyeslessdev.needmypuppyapi.repositories.BreedRepo;
 import org.junit.jupiter.api.BeforeAll;
@@ -41,7 +42,7 @@ public class BreedServiceTest {
     private SearchCriteriaBuilder searchCriteriaBuilder;
 
     @Mock
-    private Specification<Breed> specification;
+    private Specification<SearchCriteria> specification;
 
     @Mock
     private Logger logger;
@@ -203,7 +204,7 @@ public class BreedServiceTest {
 
         BreedRequest breedRequest = breedFilterService.getBreedRequest(new HashMap<>());
         breedFilterService.saveBreedRequest(breedRequest, "anyname");
-        Specification<Breed> mySpec = searchCriteriaBuilder.buildListOfCriteria(breedRequest);
+        Specification<SearchCriteria> mySpec = searchCriteriaBuilder.buildListOfCriteria(breedRequest);
 
         when(breedRepo.findAll(mySpec)).thenReturn(breedlist);
         when(breedFilterService.getProperBreeds(anyList(),anyList(),any(BreedRequest.class))).thenReturn(new HashMap<>());

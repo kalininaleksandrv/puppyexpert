@@ -21,7 +21,7 @@ public class SearchCriteriaBuilder {
     private int care;
 
 
-    public Specification<Breed> buildListOfCriteria (BreedRequest breedRequest){
+    public Specification<SearchCriteria> buildListOfCriteria (BreedRequest breedRequest){
 
         List<SearchCriteria> outcomecriteria = new ArrayList<>();
 
